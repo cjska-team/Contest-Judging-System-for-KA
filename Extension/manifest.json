@@ -4,7 +4,7 @@
    			"19": "icon-19.png",
    			"38": "icon-38.png"
    		},
-   		"default_title":"MultiTool",
+   		"default_title":"Contest Judging for Khan Academy",
    		"default_popup": "popup/index.html"
    	},
    "icons": {
@@ -28,12 +28,10 @@
    "externally_connectable": {
       "matches": ["*://*.khanacademy.org/*"]
    },
-   "description": "Useful tools for use on Khan Academy",
-   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnatGjIMGoR2WlxZzvPm1eBDJxZ0u1uK/sqDFe4Qe4ucctxFrafoY2hotT+gnc5kzzwr25sZfurJVOZ5gMe/aQUrv63i7QWjuzB3Xryl1nF/BGzL/IEHK+BAJTN2MGjeECFKsGonSD7RPpOS4M2HyXUP8eHpy2ZtfP4XsEdTF85Jk1MUPODmUKS8OH3Mq/gawn2oPveBzau9aCNE/OoxnBoqYmIKJ14ZRh3N5UOHcoiQqkUsHzkWDqlt7BRpmqtVeSH6aWTJDoa2BqqkWG11/oFPWjolkoo3YZ1sPpiAuv+8Xoz3MN6UkeLQaqQbd9AqrXzA+z/s80fO6HRHAV378hQIDAQAB",
-   "manifest_version": 2,
-   "name": "MultiTool for Khan Academy",
+   "description": "Hello...?",
+   "name": "Contest Judging for Khan Academy",
    "permissions": [ "storage", "activeTab" , "notifications","management", "http://terminalbit.com/"],
-   "short_name": "MultiTool",
-   "version": "1.4.3.1",
-   "version_name":"1.4.3_01"
+   "short_name": "Contest Judging",
+   "version": "0.1",
+   "version_name":"0.1"
 }
