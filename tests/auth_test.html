@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Firebase + Google Auth Test</title>
+	</head>
+	<body>
+		<button id="login">Click me to login!</button>
+		<script src="../Resources/firebase.js"></script>
+		<script>
+			var firebaseAppId = " "; // For security reasons, DO NOT include the Firebase App ID anywhere in files shown in the repository!
+
+			document.getElementById("login").onclick = function() {
+				var ref = new Firebase("https://" + firebaseAppId + ".firebaseio.com");
+					ref.authWithOAuthPopup("google", function(error, authData) {
+					if (error) {
+						console.log("Login Failed!", error);
+					} else {
+						console.log("Authenticated successfully with payload:", authData);
+					}
+				}, { remember: "sessionOnly" });
+			};
+		</script>
+	</body>
+</html>
