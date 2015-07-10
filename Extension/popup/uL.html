@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <!-- Latest compiled and minified CSS -->
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+      <style>
+         html,body {
+         	width: 500px;
+         	height: 500px;
+         	padding: 0px;
+         	margin: 0px;
+         }
+         .jumbotron {
+         	margin-top: 51px;
+         }
+         * {
+         	border-radius: 0px !important;
+         }
+      </style>
+      <script src="ext/jquery.js"></script>
+      <script src="popupscripts.js"></script>
+   </head>
+   <body>
+      <nav class="navbar navbar-default navbar-fixed-top">
+         <!-- We use the fluid option here to avoid overriding the fixed width of a normal container within the narrow content columns. -->
+         <div class="container-fluid">
+            <div class="navbar-header">
+               <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-8" aria-expanded="false"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button> <a class="navbar-brand" href="/popup.html">MultiTool</a> 
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-8">
+               <ul class="nav navbar-nav">
+                  <li><a href="index.html">Home</a>
+                  </li>
+                  <li><a href="pD.html">Program Diagnostic</a>
+                  </li>
+                  <li class="active"><a href="uL.html">User Lookup</a>
+                  </li>
+                  <li><a href="options.html">Options</a></li>
+               </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+         </div>
+      </nav>
+      <div class="jumbotron">
+         <div class="container">
+            <h1>User Lookup <span style="font-size:20px;vertical-align:middle;color:grey" class="glyphicon glyphicon-user" aria-hidden="true"></span></h1>
+            <p>Find some information about a specified user.</p>
+         </div>
+      </div>
+      <div class="container">
+         <center>
+            <b>Autofill</b>
+            <br>
+            <div class="btn-group" role="group" id="autofill">
+               <button type="button" class="btn btn-default" id="pC">Program Creator</button>
+               <button type="button" class="btn btn-default" id="pU">Profile User</button>
+               <button type="button" class="btn btn-default" id="Y" disabled>You</button>
+            </div>
+            <hr style="margin-top:10px;margin-bottom:10px">
+            <div class="row">
+               <div class="col-lg-6">
+                  <div class="input-group">
+                     <input type="text" class="form-control" placeholder="Username" id="username"> <span class="input-group-btn">
+                     <button class="btn btn-default" type="button" id="lookup">Lookup</button>
+                     </span> 
+                  </div>
+                  <!-- /input-group -->
+               </div>
+               <!-- /.col-lg-6 -->
+            </div>
+            <!-- /.row -->
+         </center>
+         <h2>Data</h2>
+         <hr style="margin-top:10px;margin-bottom:20px">
+         <img src="https://www.kasandbox.org/third_party/javascript-khansrc/live-editor/build/images/avatars/leaf-grey.png" style="float:left;margin-right:5px" width="50px" height="50px" id="ppic"><b id="nickname">unknown user</b>&nbsp;&nbsp;<i id="uLabel">@null</i><br>
+         <span class="label label-primary" style="border-radius:3px !important;background-color:#00b0de" id="eg">0</span><br><br>
+         <div id="bio"></div>
+         <div id="location" style="color:grey;font-size:12px"></div>
+         <hr style="margin-top:10px;margin-bottom:10px">
+         <b>Can Hellban: </b><span id="cHB">?</span><br>
+         <b>Special Permissions: </b><span id="hSP">?</span><br>
+         <b>Moderator: </b><span id="iM">?</span><br>
+         <b>Moderator Level: </b><span id="mL">?</span><br>
+         <b>Can Message Users: </b><span id="cMU">?</span><br>
+         <b>Is Creator: </b><span id="iCre">?</span><br>
+         <b>Is Curator: </b><span id="iCur">?</span><br>
+         <b>Is Publisher: </b><span id="iB">?</span><br>
+         <b>Create Official Clarifications: </b><span id="cOC">?</span><br><br>
+
+
+      </div>
+      <script src="ext/bootstrap.min.js"></script>
+   </body>
+</html>
