@@ -1,3 +1,7 @@
+/***
+ * This file is where all the general purpose, reusable code should go!
+***/
+
 /*
  * Basic Script Injection
  * Author: Gigabyte Giant
