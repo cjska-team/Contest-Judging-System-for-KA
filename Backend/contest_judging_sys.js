@@ -7,8 +7,8 @@
  * Author: Gigabyte Giant
  */
 var include = function(link) {
-	var scriptTag = document.createElement("script");
-	scriptTag.src = link;
-
-	document.body.appendChild(scriptTag);
+    /*Append a <script> tag with src link into the <body>*/
+    var scriptTag = document.createElement("script");
+    scriptTag.src = link;
+    document.body.appendChild(scriptTag);
 };
