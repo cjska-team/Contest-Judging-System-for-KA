@@ -63,10 +63,10 @@ var sync = function(func) {
                         });
                         (function() {
                             //In order to keep n the same, we put it inside this function that is instantiated only once.
-                            var n = contestIds.length-1;
+                            var index = contestIds.length-1;
                             //Call fetchEntries and when done, set the JSON obj with the entries
                             fetchEntries(currScratchpad.url.split("/")[5], function(entries) {
-                                contestIds[n].entries = entries;
+                                contestIds[index].entries = entries;
                             });
                         })();
                     }
@@ -74,19 +74,17 @@ var sync = function(func) {
             }
 
             //When all of the contest entries have been found (check for this every second), finally call func and stop checking if all of the contest entries have been found.
-            (function() {
-                var storeNum = setInterval(function() {
-                    var done = true;
-                    for (var i = 0; i < contestIds.length; i++) if (!contestIds[i].hasOwnProperty("entries")) {
-                        done = false;
-                        break;
-                    }
-                    if (done) {
-                        clearInterval(storeNum);
-                        func(contestIds);
-                    }
-                }, 1000);
-            })();
+            var storeNum = setInterval(function() {
+                var done = true;
+                for (var i = 0; i < contestIds.length; i++) if (!contestIds[i].hasOwnProperty("entries")) {
+                    done = false;
+                    break;
+                }
+                if (done) {
+                    clearInterval(storeNum);
+                    func(contestIds);
+                }
+            }, 1000);
         }
     });
 };
