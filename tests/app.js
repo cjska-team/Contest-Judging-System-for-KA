@@ -21,19 +21,19 @@ function showContestEntries(entries) {
         //Clear contestIds
         contestIds.textContent = "";
         //Loop through entries
-        for (var i = 0; i < entries.length; i++) {
+        for (var id in entries) {
             //Our parent will be an <a> linking to the contest
             var curElem = document.createElement("a");
-            curElem.href = entries[i].url;
+            curElem.href = entries[id].url;
             curElem.target = "_blank";
             //Clone contestIds
             var curDiv = contestDiv.cloneNode(true);
             //Set src attribute of <img>
-            curDiv.childNodes[0].src = entries[i].thumb;
+            curDiv.childNodes[0].src = entries[id].thumb;
             //Insert title into the <span>.title
-            curDiv.childNodes[1].textContent = entries[i].name;
+            curDiv.childNodes[1].textContent = entries[id].name;
             //Put the number of votes in the <span>.small
-            curDiv.childNodes[2].textContent = entries[i].votes+" Votes";
+            curDiv.childNodes[2].textContent = entries[id].votes+" Votes";
             //Insert curDiv into curElem
             curElem.appendChild(curDiv);
             //Insert curElem into contestIds
@@ -47,7 +47,7 @@ function loadContests() {
     //Tell the user to wait for it.
     contestIds.textContent = "Wait for it...";
     //Call sync() to get the contest data.
-    sync(function(contests) {
+    KA_API.getContests(function(contests) {
         //Clear contestIds
         contestIds.textContent = "";
         //Loop through contests
@@ -59,7 +59,7 @@ function loadContests() {
             //Put the title in the <span>.title
             curDiv.childNodes[1].textContent = contests[i].name;
             //Put the number of entries in the <span>.small
-            curDiv.childNodes[2].textContent = contests[i].entries.length+" Entries";
+            curDiv.childNodes[2].textContent = contests[i].numEntries+" Entries";
             //Append into contestIds
             contestIds.appendChild(curDiv);
             //Bind showContestEntries([contest entries]) to the click event of curDiv
