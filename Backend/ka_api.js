@@ -37,11 +37,11 @@ window.KA_API = (function() {
 						if (currentScratchpad.authorNickname.match("pamela") !== null) {
 							/* Contest programs always have "Contest" in the title... */
 							if (currentScratchpad.translatedTitle.match("Contest") !== null) {
-								contests.push({
+								contests[currentScratchpad.url.split("/")[5]] = {
 									id: currentScratchpad.url.split("/")[5],
 									name: currentScratchpad.translatedTitle,
 									entries: [ /* TODO! */ ]
-								});
+								};
 							}
 						}
 					}
