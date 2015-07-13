@@ -9,7 +9,9 @@ window.KA_API = (function() {
 	return {
 		urls: {
 			spotlight: "https://www.khanacademy.org/api/internal/scratchpads/top?casing=camel&topic_id=xffde7c31&sort=4&limit=40000&page=0&lang=en&_=1436581332879",
-			spinoffs: "https://www.khanacademy.org/api/internal/scratchpads/{PROGRAM}/top-forks?casing=camel&sort=2&limit=300000&page=0&lang=en"
+			spinoffs: function(programID) {
+				return "https://www.khanacademy.org/api/internal/scratchpads/{PROGRAM}/top-forks?casing=camel&sort=2&limit=300000&page=0&lang=en".replace("{PROGRAM}", programID);
+			}
 		},
 		getContests: function(callback) {
 			/* Let's not return anything until we're done! */
@@ -68,7 +70,7 @@ window.KA_API = (function() {
 
 			var apiQuery = $.ajax({
 				type: 'GET',
-				url: this.urls.spinoffs.replace("{PROGRAM}", contestID),
+				url: this.urls.spinoffs(contestID),
 				async: true,
 				complete: function(apiResponse) {
 					/* Instead of having to type apiResponse.responseJSON all the time, let's create a variable to hold the response json. */
