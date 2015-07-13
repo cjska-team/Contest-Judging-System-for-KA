@@ -7,12 +7,16 @@ window.KA_API = (function() {
     if (!jQuery) return;
 
     return {
+        //Important URLs
         urls: {
+            //All contests
             spotlight: "https://www.khanacademy.org/api/internal/scratchpads/top?casing=camel&topic_id=xffde7c31&sort=4&limit=40000&page=0&lang=en&_=1436581332879",
+            //Function that returns URL containing entry data
             spinoffs: function(programID) {
                 return "https://www.khanacademy.org/api/internal/scratchpads/{PROGRAM}/top-forks?casing=camel&sort=2&limit=300000&page=0&lang=en".replace("{PROGRAM}", programID);
             }
         },
+        //Get all of the contests
         getContests: function(callback) {
             /* Any contests that we find, will be put into this array. (We'll also return this array.) */
             var contests = [];
@@ -32,24 +36,27 @@ window.KA_API = (function() {
 
                     for (var i = 0; i < allPrograms.length; i++) {
                         var currentScratchpad = allPrograms[i];
-
+                        
                         /* For now, let's only accept contests from pamela */
                         if (currentScratchpad.authorNickname.match("pamela") !== null) {
                             /* Contest programs always have "Contest" in the title... */
                             if (currentScratchpad.translatedTitle.match("Contest") !== null) {
-                                contests.push({
-                                    id: currentScratchpad.url.split("/")[5],
+                                //The program ID of the below contest
+                                var programID = currentScratchpad.url.split("/")[5];
+                                //Make a new JSON object in contests
+                                contests[programID] = {
+                                    id: programID,
                                     name: currentScratchpad.translatedTitle,
                                     thumb: "https://www.khanacademy.org"+currentScratchpad.thumb,
                                     numEntries: currentScratchpad.spinoffCount 
-                                });
-                                //This is in a function wrapper so we don't lose index
+                                };
+                                //This is in a function wrapper so we don't lose programID
                                 (function() {
-                                    //The index of the above JSON obj in contests
-                                    var index = contests.length-1;
+                                    //The program ID of the above contest.
+                                    var programIDinside = programID;
                                     //Get the contest entries and set it to the entries prop of the above JSON object
-                                    KA_API.getContestEntries(contests[index].id, function(entries) {
-                                        contests[index].entries = entries;
+                                    KA_API.getContestEntries(contests[programIDinside].id, function(entries) {
+                                        contests[programIDinside].entries = entries;
                                     });
                                 })();
                             }
@@ -64,7 +71,7 @@ window.KA_API = (function() {
             var finishTimeout = setInterval(function() {
                 var done = apiQueryDone;
                 //Loop through contests and make sure they all have their entries
-                if (done) for (var i = 0; i < contests.length; i++) if (!contests[i].hasOwnProperty("entries")) {
+                if (done) for (var i in contests) if (!contests[i].hasOwnProperty("entries")) {
                     done = false;
                     break;
                 }
@@ -74,6 +81,7 @@ window.KA_API = (function() {
                 }
             }, 1000);
         },
+        //Get all of the entries for a contest
         getContestEntries: function(contestID, callback) {
             /* Let's not return anything until we're done! */
             var done = false;
@@ -88,6 +96,7 @@ window.KA_API = (function() {
                     /* Instead of having to type apiResponse.responseJSON all the time, let's create a variable to hold the response json. */
                     var jsonData = apiResponse.responseJSON;
 
+                    //Loop through jsonData.scratchpads and add a JSON object for each entry
                     for (var i = 0; i < jsonData.scratchpads.length; i++) {
                         var id = jsonData.scratchpads[i].url.split("/")[5];
 
@@ -95,11 +104,13 @@ window.KA_API = (function() {
                             id: id,
                             name: jsonData.scratchpads[i].translatedTitle,
                             url: jsonData.scratchpads[i].url,
+                            //Image link
                             thumb: "https://www.khanacademy.org"+jsonData.scratchpads[i].thumb,
                             votes: jsonData.scratchpads[i].sumVotesIncremented
                         };
                     }
 
+                    //Pass entries into callback
                     callback(entries);
                 }
             });

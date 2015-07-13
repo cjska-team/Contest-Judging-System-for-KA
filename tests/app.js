@@ -51,7 +51,7 @@ function loadContests() {
         //Clear contestIds
         contestIds.textContent = "";
         //Loop through contests
-        for (var i = 0; i < contests.length; i++) {
+        for (var i in contests) {
             //Clone contestDiv
             var curDiv = contestDiv.cloneNode(true);
             //Set the src attribute to the <img>
