@@ -8,3 +8,4 @@ As mentioned by Pamela Fox ( @pamelafox )
 ## Team Members
  * [Lokio27](https://github.com/MikaalSky)
  * [Gigabyte Giant](https://github.com/Gigabyte-Giant)
+ * [Noble Mushtak](https://github.com/Noble-Mushtak)
