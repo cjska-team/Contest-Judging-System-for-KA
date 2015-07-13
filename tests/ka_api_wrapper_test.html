@@ -8,7 +8,9 @@
 		<script src="../Backend/ka_api.js"></script>
 		<script>
 			KA_API.getContests(function(data) {
-				console.log(data);
+				KA_API.getContestEntries(data[0].id, function(response) {
+					console.log(response);
+				});
 			});
 		</script>
 	</body>
