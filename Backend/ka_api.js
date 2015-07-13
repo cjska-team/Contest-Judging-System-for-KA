@@ -8,7 +8,8 @@ window.KA_API = (function() {
 
 	return {
 		urls: {
-			spotlight: "https://www.khanacademy.org/api/internal/scratchpads/top?casing=camel&topic_id=xffde7c31&sort=4&limit=40000&page=0&lang=en&_=1436581332879"
+			spotlight: "https://www.khanacademy.org/api/internal/scratchpads/top?casing=camel&topic_id=xffde7c31&sort=4&limit=40000&page=0&lang=en&_=1436581332879",
+			spinoffs: "https://www.khanacademy.org/api/internal/scratchpads/{PROGRAM}/top-forks?casing=camel&sort=2&limit=300000&page=0&lang=en"
 		},
 		getContests: function(callback) {
 			/* Let's not return anything until we're done! */
@@ -53,6 +54,39 @@ window.KA_API = (function() {
 					callback(contests);
 				}
 			}, 1000);
+		},
+		getContestEntries: function(contestID, callback) {
+			/* Let's not return anything until we're done! */
+			var done = false;
+			/* Any entries that we find, will be put into this object. (We'll also return this object.) */
+			var entries = {};
+
+			var finishTimeout = setInterval(function() {
+					clearInterval(finishTimeout);
+					callback(entries);
+			}, 1000);
+
+			var apiQuery = $.ajax({
+				type: 'GET',
+				url: this.urls.spinoffs.replace("{PROGRAM}", contestID),
+				async: true,
+				complete: function(apiResponse) {
+					/* Instead of having to type apiResponse.responseJSON all the time, let's create a variable to hold the response json. */
+					var jsonData = apiResponse.responseJSON;
+
+					for (var i = 0; i < jsonData.scratchpads.length; i++) {
+						var id = jsonData.scratchpads[i].url.split("/")[5];
+
+						entries[id] = {
+							id: id,
+							name: jsonData.scratchpads[i].translatedTitle
+						};
+					}
+
+					clearInterval(finishTimeout);
+					callback(entries);
+				}
+			});
 		}
 	};
 })();
