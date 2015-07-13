@@ -12,3 +12,12 @@ var include = function(link) {
     scriptTag.src = link;
     document.body.appendChild(scriptTag);
 };
+
+var getApi = function(apiUrl,complete){
+  return $.ajax({
+      type: 'GET',
+      url: apiUrl,
+      async: true,
+      complete: complete
+    });
+};
