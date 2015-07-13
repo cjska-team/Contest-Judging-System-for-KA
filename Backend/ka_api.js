@@ -47,8 +47,7 @@ window.KA_API = (function() {
                                 contests[programID] = {
                                     id: programID,
                                     name: currentScratchpad.translatedTitle,
-                                    thumb: "https://www.khanacademy.org"+currentScratchpad.thumb,
-                                    numEntries: currentScratchpad.spinoffCount 
+                                    thumb: "https://www.khanacademy.org"+currentScratchpad.thumb
                                 };
                                 //This is in a function wrapper so we don't lose programID
                                 (function() {
@@ -71,7 +70,7 @@ window.KA_API = (function() {
             var finishTimeout = setInterval(function() {
                 var done = apiQueryDone;
                 //Loop through contests and make sure they all have their entries
-                if (done) for (var i in contests) if (!contests[i].hasOwnProperty("entries")) {
+                if (done) for (var id in contests) if (!contests[id].hasOwnProperty("entries")) {
                     done = false;
                     break;
                 }
