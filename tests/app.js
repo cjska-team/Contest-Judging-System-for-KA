@@ -15,9 +15,9 @@ var small = document.createElement("span");
 small.className = "small";
 contestDiv.appendChild(small);
 
-var showContestEntries = function(entries) {
+function showContestEntries(entries) {
     /*This returns a click event handler that shows the entries in a contest as represented by entries.*/
-    return function() {
+    return function event() {
         //Clear contestIds
         contestIds.textContent = "";
         //Loop through entries
@@ -42,7 +42,7 @@ var showContestEntries = function(entries) {
     };
 };
 
-var loadContests = function() {
+function loadContests() {
     /*This loads all of the contests*/
     //Tell the user to wait for it.
     contestIds.textContent = "Wait for it...";
