@@ -5,7 +5,7 @@ function doesEntryExist() {
 function fetchEntries(contestID, func) {
     /*Fetches spin-offs of contests using contestID*/
     //The contest entries
-    var entries = { };
+    var entries = [];
     //The JSON API url
     var apiUrl = "https://www.khanacademy.org/api/internal/scratchpads/" + contestID + "/top-forks?casing=camel&sort=2&limit=300000&page=0&lang=en";
 
@@ -17,11 +17,15 @@ function fetchEntries(contestID, func) {
         complete: function(apiResponse) {
             //The "scratchpads" or the JSON representation of the programs
             var scratchpads = apiResponse.responseJSON.scratchpads;
-            //Set a JSON object for each entry in scratchpads by extracting certain data such as the program id and the program's name.
+            //Set a JSON object for each entry in scratchpads by extracting certain data such as the program id, the program's name, the number of votes it has, a screensht image, and a link to the program.
             for (var i = 0; i < scratchpads.length; i++) {
-                //Noble Mushtak: I don't understand the point of the id property if it's the same as the key. If we have the key to find the JSON object within entries, then why do we need an id property of the JSON object that's exactly the same as the key?
-                var programId = scratchpads[i].url.split("/")[5];
-                entries[programId] = {id: programId, name: scratchpads[i].translatedTitle};
+                entries.push({
+                    id: scratchpads[i].url.split("/")[5],
+                    name: scratchpads[i].translatedTitle,
+                    url: scratchpads[i].url,
+                    thumb: "https://www.khanacademy.org"+scratchpads[i].thumb,
+                    votes: scratchpads[i].sumVotesIncremented,
+                });
             }
             //Finally, we call the function to do what ever needs to be done with entries.
             func(entries);
@@ -56,10 +60,11 @@ var sync = function(func) {
                 if (currScratchpad.authorNickname.match("pamela") !== null) {
                     if (currScratchpad.translatedTitle.match("Contest") !== null) {
                         //console.log(currScratchpad.url);
-                        //Push a JSON obj into contestIds and false into done
+                        //Push a JSON obj into contestIds
                         contestIds.push({
                             id: currScratchpad.url.split("/")[5],
                             name: currScratchpad.translatedTitle,
+                            thumb: "https://www.khanacademy.org"+currScratchpad.thumb
                         });
                         (function() {
                             //In order to keep n the same, we put it inside this function that is instantiated only once.
