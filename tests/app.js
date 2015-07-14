@@ -55,7 +55,7 @@ function insertContests(event) {
         curDiv.childNodes[0].src = contests[i].thumb;
         //Put the title in the <span>.title
         curDiv.childNodes[1].textContent = contests[i].name;
-        
+
         //Set curID
         curID = contests[i].id
         //Insert entries[curID] and convert to contests[i].entries to array.
@@ -66,7 +66,7 @@ function insertContests(event) {
         entriesElems[curID] = document.createElement("div");
         //Make entriesElems initially invisible
         entriesElems[curID].style.display = "none";
-        
+
         //Put the number of entries in the <span>.small
         curDiv.childNodes[2].textContent = entries[contests[i].id].length+" Entries";
         //Append into contestIds
@@ -113,7 +113,7 @@ function showContestEntries(id) {
         //Show contestEntries
         entriesElems[curID].style.display = "block";
         //Show the goBack button
-        goBack.style.display = "block";
+        goBack.style.display = "inline";
         //Show more depending on if there are entries left
         if (entries[curID].length > numEntriesLoaded[curID]) more.style.display = "block";
         else more.style.display = "none";
