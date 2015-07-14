@@ -42,6 +42,7 @@ window.Contest_Judging_System = (function() {
 				khanacademy: false
 			};
 
+			/* Currently not used. Might be re-implemented in the future. */
 			var addedContests = [];
 			var removedContests = [];
 
