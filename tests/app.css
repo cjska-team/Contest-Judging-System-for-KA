@@ -3,6 +3,19 @@ main {
     font-family: Verdana, sans-serif;
     font-size: 1.5em;
 }
+/*Make all buttons have 1.5 times the default font*/
+button {
+    font-size: 1.5em;
+}
+/*Initially hide the #goBack button*/
+#goBack {
+    display: none;
+}
+/*Make #more take up the whole screen in width and make it initally invisible*/
+#more {
+    width: 100%;
+    display: none;
+}
 /*Make all .contest inline-block with 23% of the screen width. Also, give them 1% margin space on all sides.*/
 .contest {
     display: inline-block;

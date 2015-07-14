@@ -27,7 +27,7 @@ function fetchEntries(contestID, func) {
     });
 };
 
-var sync = function(func) {
+function sync(func) {
     /*This gets data of all of the contests*/
     //Noble Mushtak: I don't see the point of this variable, but I'm not deleting in case there is a purpose behind this.
     //var username = "pamela";

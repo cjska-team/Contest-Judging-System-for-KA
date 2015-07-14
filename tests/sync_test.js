@@ -2,7 +2,7 @@
 var syncBtn = document.getElementById("syncBtn"), contestIds = document.getElementById("contestIds");
 
 //When syncBtn is clicked...
-var clickHandler = function() {
+function clickHandler() {
     //Alert the user to wait for it.
     syncBtn.textContent = "Wait for it...";
     //Make sure that the user can not click the button while we're waiting for sync().
