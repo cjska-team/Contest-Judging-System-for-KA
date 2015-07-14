@@ -7,7 +7,7 @@ $(function() {
 			var programData = $.ajax({
 				type: 'GET',
 				url: 'http://www.khanacademy.org/api/labs/scratchpads/' + curr.id,
-				async: false
+				async: false // Will change to asynchronous later on!
 			}).responseJSON;
 
 			var rowDiv = document.createElement("div");
