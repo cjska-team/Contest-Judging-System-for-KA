@@ -19,11 +19,6 @@ window.KA_API = (function() {
 			/* Any entries that we find, will be put into this object. (We'll also return this object.) */
 			var entries = {};
 
-			var finishTimeout = setInterval(function() {
-					clearInterval(finishTimeout);
-					callback(entries);
-			}, 1000);
-
 			var apiQuery = $.ajax({
 				type: 'GET',
 				url: this.urls.spinoffs(contestID),
@@ -44,8 +39,6 @@ window.KA_API = (function() {
 							}
 						};
 					}
-
-					clearInterval(finishTimeout);
 					callback(entries);
 				}
 			});
