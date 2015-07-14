@@ -7,21 +7,52 @@ window.KA_API = (function() {
     if (!jQuery) return;
 
     return {
-        //Important URLs
+        //Important Links:
         urls: {
-            //All contests
+            //For getting contests:
             spotlight: "https://www.khanacademy.org/api/internal/scratchpads/top?casing=camel&topic_id=xffde7c31&sort=4&limit=40000&page=0&lang=en&_=1436581332879",
-            //Function that returns URL containing entry data
+            //For getting contest entries:
             spinoffs: function(programID) {
                 return "https://www.khanacademy.org/api/internal/scratchpads/{PROGRAM}/top-forks?casing=camel&sort=2&limit=300000&page=0&lang=en".replace("{PROGRAM}", programID);
             }
         },
-        //Get all of the contests
+        getContestEntries: function(contestID, callback) {
+            /* Let's not return anything until we're done! */
+            var done = false;
+            /* Any entries that we find, will be put into this object. (We'll also return this object.) */
+            var entries = {};
+
+            //Send AJAX request to spin-offs of contest with contestID
+            var apiQuery = $.ajax({
+                type: 'GET',
+                url: this.urls.spinoffs(contestID),
+                async: true,
+                complete: function(apiResponse) {
+                    /* Instead of having to type apiResponse.responseJSON all the time, let's create a variable to hold the response json. */
+                    var jsonData = apiResponse.responseJSON;
+
+                    //Loop through scratchpads
+                    for (var i = 0; i < jsonData.scratchpads.length; i++) {
+                        //Program ID for this spin-off
+                        var id = jsonData.scratchpads[i].url.split("/")[5];
+
+                        //Add JSON object for this spin-off.
+                        entries[id] = {
+                            id: id,
+                            name: jsonData.scratchpads[i].translatedTitle
+                        };
+                    }
+
+                    //Finally, call the callback.
+                    callback(entries);
+                }
+            });
+        },
         getContests: function(callback) {
-            /* Any contests that we find, will be put into this array. (We'll also return this array.) */
-            var contests = [];
-            /* This is true iff the first AJAX request has finished */
+            /* Let's not return anything until we're done! */
             var apiQueryDone = false;
+            /* Any contests that we find, will be put into this array. (We'll also return this array.) */
+            var contests = {};
 
             var apiQuery = $.ajax({
                 type: 'GET',
@@ -33,27 +64,29 @@ window.KA_API = (function() {
 
                     /* Keep track of all the spotlight programs */
                     var allPrograms = jsonData.scratchpads;
-
+                    
                     for (var i = 0; i < allPrograms.length; i++) {
+                        //Check if entries have loaded
+                        var loadedEntries = false;
+                        //The current scratchpad corresponding to this contest.
                         var currentScratchpad = allPrograms[i];
-                        
+
                         /* For now, let's only accept contests from pamela */
                         if (currentScratchpad.authorNickname.match("pamela") !== null) {
                             /* Contest programs always have "Contest" in the title... */
                             if (currentScratchpad.translatedTitle.match("Contest") !== null) {
-                                //The program ID of the below contest
+                                //The contest ID for this contest
                                 var programID = currentScratchpad.url.split("/")[5];
-                                //Make a new JSON object in contests
+                                //Add in a JSON object for this contest.
                                 contests[programID] = {
                                     id: programID,
-                                    name: currentScratchpad.translatedTitle,
-                                    thumb: "https://www.khanacademy.org"+currentScratchpad.thumb
+                                    name: currentScratchpad.translatedTitle
                                 };
-                                //This is in a function wrapper so we don't lose programID
+
                                 (function() {
-                                    //The program ID of the above contest.
+                                    //This is ina  function wrapper to save programID
                                     var programIDinside = programID;
-                                    //Get the contest entries and set it to the entries prop of the above JSON object
+                                    //Fetch the entries and insert them into the above JSON object.
                                     KA_API.getContestEntries(contests[programIDinside].id, function(entries) {
                                         contests[programIDinside].entries = entries;
                                     });
@@ -61,58 +94,25 @@ window.KA_API = (function() {
                             }
                         }
                     }
-                    //Now that the request has finished, set apiQueryDone to true
+                    //Since we've finished this request, set apiQueryDone.
                     apiQueryDone = true;
                 }
             });
 
             /* Check to see if we're done; if we are, invoke the callback function. (Idea from @noble-mushtak) */
             var finishTimeout = setInterval(function() {
-                var done = apiQueryDone;
-                //Loop through contests and make sure they all have their entries
-                if (done) for (var id in contests) if (!contests[id].hasOwnProperty("entries")) {
-                    done = false;
-                    break;
-                }
-                if (done) {
+                if (apiQueryDone) {
+                    //Loop through contests and return if some contest does not have entries
+                    for (var i in contests) {
+                        if (!contests[i].hasOwnProperty("entries")) return;
+                    }
+
+                    //If we're done, log "All done!", clear finishTimeout, and call the callback.
+                    console.log("All done!");
                     clearInterval(finishTimeout);
                     callback(contests);
                 }
             }, 1000);
-        },
-        //Get all of the entries for a contest
-        getContestEntries: function(contestID, callback) {
-            /* Let's not return anything until we're done! */
-            var done = false;
-            /* Any entries that we find, will be put into this object. (We'll also return this object.) */
-            var entries = {};
-
-            var apiQuery = $.ajax({
-                type: 'GET',
-                url: this.urls.spinoffs(contestID),
-                async: true,
-                complete: function(apiResponse) {
-                    /* Instead of having to type apiResponse.responseJSON all the time, let's create a variable to hold the response json. */
-                    var jsonData = apiResponse.responseJSON;
-
-                    //Loop through jsonData.scratchpads and add a JSON object for each entry
-                    for (var i = 0; i < jsonData.scratchpads.length; i++) {
-                        var id = jsonData.scratchpads[i].url.split("/")[5];
-
-                        entries[id] = {
-                            id: id,
-                            name: jsonData.scratchpads[i].translatedTitle,
-                            url: jsonData.scratchpads[i].url,
-                            //Image link
-                            thumb: "https://www.khanacademy.org"+jsonData.scratchpads[i].thumb,
-                            votes: jsonData.scratchpads[i].sumVotesIncremented
-                        };
-                    }
-
-                    //Pass entries into callback
-                    callback(entries);
-                }
-            });
         }
     };
 })();
