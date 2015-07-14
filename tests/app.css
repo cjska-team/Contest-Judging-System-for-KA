@@ -3,15 +3,62 @@
 */
 
 /*Make default font Verdana (or sans-serif) with 1.5 times the default*/
-main {
+body {
     font-family: Verdana, sans-serif;
     font-size: 1.5em;
+    margin: 0px;
 }
-/*Make all buttons have 1.5 times the default font*/
+/*Give <main> some space at the top*/
+main {
+    margin-top: 1.5em;
+}
+/*Give <header>:*/
+header {
+    /*Bluish transparent background*/
+    background-color: rgba(75,170,215,.5);
+    /*Fixed position*/
+    position: fixed;
+    /*No space from top-left corner*/
+    top: 0px;
+    left: 0px;
+    /*Take up whole screen-width*/
+    width: 100%;
+    /*Give height of 1.5em*/
+    height: 1.5em;
+    /*Center text*/
+    text-align:center;
+}
+/*Give the <img> inside the <header> the same height as the <header>*/
+header img {
+    height: 100%;
+}
+/*Give the <h1> inline display so it won't go to a new line*/
+header h1 {
+    display: inline;
+}
+/*Give all buttons the following:*/
 button {
-    font-size: 1.5em;
+    /*Same font as default font of parent element*/
+    font-size: 1em;
+    /*Greenish background*/
+    background-color: #3dd439;
+    /*White text*/
+    color: white;
+    /*No border except for a black border on bottom*/
+    border: 0px;
+    border-bottom: 0.3em solid #000;
 }
-/*Initially hide the #goBack button*/
+/*Hovering buttons have a slightly less big border*/
+button:hover {
+    border-bottom:0.2em solid #000;
+    /*margin-top:0.1em;*/
+}
+/*Buttons being clicked on have an even smaller border*/
+button:active {
+    border-bottom:0.1em solid #000;
+    /*margin-top:0.2em;*/
+}
+/*Initially hide the #goBack button and give it a bigger font size*/
 #goBack {
     display: none;
 }

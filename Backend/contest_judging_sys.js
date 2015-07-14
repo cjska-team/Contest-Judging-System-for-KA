@@ -3,6 +3,16 @@
 ***/
 window.Contest_Judging_System = (function() {
     /* Function wrapper to create Contest_Judging_System */
+
+    /* This function can be used to inject scripts into pages. It returns the created <script> element. */
+    //The reason we put it inside this function wrapper here is because we're going to put it inside the namespace, so it doesn't need to be global, but we're going to use it to add dependencies before returning the namespace, so we don't simply add it inside the object like all the other methods.
+    var includeFunc = function(path) {
+        var scriptTag = document.createElement("script");
+        scriptTag.src = path;
+        document.body.appendChild(scriptTag);
+        return scriptTag;
+    }
+    
 	//jQuery and Firebase are both dependencies for this project. If we don't have them, exit the function immediately.
     // TODO: If a project dependency doesn't exist, go ahead an inject it.
 	if (!window.jQuery || !window.Firebase || !window.KA_API) {
@@ -12,13 +22,8 @@ window.Contest_Judging_System = (function() {
 
     //Everything from this namespace will be placed in the object that is returned.
 	return {
-        /* This function can be used to inject scripts into pages. It returns the injected <script> element. */
-		include: function(path) {    
-            var scriptTag = document.createElement("script");
-            scriptTag.src = path;
-            document.body.appendChild(scriptTag);
-            return scriptTag;
-        },
+        /* Puts the script injection function inside of this namespace. */
+		include: includeFunc,
         /* This function gets all the contests that we have stored on Firebase and passes them into a callback function. */
 		getStoredContests: function(callback) {n
             //This is the object for the contests within our Firebase database.
