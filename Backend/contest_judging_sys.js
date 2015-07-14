@@ -65,6 +65,7 @@ window.Contest_Judging_System = (function() {
 				khanacademy: false
 			};
 
+			/* Currently not used. Might be re-implemented in the future. */
 			var addedContests = [];
 			var removedContests = [];
 
@@ -81,40 +82,14 @@ window.Contest_Judging_System = (function() {
 				completed.firebase = true;
 			});
 
+			var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/contests/");
+
 			var recievedData = setInterval(function() {
 				if (completed.firebase && completed.khanacademy) {
 					clearInterval(recievedData);
-					for (kaContest in kaData) {
-						console.log(kaData[kaContest]);
-						/* If this contest doesn't exist in the data recieve from Firebase, the contest must be new. */
-						if (fbData[kaContest] === undefined) {
-							addedContests.push(kaData[kaContest]);
-						}
-					}
-
-					for (fbContest in fbData) {
-						/* If this contest doesn't exist in the data recieved from Khan Academy, the contest must've been removed. */
-						if (kaData[fbContest] === undefined) {
-							removedContests.push(fbContest);
-						}
-					}
-
-					var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/contests/");
-
-					for (var a = 0; a < addedContests.length; a++) {
-						// add contest to firebase
-						console.log(addedContests[a].entries);
-						var currContest = fbRef.child(addedContests[a].id);
-						currContest.set(addedContests[a]);
-					}
-
-					for (var r = 0; r < removedContests.length; r++) {
-						// remove contest from firebase
-						var currContest = fbRef.child(removedContests[r]);
-						currContest.set(null);
-					}
+					fbRef.set(kaData);
 				}
-			}, 1000);
+			}, 10000);
 		}
 	};
 })();

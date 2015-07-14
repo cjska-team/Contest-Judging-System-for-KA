@@ -9,6 +9,3 @@ Hi! This is a [KA Contest Judging System](https://www.khanacademy.org/computer-p
  * [Gigabyte Giant](https://github.com/Gigabyte-Giant) -- Project Lead, Developer
  * [Lokio27](https://github.com/MikaalSky) -- Second in command, Developer
  * [Noble Mushtak](https://github.com/Noble-Mushtak) -- Developer
-
-#### Partial Members (provide help occasionally)
- * [SpongeJr](https://github.com/SpongeJr)
