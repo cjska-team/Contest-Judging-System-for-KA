@@ -6,19 +6,23 @@ window.KA_API = (function() {
 	/* jQuery is required for [most] all of these. So if it's object is not found, exit the function. */
 	if (!jQuery) return;
 
+	/* Everything from this namespace will be placed in the object that is returned. */
 	return {
+		/* Khan Academy API Urls */
 		urls: {
 			spotlight: "https://www.khanacademy.org/api/internal/scratchpads/top?casing=camel&topic_id=xffde7c31&sort=4&limit=40000&page=0&lang=en&_=1436581332879",
 			spinoffs: function(programID) {
 				return "https://www.khanacademy.org/api/internal/scratchpads/{PROGRAM}/top-forks?casing=camel&sort=2&limit=300000&page=0&lang=en".replace("{PROGRAM}", programID);
 			}
 		},
+		/* This function gets all the entries for a specific contest, and passes them into the callback. */
 		getContestEntries: function(contestID, callback) {
 			/* Let's not return anything until we're done! */
 			var done = false;
 			/* Any entries that we find, will be put into this object. (We'll also return this object.) */
 			var entries = {};
 
+			/* The ajax request used for getting all the entries to the desired contest. */
 			var apiQuery = $.ajax({
 				type: 'GET',
 				url: this.urls.spinoffs(contestID),
@@ -30,6 +34,7 @@ window.KA_API = (function() {
 					for (var i = 0; i < jsonData.scratchpads.length; i++) {
 						var id = jsonData.scratchpads[i].url.split("/")[5];
 
+						/* Put the current entries in the object that we're going to "return". */
 						entries[id] = {
 							id: id,
 							name: jsonData.scratchpads[i].translatedTitle,
@@ -39,16 +44,19 @@ window.KA_API = (function() {
 							}
 						};
 					}
+					/* Pass all the entries we found, to the callback function. */
 					callback(entries);
 				}
 			});
 		},
+		/* Get's all of Pamela's contest programs from Khan Academy, and pass them into the callback function. */
 		getContests: function(callback) {
 			/* Let's not return anything until we're done! */
 			var apiQueryDone = false;
 			/* Any contests that we find, will be put into this array. (We'll also return this array.) */
 			var contests = {};
 
+			/* The ajax request used to get all the contests from Khan Academy. */
 			var apiQuery = $.ajax({
 				type: 'GET',
 				url: this.urls.spotlight,
