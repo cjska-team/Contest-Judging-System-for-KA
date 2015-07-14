@@ -4,108 +4,115 @@
 ***/
 window.KA_API = (function() {
 	/* jQuery is required for [most] all of these. So if it's object is not found, exit the function. */
-	if (!jQuery) return;
+	if (!window.jQuery) return;
 
 	return {
+        //Important Links
 		urls: {
+            //For getting contests:
 			spotlight: "https://www.khanacademy.org/api/internal/scratchpads/top?casing=camel&topic_id=xffde7c31&sort=4&limit=40000&page=0&lang=en&_=1436581332879",
+            //For getting contest entries where contest has ID of programID
 			spinoffs: function(programID) {
 				return "https://www.khanacademy.org/api/internal/scratchpads/{PROGRAM}/top-forks?casing=camel&sort=2&limit=300000&page=0&lang=en".replace("{PROGRAM}", programID);
 			}
 		},
 		getContestEntries: function(contestID, callback) {
-			/* Let's not return anything until we're done! */
-			var done = false;
-			/* Any entries that we find, will be put into this object. (We'll also return this object.) */
+            /* This function gets all contest entries for the contest with ID of contestID and then passes the entries into callback. */
+			//Any entries that we find, will be put into this object. (We'll also pass this object into callback.)
 			var entries = {};
 
+            //Send AJAX request to spin-offs of contest with contestID
 			var apiQuery = $.ajax({
 				type: 'GET',
 				url: this.urls.spinoffs(contestID),
 				async: true,
 				complete: function(apiResponse) {
-					/* Instead of having to type apiResponse.responseJSON all the time, let's create a variable to hold the response json. */
-					var jsonData = apiResponse.responseJSON;
+                    /* When the AJAX request finishes */
+					//allPrograms is a list of all of the contest entries
+					var allPrograms = apiResponse.responseJSON.scratchpads
 
-					for (var i = 0; i < jsonData.scratchpads.length; i++) {
-						var id = jsonData.scratchpads[i].url.split("/")[5];
+                    //Loop through allPrograms
+					for (var i = 0; i < allPrograms.length; i++) {
+                        //Program ID for this spin-off
+						var id = allPrograms[i].url.split("/")[5];
 
+                        //Add JSON object for this spin-off into entries
 						entries[id] = {
+                            //Program ID
 							id: id,
-							name: jsonData.scratchpads[i].translatedTitle,
+                            //Program Title
+							name: allPrograms[i].translatedTitle,
+                            //Program Scores
 							scores: {
 								rubric: 0,
 								judge: 0
 							}
 						};
 					}
+                    //Finally, pass entries into callback
 					callback(entries);
 				}
 			});
 		},
 		getContests: function(callback) {
-			/* Let's not return anything until we're done! */
+            /* This function gets all of the contests and gets the contest entries using getContestEntries() above. It then passes the contests into callback. */
+			//This Bool is true iff the first AJAX request has finished.
 			var apiQueryDone = false;
-			/* Any contests that we find, will be put into this array. (We'll also return this array.) */
+			//Any contests that we find, will be put into this object. (We'll also pass this object into callback.)
 			var contests = {};
 
+            //Send AJAX request to get all contests
 			var apiQuery = $.ajax({
 				type: 'GET',
 				url: this.urls.spotlight,
 				async: true,
 				complete: function(apiResponse) {
-					/* Instead of having to type apiResponse.responseJSON all the time, let's create a variable to hold the response json. */
-					var jsonData = apiResponse.responseJSON;
+                    /* When the AJAX request finishes */
+					//allPrograms is a list of all of the contest entries
+					var allPrograms = apiResponse.responseJSON.scratchpads;
 
-					/* Keep track of all the spotlight programs */
-					var allPrograms = jsonData.scratchpads;
-
+                    //Loop through allPrograms
 					for (var i = 0; i < allPrograms.length; i++) {
-						var loadedEntries = false;
-						var currentScratchpad = allPrograms[i];
+						//For now, let's only accept contests from pamela. Also, all contests must have "Contest" in their title.
+						if (allPrograms[i].authorNickname.match("pamela") !== null && allPrograms[i].translatedTitle.match("Contest") !== null) {
+                            //The program ID for this contest
+                            var programID = allPrograms[i].url.split("/")[5];
+                            //Add in a JSON object for this contest into contests
+                            contests[programID] = {
+                                //Program ID
+                                id: programID,
+                                //Program Title
+                                name: allPrograms[i].translatedTitle
+                            };
 
-						var allEntries = {};
+                            (function() {
+                                /* This is in a function wrapper so programIDinside will be remembered in the below function. */
+                                var programIDinside = programID;
 
-						/* For now, let's only accept contests from pamela */
-						if (currentScratchpad.authorNickname.match("pamela") !== null) {
-							/* Contest programs always have "Contest" in the title... */
-							if (currentScratchpad.translatedTitle.match("Contest") !== null) {
-								var programID = currentScratchpad.url.split("/")[5];
-
-								contests[programID] = {
-									id: programID,
-									name: currentScratchpad.translatedTitle
-								};
-
-								(function() {
-									var programIDinside = programID;
-
-									KA_API.getContestEntries(contests[programIDinside].id, function(entries) {
-										contests[programIDinside].entries = entries;
-									});
-								})();
-							}
-						}
+                                //Fetch the contest entries for this contest and when done, set the entries property within the above JSON object.
+                                KA_API.getContestEntries(contests[programIDinside].id, function(entries) {
+                                    contests[programIDinside].entries = entries;
+                                });
+                            })();
+                        }
 					}
 					apiQueryDone = true;
 				}
 			});
 
-			/* Check to see if we're done; if we are, invoke the callback function. (Idea from @noble-mushtak) */
+			//Check to see if we're done every second; if we are, invoke the callback function. (Idea from @noble-mushtak)
 			var finishTimeout = setInterval(function() {
-				var done = apiQueryDone;
-
-				if (done) {
+				if (apiQueryDone) {
+                    //If the first AJAX request has finished, make sure all of the other AJAX requests have finished. If we find a contest without the entries property, we know their AJAX request has not finished, so we return.
 					for (var i in contests) {
-						if (contests[i].entries === undefined) {
-							done = false;
-							return;
-						}
+						if (!contests[i].hasOwnProperty("entries")) return;
 					}
 
+                    //At this point, we have made sure the request has finished, so we make a log in the console, stop looping this asynchronous function, and finally pass contests into callback.
 					console.log("All done!");
-					callback(contests);
+                    //Make sure clearTimeout() is called first. We don't know how long callback will take and if callback takes more than a second, then callback will be called multiple times.
 					clearInterval(finishTimeout);
+					callback(contests);
 				}
 			}, 1000);
 		}
