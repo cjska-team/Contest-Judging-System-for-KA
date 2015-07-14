@@ -25,7 +25,7 @@ window.Contest_Judging_System = (function() {
         /* Puts the script injection function inside of this namespace. */
 		include: includeFunc,
         /* This function gets all the contests that we have stored on Firebase and passes them into a callback function. */
-		getStoredContests: function(callback) {n
+		getStoredContests: function(callback) {
             //This is the object for the contests within our Firebase database.
 			var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/contests/");
             //This is an object to hold all of the data from Firebase.
