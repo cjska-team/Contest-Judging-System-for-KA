@@ -2,8 +2,13 @@
  * This file is where all the general purpose, reusable code should go!
 ***/
 window.Contest_Judging_System = (function() {
-	/* jQuery and Firebase are both dependencies for this project. If we don't have them, exit the function immediately. */
-	if (!window.jQuery || !window.Firebase || !window.KA_API) return; // TODO: If a project dependency doesn't exist, go ahead an inject it.
+    /* Function wrapper to create Contest_Judging_System */
+	//jQuery and Firebase are both dependencies for this project. If we don't have them, exit the function immediately.
+    // TODO: If a project dependency doesn't exist, go ahead an inject it.
+	if (!window.jQuery || !window.Firebase || !window.KA_API) {
+        console.log("Needs jQuery, Firebase, and KA_API");
+        return;
+    }
 
 	return {
 		include: function(path) {
