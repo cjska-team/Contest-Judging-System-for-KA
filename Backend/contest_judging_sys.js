@@ -10,19 +10,20 @@ window.Contest_Judging_System = (function() {
         return;
     }
 
+    //Everything from this namespace will be placed in the object that is returned.
 	return {
-		include: function(path) {
-            /* Puts <script> with src of path into <body> and returns the <script> element */
+        /* This function can be used to inject scripts into pages. It returns the injected <script> element. */
+		include: function(path) {    
             var scriptTag = document.createElement("script");
             scriptTag.src = path;
             document.body.appendChild(scriptTag);
             return scriptTag;
         },
-		getStoredContests: function(callback) {
-            /* This function gets the stored contests within our Firebase database and passes them into callback. */
+        /* This function gets all the contests that we have stored on Firebase and passes them into a callback function. */
+		getStoredContests: function(callback) {n
             //This is the object for the contests within our Firebase database.
 			var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/contests/");
-            //These are the stored contests we will pass into callback
+            //This is an object to hold all of the data from Firebase.
 			var fromFirebase = {};
             //Insert all of the entries in our database in order by key
 			fbRef.orderByKey().on("child_added", function(item) {
@@ -55,20 +56,20 @@ window.Contest_Judging_System = (function() {
 			var kaData;
 			var fbData;
 
-            //Get all of the contests and contest entries using KA_API.
+            //Get all of the contests from Khan Academy
 			KA_API.getContests(function(response) {
                 /* When done, set kaData to the contests and set completed.khanacademy to true. */
 				kaData = response;
 				completed.khanacademy = true;
 			});
-            //Get all of the contests in our database using the above getStoredContests() method.
+            //Get all of the known contests from Firebase
 			this.getStoredContests(function(response) {
                 /* When done, set fbData to our stored contests and set completed.firebase to true. */
 				fbData = response;
 				completed.firebase = true;
 			});
 
-            //This is the object for the contests within our Firebase database.        
+            //Create a new reference to Firebase to use later on when pushing contests to Firebase.
 			var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/contests/");
             //Every second, we check if both requests have been completed and if they have, we stop checking if both requests have been completed and set fbRef to kaData using the Firebase set() method.
 			var recievedData = setInterval(function() {
