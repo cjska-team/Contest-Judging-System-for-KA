@@ -28,5 +28,7 @@ $(function() {
 			$(rowDiv).add(contestDiv).appendTo(rowDiv);
 			$("#contests").add(rowDiv).appendTo("#contests");
 		}
+
+		$("#loading").css("display", "none");
 	});
 });
