@@ -66,7 +66,7 @@ window.Contest_Judging_System = (function() {
 					clearInterval(recievedData);
 					fbRef.set(kaData);
 				}
-			}, 10000);
+			}, 1000);
 		}
 	};
 })();
