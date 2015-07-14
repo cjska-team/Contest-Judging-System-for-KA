@@ -39,7 +39,11 @@ window.KA_API = (function() {
                         //Add JSON object for this spin-off.
                         entries[id] = {
                             id: id,
-                            name: jsonData.scratchpads[i].translatedTitle
+                            name: jsonData.scratchpads[i].translatedTitle,
+                            scores: {
+                                rubric: 0,
+                                judge: 0
+                            }
                         };
                     }
 
