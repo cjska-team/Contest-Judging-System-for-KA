@@ -25,10 +25,10 @@ window.Contest_Judging_System = (function() {
 			var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/contests/");
 
 			/* An array to hold all the data from Firebase. */
-			var fromFirebase = [];
+			var fromFirebase = {};
 
 			fbRef.orderByKey().on("child_added", function(item) {
-				fromFirebase[item.key()] = item.key();
+				fromFirebase[item.key()] = item.val();
 			});
 			fbRef.once("value", function(data) {
 				callback(fromFirebase);

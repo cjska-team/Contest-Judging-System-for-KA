@@ -82,7 +82,8 @@ window.KA_API = (function() {
 
 								contests[programID] = {
 									id: programID,
-									name: currentScratchpad.translatedTitle
+									name: currentScratchpad.translatedTitle,
+									img: currentScratchpad.thumb
 								};
 
 								(function() {
