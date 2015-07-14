@@ -3,8 +3,12 @@
  * Anything relating to the Khan Academy API should be placed in this file.
 ***/
 window.KA_API = (function() {
-	/* jQuery is required for [most] all of these. So if it's object is not found, exit the function. */
-	if (!window.jQuery) return;
+    /* Function wrapper to create KA_API */
+	//jQuery is required for [most] all of these. So if it's object is not found, exit the function.
+	if (!window.jQuery) {
+        console.log("Needs jQuery");
+        return;
+    }
 
 	return {
         //Important Links
