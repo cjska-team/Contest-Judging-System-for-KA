@@ -1,3 +1,7 @@
+/**
+ * This code is not currently working, but is left here in case the code could be salvaged.
+*/
+
 //contestIds is the <div> that holds the contests.
 var contestIds = document.getElementById("contestIds");
 //This is the <main> element

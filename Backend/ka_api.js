@@ -19,11 +19,6 @@ window.KA_API = (function() {
 			/* Any entries that we find, will be put into this object. (We'll also return this object.) */
 			var entries = {};
 
-			var finishTimeout = setInterval(function() {
-					clearInterval(finishTimeout);
-					callback(entries);
-			}, 1000);
-
 			var apiQuery = $.ajax({
 				type: 'GET',
 				url: this.urls.spinoffs(contestID),
@@ -37,11 +32,13 @@ window.KA_API = (function() {
 
 						entries[id] = {
 							id: id,
-							name: jsonData.scratchpads[i].translatedTitle
+							name: jsonData.scratchpads[i].translatedTitle,
+							scores: {
+								rubric: 0,
+								judge: 0
+							}
 						};
 					}
-
-					clearInterval(finishTimeout);
 					callback(entries);
 				}
 			});
