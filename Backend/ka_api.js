@@ -87,7 +87,9 @@ window.KA_API = (function() {
                                 //Program ID
                                 id: programID,
                                 //Program Title
-                                name: allPrograms[i].translatedTitle
+                                name: allPrograms[i].translatedTitle,
+                                //Program Icon
+                                img: allPrograms[i].thumb
                             };
 
                             (function() {

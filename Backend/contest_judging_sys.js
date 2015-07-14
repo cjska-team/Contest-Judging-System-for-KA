@@ -32,7 +32,7 @@ window.Contest_Judging_System = (function() {
 			var fromFirebase = {};
             //Insert all of the entries in our database in order by key
 			fbRef.orderByKey().on("child_added", function(item) {
-				fromFirebase[item.key()] = item.key();
+				fromFirebase[item.key()] = item.val();
 			});
             //Finally, pass fromFirebase into callback.
 			fbRef.once("value", function(data) {

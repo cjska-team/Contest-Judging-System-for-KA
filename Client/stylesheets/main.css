@@ -1,0 +1,13 @@
+.contest {
+	padding: 20px;
+}
+.contest * {
+	margin: 0;
+}
+.contest img {
+	display: inline-table;
+	width: 20%;
+}
+.contest .details {
+	display: inline-table;
+}
