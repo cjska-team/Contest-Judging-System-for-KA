@@ -1,3 +1,8 @@
+/*body background*/
+body{
+	background:repeating-linear-gradient( 45deg, #3dd439, #3dd439 0.5em, #2CC327 0.5em, #2cc328 1em );
+	background-attachment: fixed;
+}
 /*Give the #loading div centered text*/
 #loading {
 	text-align: center;
@@ -20,16 +25,17 @@
 .contest {
 	margin: 5px;
 	padding: 20px;
-	border: 1px solid #000;
+	background:#eee;
 	border-radius:6px;
 }
 /*Give all <img>s within the .contest <div>s a thin dashed black border.*/
 .contest img {
-	border: 1px dashed #000;
+  border-radius:6px;
 }
 /*adds the logo to the header*/
 .jumbotron{
     background-image: url('../../Resources/favicon.png'); !importent;
     background-size: contain; !importent;
     background-repeat: no-repeat;
+    box-shadow:0px 0px 1em #000;
 }
