@@ -6,7 +6,7 @@ Hi! This is a [KA Contest Judging System](https://www.khanacademy.org/computer-p
 
 ## Screenshots
 #### How are we currently presenting contests to judges?
-![Screenshot1](https://lh3.googleusercontent.com/_DcOiSQlvH8WO6LEL7l95g3WRbij_8yodK9xWNfbJjA=w107-h640-no)
+![Screenshot1](https://lh3.googleusercontent.com/QsOgJXiiW57KrzEmWofotX8vNvIPL-O8rqyaG4jsBKQ=w1226-h640-no)
 
 ## Team Members
 #### Full Members
