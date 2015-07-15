@@ -26,3 +26,9 @@
 .contest img {
 	border: 1px dashed #000;
 }
+/*adds the logo to the header*/
+.jumbotron{
+    background-image: url('../Resources/favicon.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+}
