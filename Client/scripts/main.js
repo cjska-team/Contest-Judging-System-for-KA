@@ -41,7 +41,7 @@ $(function() {
 
 						var detailsDiv = document.createElement("div");
 						detailsDiv.className = "details";
-						detailsDiv.innerHTML = data.description || "No description provided!";
+						detailsDiv.innerHTML = data.responseJSON.description || "No description provided!";
 
 						$(imgLink).add(mediaObject).appendTo(imgLink);
 						$(mediaLeftDiv).add(imgLink).appendTo(mediaLeftDiv);
