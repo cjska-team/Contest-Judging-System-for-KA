@@ -6,7 +6,10 @@ $(function() {
 			var programData = $.ajax({
 				type: 'GET',
 				url: 'http://www.khanacademy.org/api/labs/scratchpads/' + curr.id,
-				async: false // Will change to asynchronous later on!
+				async: true,
+				complete: function(data) {
+
+				}
 			}).responseJSON;
 
 			/* http://getbootstrap.com/components/#media-default */
@@ -24,7 +27,7 @@ $(function() {
 			mediaLeftDiv.className = "media-left media-middle";
 
 			var imgLink = document.createElement("a");
-			imgLink.href = "https://khanacademy.org/computer-programming/contest/" + curr.id;
+			imgLink.href = "https://www.khanacademy.org/computer-programming/contest/" + curr.id;
 			imgLink.target = "_blank";
 
 			var mediaObject = document.createElement("img");
