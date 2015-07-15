@@ -21,10 +21,10 @@ $(function() {
 			mediaDiv.className = "media";
 
 			var mediaLeftDiv = document.createElement("div");
-			mediaLeftDiv.className = "media-left";
+			mediaLeftDiv.className = "media-left media-middle";
 
 			var imgLink = document.createElement("a");
-			imgLink.href = "https://khanacademy.org/cs/contest/" + curr.id;
+			imgLink.href = "https://khanacademy.org/computer-programming/contest/" + curr.id;
 			imgLink.target = "_blank";
 
 			var mediaObject = document.createElement("img");
