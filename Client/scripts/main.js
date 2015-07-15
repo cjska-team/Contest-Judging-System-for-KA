@@ -32,7 +32,7 @@ $(function() {
 
 			var mediaObject = document.createElement("img");
 			mediaObject.className = "media-object";
-			mediaObject.src = "https://khanacademy.org" + curr.img;
+			mediaObject.src = "https://www.khanacademy.org" + curr.img;
 
 			var mediaBody = document.createElement("div");
 			mediaBody.className = "media-body";
