@@ -1,28 +1,28 @@
+/*Give the #loading div centered text*/
 #loading {
 	text-align: center;
 }
-
+/*Have the spin or spin2 animation run infinitely so .glyphicon-refresh-animate spins round and round forever*/
 .glyphicon-refresh-animate {
     -animation: spin .7s infinite linear;
     -webkit-animation: spin2 .7s infinite linear;
 }
-
-@-webkit-keyframes spin2 {
-    from { -webkit-transform: rotate(0deg);}
-    to { -webkit-transform: rotate(360deg);}
-}
-
+/*The following two animations make .glyphicon-refresh-animate spin one full rotation*/
 @keyframes spin {
     from { transform: scale(1) rotate(0deg);}
     to { transform: scale(1) rotate(360deg);}
 }
-
+@-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+/*Give all .contest <div>s a margin, some padding, and a thin solid black border.*/
 .contest {
 	margin: 5px;
 	padding: 20px;
 	border: 1px solid #000;
 }
-
+/*Give all <img>s within the .contest <div>s a thin dashed black border.*/
 .contest img {
-	border: 1px dashed #000;
+    border: 1px dashed #000;
 }
