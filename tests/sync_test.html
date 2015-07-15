@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Sync Test</title>
+		<style>
+			#syncBtn {
+				width: 500px;
+				height: 500px;
+			}
+		</style>
+	</head>
+	<body>
+		<button id="syncBtn">Sync Me!</button>
+
+		<div id="contestIds"></div>
+
+		<script src="../Resources/firebase.js"></script>
+		<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+		<script src="../Backend/sync.js"></script>
+		<script>
+			document.getElementById("syncBtn").onclick = function() {
+				var contests = sync();
+
+				contests.sort(function(a, b) { return a.id - b.id; });
+
+				alert((contests.length + 1) + " challenges found!");
+
+				/*for (var i = 0; i < contests.length; i++) {
+					var ref = new Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contests[i].id);
+
+					ref.set({ id: contests[i].id, name: contests[i].name });
+
+					var pElem = document.createElement("p");
+					pElem.textContent = contests[i].id + " - " + contests[i].name;
+
+					document.getElementById("contestIds").appendChild(pElem);
+				}*/
+
+				var fromFirebase = [ ];
+
+				var ref = new Firebase("https://<FIREBASE ID>.firebaseio.com/contests/");
+				ref.orderByKey().on("child_added", function(snapshot) {
+					fromFirebase.push(snapshot.key());
+				});
+
+				ref.once("value", function(snapshot) {
+					for (var i = 0; i < fromFirebase.length; i++) {
+						if (contests.indexOf(fromFirebase[i]) !== -1) {
+							console.log("Item removed.");
+						} else {
+							console.log("Exists on Khan Academy!");
+						}
+					}
+
+					for (var j = 0; j < contests.length; j++) {
+						var newRef = new Firebase("https://<FIREBASE ID>.firebaseio.com/contests/" + contests[j].id);
+						if (fromFirebase.indexOf(contests[j].id) === -1) {
+							console.log("We need to add this one!");
+							newRef.set(contests[j]);
+
+						} else {
+							console.log("Exists in Firebase!");
+						}
+					}
+				});
+			};
+		</script>
+	</body>
+</html>

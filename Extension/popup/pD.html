@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+       <meta charset="utf-8">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <style>
+        html,
+        body {
+            width: 100%;
+            height: 500px;
+            padding:0px;
+            margin: 0px;
+        }
+        .jumbotron{
+        	margin-top:51px;
+        }
+        #flagscroll{
+            width:500px;
+            height:150px;
+            overflow-y:auto;
+            overflow-x:hidden;
+            border:1px solid rgb(200,200,200);
+        }
+        *{
+        	border-radius:0px !important;
+        }
+    </style>
+    <script src="ext/jquery.js"></script>
+    <script src="popupscripts.js"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <!-- We use the fluid option here to avoid overriding the fixed width of a normal container within the narrow content columns. -->
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-8" aria-expanded="false"> 
+                	<span class="sr-only">Toggle navigation</span> 
+                	<span class="icon-bar"></span> 
+                	<span class="icon-bar"></span> 
+                	<span class="icon-bar"></span> 
+                </button> 
+               	<a class="navbar-brand" href="/popup.html">MultiTool</a> 
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-8">
+                <ul class="nav navbar-nav">
+                    <li><a href="index.html">Home</a></li>
+                    <li class="active"><a href="pD.html">Program Diagnostic</a></li>
+                    <li><a href="uL.html">User Lookup</a></li>
+                    <li><a href="options.html">Options</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+    </nav>
+    <div class="jumbotron">
+    	<div class="container">
+    		<h1>Program Diagnostic <span style="font-size:20px;vertical-align:middle;color:grey" class="glyphicon glyphicon-console" aria-hidden="true"></span></h1>
+    		<p>Find out some information about a specific program.</p>
+    	</div>
+    </div>
+    <div class="container">
+         <center>
+            <b>Autofill</b>
+            <br>
+            <div class="btn-group" role="group" id="autofill">
+               <button type="button" class="btn btn-default" id="tP">This Program</button>
+            </div>
+            <hr style="margin-top:10px;margin-bottom:10px">
+            <div class="row">
+               <div class="col-lg-6">
+                  <div class="input-group">
+                     <input type="text" class="form-control" placeholder="Program ID" id="pgID"> <span class="input-group-btn">
+                     <button class="btn btn-default" type="button" id="lookup-pD">Lookup</button>
+                     </span> 
+                  </div>
+                  <!-- /input-group -->
+               </div>
+               <!-- /.col-lg-6 -->
+            </div>
+            <!-- /.row -->
+         </center>
+         <h2>Data</h2>
+         <hr style="margin-top:10px;margin-bottom:20px">
+         <img src="https://www.khanacademy.org/computer-programming/placeholder-image/4824908793643008/5668600916475904.png" style="float:left;margin-right:5px" width="50px" height="50px" id="ppic"><span class="label label-danger" style="border-radius:3px !important;display:none" id="hide">HIDDEN</span> <span class="label label-warning" style="border-radius:3px !important;display:none" id="flagged">FLAGGED</span> <b id="pname">unknown program</b><br>
+         <span class="label label-success" style="border-radius:3px !important" title="Vote Count" id="votes">0</span> <span class="label label-info" style="border-radius:3px !important" title="Spinoff Count" id="spinoffs">0</span><br><br>
+         <img src="https://www.kasandbox.org/third_party/javascript-khansrc/live-editor/build/images/avatars/leaf-grey.png" style="float:left;margin-right:5px" width="50px" height="50px" id="cpic"><b id="nickname">unknown user</b>&nbsp;&nbsp;<i id="uLabel">@null</i><br>
+         <span class="label label-primary" style="border-radius:3px !important;background-color:#00b0de" id="eg">0</span><br><br>
+         <hr style="margin-top:10px;margin-bottom:10px">
+         <h3>Flags</h3>
+         <div id="flagscroll"></div>
+         <br>
+         <button class="btn btn-warning" id="flaghelp">Have unreasonable flags? Click here.</button>
+         <br><br>
+      </div>
+    <script src="ext/bootstrap.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <style>
+        html,
+        body {
+            width: 500px;
+            height: 500px;
+            overflow-y: auto;
+            overflow-x:hidden;
+            padding:0px;
+            margin: 0px;
+        }
+        .jumbotron{
+        	margin-top:51px;
+        }
+        *{
+        	border-radius:0px !important;
+        }
+        #version {
+            color:red;
+        }
+    </style>
+    <script src="ext/jquery.js"></script>
+    <script src="popupscripts.js"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <!-- We use the fluid option here to avoid overriding the fixed width of a normal container within the narrow content columns. -->
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-8" aria-expanded="false"> 
+                	<span class="sr-only">Toggle navigation</span> 
+                	<span class="icon-bar"></span> 
+                	<span class="icon-bar"></span> 
+                	<span class="icon-bar"></span> 
+                </button> 
+               	<a class="navbar-brand" href="/popup.html">MultiTool</a> 
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-8">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="index.html">Home</a></li>
+                    <li><a href="pD.html">Program Diagnostic</a></li>
+                    <li><a href="uL.html">User Lookup</a></li>
+                    <li><a href="options.html">Options</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+    </nav>
+    <div class="jumbotron">
+    	<div class="container">
+    		<h1>Hello!</h1>
+    		<p>Use the navigation to navigate to the various tools found in this extension.</p>
+    	</div>
+    </div>
+    <div class="container">
+        <div class="alert alert-warning" role="alert" id="outOfDateWarning" style="display:none">
+            <b>Warning!</b><br>
+            <p>Your copy of MultiTool is not up to date.</p>
+        </div>
+        <div id="changelog" style="display:none;">
+            <h3>Here's whats new in <span id="version"></span></h3>
+            <ul id="changes">
+                <li>For some reason the changes didn't get printed. Hm.</li>
+            </ul>
+        </div>
+        <div id="changelogLoader">
+            <center><b>Loading Version Data...</b></center>
+        </div>
+        <br><br>
+    </div>
+    <div style="position:absolute;bottom:0px;width:100%;text-align:center;background-color:white">
+    	<hr style="padding-bottom:0px;margin-bottom:0px;margin-top:0px">
+    	<i style="color:gray">This extension is not affilated, nor is produced or maintained by Khan Academy or any of it's developers.</i>
+    </div>
+    <script src="ext/bootstrap.min.js"></script>
+</body>
+
+</html>
