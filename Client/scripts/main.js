@@ -1,67 +1,78 @@
 $(function() {
 	Contest_Judging_System.getStoredContests(function(contests) {
 		for (var i in contests) {
-			var curr = contests[i];
+			(function() {
+				var hasDataLoaded = false;
+				var curr = contests[i];
 
-			var programData = $.ajax({
-				type: 'GET',
-				url: 'http://www.khanacademy.org/api/labs/scratchpads/' + curr.id,
-				async: true,
-				complete: function(data) {
+				var programData = $.ajax({
+					type: 'GET',
+					url: 'http://www.khanacademy.org/api/labs/scratchpads/' + curr.id,
+					async: true,
+					complete: function(data) {
 
-				}
-			}).responseJSON;
+						/* http://getbootstrap.com/components/#media-default */
+						var rowDiv = document.createElement("div");
+						rowDiv.className = "row";
 
-			/* http://getbootstrap.com/components/#media-default */
+						var contestDiv = document.createElement("div");
+						contestDiv.className = "contest";
 
-			var rowDiv = document.createElement("div");
-			rowDiv.className = "row";
+						var mediaDiv = document.createElement("div");
+						mediaDiv.className = "media";
 
-			var contestDiv = document.createElement("div");
-			contestDiv.className = "contest";
+						var mediaLeftDiv = document.createElement("div");
+						mediaLeftDiv.className = "media-left media-middle";
 
-			var mediaDiv = document.createElement("div");
-			mediaDiv.className = "media";
+						var imgLink = document.createElement("a");
+						imgLink.href = "https://www.khanacademy.org/computer-programming/contest/" + curr.id;
+						imgLink.target = "_blank";
 
-			var mediaLeftDiv = document.createElement("div");
-			mediaLeftDiv.className = "media-left media-middle";
+						var mediaObject = document.createElement("img");
+						mediaObject.className = "media-object";
+						mediaObject.src = "https://www.khanacademy.org" + curr.img;
 
-			var imgLink = document.createElement("a");
-			imgLink.href = "https://www.khanacademy.org/computer-programming/contest/" + curr.id;
-			imgLink.target = "_blank";
+						var mediaBody = document.createElement("div");
+						mediaBody.className = "media-body";
 
-			var mediaObject = document.createElement("img");
-			mediaObject.className = "media-object";
-			mediaObject.src = "https://www.khanacademy.org" + curr.img;
+						var mediaHeading = document.createElement("h4");
+						mediaHeading.className = "media-heading";
+						mediaHeading.textContent = curr.name;
 
-			var mediaBody = document.createElement("div");
-			mediaBody.className = "media-body";
+						var detailsDiv = document.createElement("div");
+						detailsDiv.className = "details";
+						detailsDiv.innerHTML = data.description || "No description provided!";
 
-			var mediaHeading = document.createElement("h4");
-			mediaHeading.className = "media-heading";
-			mediaHeading.textContent = curr.name;
+						$(imgLink).add(mediaObject).appendTo(imgLink);
+						$(mediaLeftDiv).add(imgLink).appendTo(mediaLeftDiv);
 
-			var detailsDiv = document.createElement("div");
-			detailsDiv.className = "details";
-			detailsDiv.innerHTML = programData.description || "No description provided!";
+						$(mediaBody).add(mediaHeading).appendTo(mediaBody);
+						$(mediaBody).add(detailsDiv).appendTo(mediaBody);
 
-			$(imgLink).add(mediaObject).appendTo(imgLink);
-			$(mediaLeftDiv).add(imgLink).appendTo(mediaLeftDiv);
+						$(mediaDiv).add(mediaLeftDiv).appendTo(mediaDiv);
+						$(mediaDiv).add(mediaBody).appendTo(mediaDiv);
 
-			$(mediaBody).add(mediaHeading).appendTo(mediaBody);
-			$(mediaBody).add(detailsDiv).appendTo(mediaBody);
+						$(contestDiv).add(mediaDiv).appendTo(contestDiv);
 
-			$(mediaDiv).add(mediaLeftDiv).appendTo(mediaDiv);
-			$(mediaDiv).add(mediaBody).appendTo(mediaDiv);
+						$(rowDiv).add(contestDiv).appendTo(rowDiv);
 
-			$(contestDiv).add(mediaDiv).appendTo(contestDiv);
+						$("#contests").add(rowDiv).appendTo("#contests");
 
-			$(rowDiv).add(contestDiv).appendTo(rowDiv);
-
-			$("#contests").add(rowDiv).appendTo("#contests");
+						curr.done = true;
+					}
+				});
+			})();
 		}
 
-		$("#loading").css("display", "none");
+		var toNext = setTimeout(function() {
+			for (var i in contests) {
+				if (contests[i].done !== true) {
+					return;
+				}
+			}
+			clearTimeout(toNext);
+			$("#loading").css("display", "none");
+		});
 
 		$("a").attr("target", "_blank");
 	});
