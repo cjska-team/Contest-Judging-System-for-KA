@@ -18,15 +18,11 @@
 }
 
 .contest {
+	margin: 5px;
 	padding: 20px;
+	border: 1px solid #000;
 }
-.contest * {
-	margin: 0;
-}
+
 .contest img {
-	display: inline-table;
-	width: 20%;
-}
-.contest .details {
-	display: inline-table;
+	border: 1px dashed #000;
 }
