@@ -1,3 +1,8 @@
+//This is the loading element that tells the user to wait.
+var loadingDiv = document.querySelector("#loading");
+//This is the contests element that shows info on all of the contests.
+var contestsDiv = document.querySelector("#contests");
+
 //Get all of the stored contests from the Firebase database
 Contest_Judging_System.getStoredContests(function(contests) {
     /* When the request is finished... */
@@ -34,12 +39,11 @@ Contest_Judging_System.getStoredContests(function(contests) {
                     mediaLeftDiv.className = "media-left";
                     //Create the link to the contest
                     var imgLink = document.createElement("a");
-                    imgLink.href = "https://khanacademy.org/cs/contest/" + curr.id;
-                    imgLink.target = "_blank";
+                    imgLink.href = "https://www.khanacademy.org/computer-programming/contest/" + curr.id;
                     //Create the image that will go in our link
                     var mediaObject = document.createElement("img");
                     mediaObject.className = "media-object";
-                    mediaObject.src = "https://khanacademy.org" + curr.img;
+                    mediaObject.src = "https://www.khanacademy.org" + curr.img;
                     
                     //Create the div containing the body of contest info
                     var mediaBody = document.createElement("div");
@@ -72,7 +76,7 @@ Contest_Judging_System.getStoredContests(function(contests) {
                     //Put contestDiv inside rowDiv
                     rowDiv.appendChild(contestDiv);
                     //Put rowDiv inside the #contests div
-                    document.querySelector("#contests").appendChild(rowDiv);
+                    contestsDiv.appendChild(rowDiv);
                     
                     //Now that we're done, add the done propery to curr so that the below setTimeout() function will know.
                     curr.done = true;
@@ -88,6 +92,6 @@ Contest_Judging_System.getStoredContests(function(contests) {
 
         //If we're done, get rid of the loading screen and stop checking if we're done.
         clearTimeout(finishedTimeout);
-        $("#loading").css("display", "none");
+        loadingDiv.style.display = "none";
     });
 });
