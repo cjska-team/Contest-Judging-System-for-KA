@@ -10,8 +10,9 @@ window.KA_API = (function() {
         return;
     }
 
+    //Everything from this namespace will be placed in the object that is returned.
 	return {
-        //Important Links
+        //Khan Academy API Urls
 		urls: {
             //For getting contests:
 			spotlight: "https://www.khanacademy.org/api/internal/scratchpads/top?casing=camel&topic_id=xffde7c31&sort=4&limit=40000&page=0&lang=en&_=1436581332879",
@@ -20,12 +21,12 @@ window.KA_API = (function() {
 				return "https://www.khanacademy.org/api/internal/scratchpads/{PROGRAM}/top-forks?casing=camel&sort=2&limit=300000&page=0&lang=en".replace("{PROGRAM}", programID);
 			}
 		},
+        /* This function gets all the entries for a specific contest, and passes them into the callback. */
 		getContestEntries: function(contestID, callback) {
-            /* This function gets all contest entries for the contest with ID of contestID and then passes the entries into callback. */
 			//Any entries that we find, will be put into this object. (We'll also pass this object into callback.)
 			var entries = {};
 
-            //Send AJAX request to spin-offs of contest with contestID
+            //Send AJAX request for getting all the entries to the desired contest
 			var apiQuery = $.ajax({
 				type: 'GET',
 				url: this.urls.spinoffs(contestID),
@@ -58,14 +59,14 @@ window.KA_API = (function() {
 				}
 			});
 		},
+        /* This function gets all of Pamela's contest programs from Khan Academy and passes them into the callback function. */
 		getContests: function(callback) {
-            /* This function gets all of the contests and gets the contest entries using getContestEntries() above. It then passes the contests into callback. */
 			//This Bool is true iff the first AJAX request has finished.
 			var apiQueryDone = false;
 			//Any contests that we find, will be put into this object. (We'll also pass this object into callback.)
 			var contests = {};
 
-            //Send AJAX request to get all contests
+            //Send AJAX request to get all the contests from Khan Academy
 			var apiQuery = $.ajax({
 				type: 'GET',
 				url: this.urls.spotlight,
@@ -86,7 +87,9 @@ window.KA_API = (function() {
                                 //Program ID
                                 id: programID,
                                 //Program Title
-                                name: allPrograms[i].translatedTitle
+                                name: allPrograms[i].translatedTitle,
+                                //Program Icon
+                                img: allPrograms[i].thumb
                             };
 
                             (function() {

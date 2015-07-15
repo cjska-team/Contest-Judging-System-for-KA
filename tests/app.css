@@ -47,7 +47,7 @@ button:active{
   border-bottom:0.1em solid #000;
   margin-top:0.2em;
 }
-/*Initially hide the #goBack button*/
+/*Initially hide the #goBack button and give it a bigger font size*/
 #goBack {
     display: none;
 }
