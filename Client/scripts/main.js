@@ -19,10 +19,9 @@ Contest_Judging_System.getStoredContests(function(contests) {
                 type: 'GET',
                 url: 'http://www.khanacademy.org/api/labs/scratchpads/' + curr.id,
                 async: true,
-                complete: function(apiResponse) {
+                complete: function(data) {
                     /* When done with AJAX request */
                     //http://getbootstrap.com/components/#media-default
-                    programData = apiResponse.responseJSON;
 
                     //Create row for this contest
                     var rowDiv = document.createElement("div");
@@ -55,7 +54,7 @@ Contest_Judging_System.getStoredContests(function(contests) {
                     //Create the div containing the contest details
                     var detailsDiv = document.createElement("div");
                     detailsDiv.className = "details";
-                    detailsDiv.innerHTML = programData.description || "No description provided!";
+                    detailsDiv.innerHTML = data.responseJSON.description || "No description provided!";
 
                     //Put image inside link
                     imgLink.appendChild(mediaObject);
