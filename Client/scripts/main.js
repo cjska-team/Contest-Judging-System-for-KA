@@ -66,7 +66,7 @@ $(function() {
 
 		var toNext = setTimeout(function() {
 			for (var i in contests) {
-				if (contests[i].done !== true) {
+				if (contests[i].done !== undefined) {
 					return;
 				}
 			}
