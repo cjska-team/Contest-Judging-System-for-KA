@@ -21,6 +21,7 @@
 	margin: 5px;
 	padding: 20px;
 	border: 1px solid #000;
+	border-radius:6px;
 }
 /*Give all <img>s within the .contest <div>s a thin dashed black border.*/
 .contest img {
@@ -28,7 +29,7 @@
 }
 /*adds the logo to the header*/
 .jumbotron{
-    background-image: url('../Resources/favicon.png');
-    background-size: contain;
+    background-image: url('../../Resources/favicon.png'); !importent;
+    background-size: contain; !importent;
     background-repeat: no-repeat;
 }
