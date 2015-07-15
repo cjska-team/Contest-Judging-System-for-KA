@@ -38,4 +38,5 @@ body{
     background-size: contain; !importent;
     background-repeat: no-repeat;
     box-shadow:0px 0px 1em #000;
+    margin-top:-6px;
 }
