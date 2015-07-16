@@ -23,6 +23,8 @@ $(function() {
 
 	/* Attempt to load a contest, based on the ID we found in the URL. */
 	Contest_Judging_System.loadContest(contestId, function(contest) {
+
+		/* Randomly pick n entries, and then display them on the page. */
 		Contest_Judging_System.get_N_Entries(10, contest.id, function(entries) {
 
 			/* Setup the page */
