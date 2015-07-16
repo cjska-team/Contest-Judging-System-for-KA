@@ -23,43 +23,43 @@ $(function() {
 
 	/* Attempt to load a contest, based on the ID we found in the URL. */
 	Contest_Judging_System.loadContest(contestId, function(contest) {
-		/* Instead of typing contest.entries all the time, let's allow ourselves to just type entries. */
-		var entries = contest.entries;
+		Contest_Judging_System.get_N_Entries(10, contest.id, function(entries) {
 
-		/* Setup the page */
-		$("title").text(contest.name);
-		$("#contestName").text(contest.name);
-		$("#contestDescription").html("Description coming soon!");
+			/* Setup the page */
+			$("title").text(contest.name);
+			$("#contestName").text(contest.name);
+			$("#contestDescription").html("Description coming soon!");
 
-		/* Add all entries to the page */
-		for (var i in entries) {
-			/* Instead of having to write entries[i] all the time, let's declare a variable that's a bit shorter. */
-			var curr = entries[i];
+			/* Add all entries to the page */
+			for (var i in entries) {
+				/* Instead of having to write entries[i] all the time, let's declare a variable that's a bit shorter. */
+				var curr = entries[i];
 
-			/* Create a div and give it Bootstrap's "row" class */
-			var rowDiv = document.createElement("row");
-			rowDiv.className = "row";
+				/* Create a div and give it Bootstrap's "row" class */
+				var rowDiv = document.createElement("row");
+				rowDiv.className = "row";
 
-			/* Create a paragraph element that'll eventually hold a link to this entry */
-			var paragraphElem = document.createElement("p");
+				/* Create a paragraph element that'll eventually hold a link to this entry */
+				var paragraphElem = document.createElement("p");
 
-			/* Create a link element and set it's text to the name of this entry */
-			var aElem = document.createElement("a");
-			aElem.textContent = curr.name;
-			aElem.href = "https://www.khanacademy.org/computer-programming/entry/" + curr.id;
+				/* Create a link element and set it's text to the name of this entry */
+				var aElem = document.createElement("a");
+				aElem.textContent = curr.name;
+				aElem.href = "https://www.khanacademy.org/computer-programming/entry/" + curr.id;
 
-			/* Add the link element to our paragraph element */
-			paragraphElem.appendChild(aElem);
+				/* Add the link element to our paragraph element */
+				paragraphElem.appendChild(aElem);
 
-			/* Add our paragraph element to our row div */
-			rowDiv.appendChild(paragraphElem);
+				/* Add our paragraph element to our row div */
+				rowDiv.appendChild(paragraphElem);
 
-			/* Add our row div to the entries div */
-			entriesDiv.appendChild(rowDiv);
-		}
+				/* Add our row div to the entries div */
+				entriesDiv.appendChild(rowDiv);
+			}
 
-		/* Hide the loading div and show items that were hidden during loading. */
-		$("#loading").css("display", "none");
-		$(".hideWhileLoad").css("display", "block");
+			/* Hide the loading div and show items that were hidden during loading. */
+			$("#loading").css("display", "none");
+			$(".hideWhileLoad").css("display", "block");
+		});
 	});
 }); 
