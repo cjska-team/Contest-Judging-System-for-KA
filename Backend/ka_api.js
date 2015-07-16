@@ -4,19 +4,19 @@
 ***/
 window.KA_API = (function() {
     /* Function wrapper to create KA_API */
-    //jQuery is required for [most] all of these. So if it's object is not found, exit the function.
+    /* jQuery is required for [most] all of these. So if it's object is not found, exit the function. */
     if (!window.jQuery) {
         console.log("Needs jQuery");
         return;
     }
 
-    //Everything from this namespace will be placed in the object that is returned.
+    /* Everything from this namespace will be placed in the object that is returned. */
     return {
-        //Khan Academy API Urls
+        /* Khan Academy API Urls */
         urls: {
-            //For getting contests:
+            /* For getting contests: */
             spotlight: "https://www.khanacademy.org/api/internal/scratchpads/top?casing=camel&topic_id=xffde7c31&sort=4&limit=40000&page=0&lang=en&_=1436581332879",
-            //For getting contest entries where contest has ID of programID
+            /* For getting contest entries where contest has ID of programID */
             spinoffs: function(programID) {
                 return "https://www.khanacademy.org/api/internal/scratchpads/{PROGRAM}/top-forks?casing=camel&sort=2&limit=300000&page=0&lang=en".replace("{PROGRAM}", programID);
             }
