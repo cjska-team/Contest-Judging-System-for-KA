@@ -75,6 +75,17 @@ window.Contest_Judging_System = (function() {
                 callback(fromFirebase);
             });
         },
+        /* Loads a specific contest from Firebase. */
+        loadContest: function(contestId, callback) {
+            /* Connect to our Firebase app */
+            var firebaseRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
+            /* Since we're only going to be dealing with contests in this function, go ahead and create a reference to the "contests" "child". */
+            var contestsRef = firebaseRef.child("contests");
+
+            contestsRef.orderByChild("id").equalTo(contestId).on("child_added", function(contestData) {
+                callback(contestData.val());
+            });
+        },
         sync: function(callback) {
             /*
              * sync() just fetches the latest data from Khan Academy and Firebase, and compares it.

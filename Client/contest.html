@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Viewing Contest</title>
+		<link rel="icon" href="../Resources/favicon.ico">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        <link rel="stylesheet" href="stylesheets/main.css">
+	</head>
+	<body>
+        <!--This is so all of the links have target=_blank. Now, we don't need to do this with jQuery.-->
+        <base target="_blank"/>
+        <!--Our container for everything-->
+        <div class="container">
+            <!--The heading-->
+            <div class="jumbotron hideWhileLoad">
+                <h3 id="contestName"></h3>
+                <div id="contestDescription"></div>
+            </div>
+            <!--The loading <div>-->
+            <div id="loading">
+                <h1 class="huge">
+                    Loading data; please wait...
+                </h1>
+                <h1><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span></h1>
+            </div>
+            <!--Holds all data for contests-->
+            <div id="entries" class="hideWhileLoad">
+                
+            </div>
+        </div>
+        
+        <script src="../Resources/firebase.js"></script>
+        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+        <script src="../Backend/ka_api.js"></script>
+        <script src="../Backend/contest_judging_sys.js"></script>
+        <script src="scripts/contest.js"></script>
+    </body>
+</html>
