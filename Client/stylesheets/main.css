@@ -2,10 +2,6 @@
 #loading {
 	text-align: center;
 }
-
-#entries {
-    text-align: center;
-}
 /*Have the spin or spin2 animation run infinitely so .glyphicon-refresh-animate spins round and round forever*/
 .glyphicon-refresh-animate {
     -animation: spin .7s infinite linear;
@@ -34,4 +30,12 @@
 .viewEntries {
     margin: 5px auto 5px auto;
     width: 100%;
+}
+
+.entry {
+
+}
+
+.entry img {
+    border: 1px solid #000;
 }
