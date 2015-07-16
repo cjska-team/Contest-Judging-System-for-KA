@@ -53,7 +53,7 @@ $(function() {
 
 							/* Create a link element, and set it's href to the URL of this entry... */
 							var aElem = document.createElement("a");
-							aElem.href = "https://www.khanacademy.org/computer-programming/entry" + curr.id;
+							aElem.href = "https://www.khanacademy.org/computer-programming/entry/" + curr.id;
 
 							/* Create an image element and set it's src to this entry's thumbnail */
 							var mediaObj = document.createElement("img");
