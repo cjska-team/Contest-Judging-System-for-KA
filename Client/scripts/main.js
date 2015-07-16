@@ -43,6 +43,13 @@ Contest_Judging_System.getStoredContests(function(contests) {
                     var mediaObject = document.createElement("img");
                     mediaObject.className = "media-object";
                     mediaObject.src = "https://www.khanacademy.org" + curr.img;
+
+                    var viewEntriesBtn = document.createElement("button");
+                    viewEntriesBtn.className = "btn btn-sm btn-primary center-block";
+                    viewEntriesBtn.textContent = "View Entries";
+                    viewEntriesBtn.onclick = function() {
+                        window.location.assign("contest.html?contest=" + curr.id);
+                    };
                     
                     //Create the div containing the body of contest info
                     var mediaBody = document.createElement("div");
@@ -60,6 +67,8 @@ Contest_Judging_System.getStoredContests(function(contests) {
                     imgLink.appendChild(mediaObject);
                     //Put link inside mediaLeftDiv
                     mediaLeftDiv.appendChild(imgLink);
+                    /* Put button into mediaLeftDiv */
+                    mediaLeftDiv.appendChild(viewEntriesBtn);
 
                     //Put heading inside body
                     mediaBody.appendChild(mediaHeading);
