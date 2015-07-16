@@ -44,12 +44,10 @@ Contest_Judging_System.getStoredContests(function(contests) {
                     mediaObject.className = "media-object";
                     mediaObject.src = "https://www.khanacademy.org" + curr.img;
 
-                    var viewEntriesBtn = document.createElement("button");
-                    viewEntriesBtn.className = "btn btn-sm btn-primary center-block";
+                    var viewEntriesBtn = document.createElement("a");
+                    viewEntriesBtn.className = "btn btn-sm btn-primary center-bloc viewEntries";
                     viewEntriesBtn.textContent = "View Entries";
-                    viewEntriesBtn.onclick = function() {
-                        window.location.assign("contest.html?contest=" + curr.id);
-                    };
+                    viewEntriesBtn.href = "contest.html?contest=" + curr.id;
                     
                     //Create the div containing the body of contest info
                     var mediaBody = document.createElement("div");

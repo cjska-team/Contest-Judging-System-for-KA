@@ -30,3 +30,8 @@
 .contest img {
     border: 1px dashed #000;
 }
+
+.viewEntries {
+    margin: 5px auto 5px auto;
+    width: 100%;
+}
