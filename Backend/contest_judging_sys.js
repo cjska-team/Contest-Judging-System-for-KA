@@ -24,6 +24,27 @@ window.Contest_Judging_System = (function() {
     return {
         /* Puts the script injection function inside of this namespace. */
         include: includeFunc,
+        /* This function gets all the "Rubrics" that we've defined in Firebase. */
+        getRubrics: function(callback) {
+            /* Connect to our Firebase app. */
+            var firebaseRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
+
+            /* We're going to messing around with the data in our "rubrics" object. Let's go ahead and grab that "child". */
+            var fbRubrics = firebaseRef.child("rubrics");
+
+            /* This array will hold all of the Rubrics that we've defined in our array. */
+            var rubrics = [ ];
+
+            /* Query all the data from Firebase, and push the JSON keys into our array. */
+            fbRubrics.orderByKey().on("child_added", function(responseData) {
+                rubrics[responseData.key()] = responseData.val();
+            });
+
+            /* Once all our data has been loaded from Firebase, invoke our callback. */
+            fbRubrics.once("value", function() {
+                callback(rubrics);
+            });
+        },
         /* This function gets all the contests that we have stored on Firebase and passes them into a callback function. */
         getStoredContests: function(callback) {
             /* This is the object for the contests within our Firebase database. */
