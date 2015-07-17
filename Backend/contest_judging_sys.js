@@ -75,6 +75,14 @@ window.Contest_Judging_System = (function() {
                 callback(fromFirebase);
             });
         },
+        /* Load a specific contest entry, based on ID */
+        loadEntry: function(contestId, entryId, callback) {
+            var firebaseRef = new Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contestId + "/entries/");
+
+            firebaseRef.orderByKey().equalTo(entryId).on("child_added", function(entryData) {
+                callback(entryData.val());
+            });
+        },
         /* Loads a specific contest from Firebase. */
         loadContest: function(contestId, callback) {
             /* Connect to our Firebase app */
