@@ -67,11 +67,54 @@ Contest_Judging_System.loadContest(contestId, function(contest) {
 						var mediaHeading = document.createElement("h4");
 						mediaHeading.textContent = curr.name;
 
+						/* Create a div that will hold more information about this entry */
+						var infoDiv = document.createElement("div");
+						infoDiv.className = "info";
+
+						/* Create a heading element (tier 5), to mark the "Score" heading */
+						var scoreHeading = document.createElement("h5");
+						scoreHeading.textContent = "Score:";
+
+						/* Create an unordered list element that will be used to display score information for this entry. */
+						var scoreList = document.createElement("ul");
+
+						/* Go through all the score information for this entry, and create a list item for it. */
+						for (var rubric in curr.scores.rubric) {
+							(function() {
+								var currRubric = rubric;
+								var val = curr.scores.rubric[rubric];
+
+								console.log(val);
+
+								Contest_Judging_System.getRubrics(function(rubrics) {
+									var max = rubrics[currRubric].max;
+
+									if (rubrics[currRubric].hasOwnProperty("keys")) {
+										console.log(rubrics[currRubric].keys);
+										val = rubrics[currRubric].keys[val];
+										console.log("Value switched to a key!");
+
+										var listItem = document.createElement("li");
+										listItem.textContent = currRubric + ": " + val;
+
+										scoreList.appendChild(listItem);
+									} else {
+										var listItem = document.createElement("li");
+										listItem.textContent = currRubric + ": " + val + " out of " + max;
+										scoreList.appendChild(listItem);
+									}
+								});
+							})();
+						}
+
 						/* Append everything */
+						infoDiv.appendChild(scoreHeading);
+						infoDiv.appendChild(scoreList);
 						aElem.appendChild(mediaObj);
 						mediaLeftDiv.appendChild(aElem);
 						mediaBody.appendChild(mediaHeading);
 						mediaListItem.appendChild(mediaLeftDiv);
+						mediaBody.appendChild(infoDiv);
 						mediaListItem.appendChild(mediaBody);
 						entriesList.appendChild(mediaListItem);
 					}

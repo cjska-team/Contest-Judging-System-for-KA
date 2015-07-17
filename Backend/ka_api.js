@@ -49,7 +49,12 @@ window.KA_API = (function() {
                             name: allPrograms[i].translatedTitle,
                             /* Program Scores */
                             scores: {
-                                rubric: 0,
+                                rubric: {
+                                    "Clean_Code": 1,
+                                    "Creativity": 1,
+                                    "Level": 1,
+                                    "Overall": 1
+                                },
                                 judge: 0
                             }
                         };
