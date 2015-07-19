@@ -18,6 +18,8 @@ var contestId = window.location.href.split("?contest=")[1].split("&")[0];
 /* Locate the entry ID in the URL, and store it for later use. */
 var entryId = window.location.href.split("&entry=")[1];
 
+var baseURL = "http://www.khanacademy.org/computer-programming/entry/{entryID}/embed.js?editor=no&amp;buttons=no&amp;author=no&amp;embed=yes";
+
 /* Print the contest ID that we found, to the console. */
 console.log("Contest ID: " + contestId);
 
@@ -27,4 +29,19 @@ console.log("Entry ID: " + entryId);
 /* Fetch the data for this contest entry, and then use the data to build up the current page. */
 Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 	console.log(entryData);
+
+	var injectedScript = document.createElement("script");
+	injectedScript.src = baseURL.replace("{entryID}", entryData.id);
+
+	document.querySelector(".program-preview").appendChild(injectedScript);
+});
+
+$(".toggleCode").on("click", function() {
+	var currentSrc = $("iframe").attr("src");
+
+	if (currentSrc.indexOf("editor=yes") !== -1) {
+		$("iframe").attr("src", currentSrc.replace("editor=yes", "editor=no"));
+	} else {
+		$("iframe").attr("src", currentSrc.replace("editor=no", "editor=yes"));
+	}
 });
