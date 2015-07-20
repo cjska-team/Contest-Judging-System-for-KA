@@ -28,8 +28,7 @@ console.log("Entry ID: " + entryId);
 
 /* Fetch the data for this contest entry, and then use the data to build up the current page. */
 Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
-	console.log(entryData);
-
+	/* Set the text of our "program-name" heading to the name of the current entry */
 	document.querySelector("#program-name").textContent = entryData.name;
 
 	/* The following stuff is broken in Firefox. Issue reported on Khan Academy live-editor repo. */
@@ -40,10 +39,11 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 	programIframe.scrolling = "no";
 	programIframe.frameborder = 0;
 
+	/* Append our program iframe to the "program-preview" div. */
 	document.querySelector(".program-preview").appendChild(programIframe);
 });
 
-/*When .toggleCode is clicked, we toggle the editor.*/
+/* Whenever we click the toggleCode button; toggle the code. */
 $(".toggleCode").on("click", function() {
 	var currentSrc = $("iframe").attr("src");
 

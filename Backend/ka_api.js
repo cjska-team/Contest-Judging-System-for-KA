@@ -121,7 +121,7 @@ window.KA_API = (function() {
                     }
 
                     /* At this point, we have made sure the request has finished, so we make a log in the console, stop looping this asynchronous function, and finally pass contests into callback. */
-                    console.log("All done!");
+                    console.log("getContests() finished!");
                     /* Make sure clearTimeout() is called first. We don't know how long callback will take and if callback takes more than a second, then callback will be called multiple times. */
                     clearInterval(finishTimeout);
                     callback(contests);
