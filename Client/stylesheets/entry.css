@@ -1,6 +1,7 @@
-/*Get rid of vertical margins of the program preview*/
+/*Get rid of vertical margins of the program preview and give the preview a thin solid black border*/
 .program-preview {
     margin: 0 auto 0 auto;
+    border: 1px solid #000;
 }
 /*Get rid of borders inside the program preview*/
 .program-preview * {
