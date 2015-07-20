@@ -32,7 +32,7 @@ Contest_Judging_System.loadContest(contestId, function(contest) {
 		$("#contestDescription").html("Description coming soon!");
 
 		var detailsDiv = document.getElementById("contestDescription");
-		detailsDiv.innerHTML = contest.desc;
+		detailsDiv.innerHTML = contest.desc || "No description found!";
 
 		console.log(contest.description);
 		/* Add all entries to the page */
