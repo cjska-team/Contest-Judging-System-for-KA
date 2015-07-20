@@ -32,8 +32,7 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 
 	document.querySelector("#program-name").textContent = entryData.name;
 
-	/* TODO: Load a program using the embed code provided by Khan Academy */
-	// https://www.khanacademy.org/computer-programming/gradient-background/6041840424583168/embedded?id=1437401965968-0.06310267560184002&origin=http%3A%2F%2F127.0.0.1%3A25565&buttons=yes&embed=yes&editor=yes&author=yes
+	/* The following stuff is broken in Firefox. Issue reported on Khan Academy live-editor repo. */
 	var programIframe = document.createElement("iframe");
 	programIframe.src = baseURL.replace("{ENTRYID}", entryData.id);
 	programIframe.width = 940;
@@ -41,7 +40,7 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 	programIframe.scrolling = "no";
 	programIframe.frameborder = 0;
 
-	document.querySelector(".program-preview").appendChild(programIframe);	
+	document.querySelector(".program-preview").appendChild(programIframe);
 });
 
 $(".toggleCode").on("click", function() {
