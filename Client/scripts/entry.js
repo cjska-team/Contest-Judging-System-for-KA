@@ -1,3 +1,5 @@
+Contest_Judging_System.tryAuthentication();
+
 /* If it doesn't look like there's a contest ID in the URL, show an alert, and go back one page. */
 if (window.location.search.indexOf("?contest") === -1) {
 	alert("Contest ID not found!");
@@ -54,19 +56,19 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 
 	/* Create a paragraph element to display the level rubric */
 	var levelRubric = document.createElement("p");
-	levelRubric.textContent = "Level: " + entryData.scores.rubric.Level;
+	levelRubric.textContent = "Level: " + entryData.scores.rubric.Level.avg;
 
 	/* Create a paragraph element to display the clean code rubric */
 	var cleanCodeRubric = document.createElement("p");
-	cleanCodeRubric.textContent = "Clean Code: " + entryData.scores.rubric.Clean_Code;
+	cleanCodeRubric.textContent = "Clean Code: " + entryData.scores.rubric.Clean_Code.avg;
 
 	/* Create a paragraph element to display the creativity rubric */
 	var creativityRubric = document.createElement("p");
-	creativityRubric.textContent = "Creativity: " + entryData.scores.rubric.Creativity;
+	creativityRubric.textContent = "Creativity: " + entryData.scores.rubric.Creativity.avg;
 
 	/* Create a paragraph element to display the overall rubric */
 	var overallRubric = document.createElement("p");
-	overallRubric.textContent = "Overall: " + entryData.scores.rubric.Overall; 
+	overallRubric.textContent = "Overall: " + entryData.scores.rubric.Overall.avg; 
 
 	/* Create all the elements we'll need for the "Level" rubric */
 	var levelGroup = document.createElement("div");
@@ -106,6 +108,7 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 	cleanCodeLabel.textContent = "Clean Code: ";
 
 	var cleanCodeInput = document.createElement("input");
+	cleanCodeInput.id = "clean_code";
 	cleanCodeInput.type = "number";
 	cleanCodeInput.min = "1";
 	cleanCodeInput.value = "1";
@@ -120,16 +123,25 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 	creativityLabel.textContent = "Creativity: ";
 
 	var creativityInput = document.createElement("input");
+	creativityInput.id = "creativity";
 	creativityInput.type = "number";
 	creativityInput.min = "1";
 	creativityInput.value = "1";
 	creativityInput.max = "5";
 
-	/* Create a button element that'll be used to submit the scores */
-	var submitBtn = document.createElement("button");
-	submitBtn.className = "btn btn-success";
-	submitBtn.disabled = "disabled";
-	submitBtn.textContent = "Submit scores";
+	var overallGroup = document.createElement("div");
+	overallGroup.id = "overall_group";
+
+	var overallLabel = document.createElement("label");
+	overallLabel.htmlFor = "overall";
+	overallLabel.textContent = "Overall: ";
+
+	var overallInput = document.createElement("input");
+	overallInput.id = "overall";
+	overallInput.type = "number";
+	overallInput.min = "1";
+	overallInput.value = "1";
+	overallInput.max = "5";
 
 	/* Append everything to whatever it needs to be appended to */
 	levelGroup.appendChild(levelLabel);
@@ -141,11 +153,14 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 	creativityGroup.appendChild(creativityLabel);
 	creativityGroup.appendChild(creativityInput);
 
+	overallGroup.appendChild(overallLabel);
+	overallGroup.appendChild(overallInput);
+
 	/* Append all of our judging tools to the rubrics div */
 	rubricsDiv.appendChild(levelGroup);
 	rubricsDiv.appendChild(cleanCodeGroup);
 	rubricsDiv.appendChild(creativityGroup);
-	rubricsDiv.appendChild(submitBtn);
+	rubricsDiv.appendChild(overallGroup);
 
 	/* Append our program iframe to the "program-preview" div. */
 	programPreview.appendChild(programIframe);
@@ -169,4 +184,18 @@ $(".toggleCode").on("click", function() {
 	} else {
 		$("iframe").attr("src", currentSrc.replace("editor=no", "editor=yes"));
 	}
+});
+
+$("#submitBtn").on("click", function() {
+	console.log("Button clicked!");
+	var scoreData = {};
+
+	scoreData.Level = parseInt($("#level").val(), 10);
+	scoreData.Clean_Code = parseInt($("#clean_code").val(), 10);
+	scoreData.Creativity = parseInt($("#creativity").val(), 10);
+	scoreData.Overall = parseInt($("#overall").val(), 10);
+
+	Contest_Judging_System.judgeEntry(contestId, entryId, scoreData, function(data) {
+		console.log("Submitted scores!");
+	});
 });

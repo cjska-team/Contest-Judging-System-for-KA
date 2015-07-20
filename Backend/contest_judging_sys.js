@@ -33,7 +33,7 @@ window.Contest_Judging_System = (function() {
             var fbRubrics = firebaseRef.child("rubrics");
 
             /* This array will hold all of the Rubrics that we've defined in our array. */
-            var rubrics = [ ];
+            var rubrics = { };
 
             /* Query all the data from Firebase, and push the JSON keys into our array. */
             fbRubrics.orderByKey().on("child_added", function(responseData) {
@@ -182,6 +182,167 @@ window.Contest_Judging_System = (function() {
                     callback(kaData);
                 }
             }, 1000);
+        },
+        validateAuthToken: function(authToken, callback) {
+            var done = false;
+            var valid = true;
+
+            $.ajax({
+                type: "POST",
+                url: "https://www.googleapis.com/oauth2/v1/tokeninfo",
+                async: true,
+                data: {
+                    "access_token": authToken
+                },
+                complete: function(responseData) {
+                    if (responseData.audience == Contest_Judging_System.googleClientId) {
+                        valid = true;
+                    } else {
+                        valid = false;
+                    }
+                    done = true;
+                }
+            });
+
+            var returnInterval = setInterval(function() {
+                if (done) {
+                    return valid;
+                }
+            }, 1000);
+        },
+        /* Cookie functions provided by w3schools */
+        getCookie: function(cookie) {
+            var name = cookie + "=";
+            var ca = document.cookie.split(';');
+            for(var i=0; i<ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0)==' ') c = c.substring(1);
+                if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+            }
+            return "";
+        },
+        setCookie: function(cookie, value) {
+            var d = new Date();
+            d.setTime(d.getTime() + (30*24*60*60*1000));
+            var expires = "expires="+d.toUTCString();
+            document.cookie = cookie + "=" + value + "; " + expires;
+        },
+        tryAuthentication: function() {
+            console.log("tryAuthentication invoked!");
+            var firebaseRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
+            var judges = firebaseRef.child("loggedInJudges");
+            var allowed = firebaseRef.child("allowedJudges");
+
+            firebaseRef.authWithOAuthPopup("google", function(error, authData) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    Contest_Judging_System.setCookie("authId", authData.google.accessToken);
+                    Contest_Judging_System.setCookie("uid", authData.uid);
+
+                    judges.child(authData.uid).set(authData);
+
+                    var allowedJudges = {};
+
+                    allowed.orderByKey().on("child_added", function(snapshot) {
+                        allowedJudges[snapshot.key()] = snapshot.val();
+                    });
+
+                    allowed.once("value", function(data) {
+                        for (var i in allowedJudges) {
+                            if (allowedJudges[i].uid === Contest_Judging_System.getCookie("uid")) {
+                                console.log("Access granted!");
+                                return;
+                            }
+                        }
+                        window.location.assign("permissionDenied.html");
+                    });
+                }
+            });
+        },
+        isJudgeAllowed: function(uid, callback) {
+            var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
+            var allowedJudges = fbRef.child("allowedJudges");
+
+            var allAllowedJudges = { };
+            var done = false;
+            var valid = false;
+
+            allowedJudges.orderByKey().on("child_added", function(data) {
+                allAllowedJudges[data.key()] = data.val();
+            });
+
+            allowedJudges.once("value", function() {
+                for (var i in allAllowedJudges) {
+                    if (allAllowedJudges[i].uid == uid && allAllowedJudges[i].allowed == true) {
+                        valid = true;
+                        done = true;
+                    }
+                }
+                done = true;
+            });
+
+            var returnWait = setInterval(function() {
+                if (done) {
+                    clearInterval(returnWait);
+                    callback(valid);
+                }
+            }, 1000);
+        },
+        addAllowedJudge: function(uid) {
+            var firebaseRef = new Firebase("https://contest-judging-sys.firebaseio.com");
+            var allowedJudges = firebaseRef.child("allowedJudges");
+
+            allowedJudges.push().set({uid: uid, allowed: true});
+        },
+        judgeEntry: function(contest, entry, scoreData, authToken, callback) {
+            var fbContestRef = new Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contest);
+            var entries = fbContestRef.child("entries");
+
+            Contest_Judging_System.isJudgeAllowed(Contest_Judging_System.getCookie("uid"), function(judgeAllowed) {
+                if (!judgeAllowed) {
+                    alert("You aren't in the allowed judges list!");
+                    return;
+                }
+
+                Contest_Judging_System.loadEntry(contest, entry, function(entryData) {
+                    Contest_Judging_System.getRubrics(function(allRubrics) {
+                        var currentRubricScore = entryData.scores.rubric;
+                        var newNumberOfJudges = parseInt(entryData.scores.rubric.NumberOfJudges + 1, 10);
+                        var judgesWhoVoted = entryData.scores.rubric.judgesWhoVoted === undefined ? [] : entryData.scores.rubric.judgesWhoVoted;
+                        if (judgesWhoVoted.indexOf(Contest_Judging_System.getCookie("uid")) === -1) {
+                            judgesWhoVoted.push(Contest_Judging_System.getCookie("uid"));
+                            console.log(newNumberOfJudges);
+                            /* Create a new object for storing scores */
+                            var newScoreObj = {
+                                "Level": {
+                                    "rough": entryData.scores.rubric.Level.rough + scoreData.Level,
+                                    "avg": Math.round((parseInt(entryData.scores.rubric.Level.rough, 10) + scoreData.Level) / newNumberOfJudges)
+                                },
+                                "Clean_Code": {
+                                    "rough": entryData.scores.rubric.Clean_Code.rough + scoreData.Clean_Code,
+                                    "avg": (parseInt(entryData.scores.rubric.Clean_Code.rough, 10) + scoreData.Clean_Code) / newNumberOfJudges
+                                },
+                                "Creativity": {
+                                    "rough": entryData.scores.rubric.Creativity.rough + scoreData.Creativity,
+                                    "avg": (parseInt(entryData.scores.rubric.Creativity.rough, 10) + scoreData.Creativity) / newNumberOfJudges
+                                },
+                                "Overall": {
+                                    "rough": entryData.scores.rubric.Overall.rough + scoreData.Overall,
+                                    "avg": (parseInt(entryData.scores.rubric.Overall.rough, 10) + scoreData.Overall) / newNumberOfJudges
+                                },
+                                "NumberOfJudges": parseInt(newNumberOfJudges, 10),
+                                "judgesWhoVoted": judgesWhoVoted
+                            };
+
+                            var thisEntry = new Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contest + "/entries/" + entry + "/scores/");
+                            thisEntry.child("rubric").set(newScoreObj);
+                        } else {
+                            alert("You've already judged this entry!");
+                        }
+                    });
+                });
+            });
         }
     };
 })();
