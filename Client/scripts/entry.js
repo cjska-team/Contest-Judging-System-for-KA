@@ -18,6 +18,7 @@ var contestId = window.location.href.split("?contest=")[1].split("&")[0];
 /* Locate the entry ID in the URL, and store it for later use. */
 var entryId = window.location.href.split("&entry=")[1];
 
+/* The base URL for the program preview Iframe. */
 var baseURL = "https://www.khanacademy.org/computer-programming/entry/{ENTRYID}/embedded?buttons=no&editor=no&author=no&embed=yes";
 
 /* Print the contest ID that we found, to the console. */
@@ -27,7 +28,7 @@ console.log("Contest ID: " + contestId);
 console.log("Entry ID: " + entryId);
 
 /* Fetch the data for this contest entry, and then use the data to build up the current page. */
-Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
+Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {	
 	/* Set the text of our "program-name" heading to the name of the current entry */
 	document.querySelector("#program-name").textContent = entryData.name;
 
