@@ -30,10 +30,7 @@ console.log("Entry ID: " + entryId);
 Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 	console.log(entryData);
 
-	var injectedScript = document.createElement("script");
-	injectedScript.src = baseURL.replace("{entryID}", entryData.id);
-
-	document.querySelector(".program-preview").appendChild(injectedScript);
+	/* TODO: Load a program using the embed code provided by Khan Academy */
 });
 
 $(".toggleCode").on("click", function() {
