@@ -43,6 +43,7 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 	document.querySelector(".program-preview").appendChild(programIframe);
 });
 
+/*When .toggleCode is clicked, we toggle the editor.*/
 $(".toggleCode").on("click", function() {
 	var currentSrc = $("iframe").attr("src");
 

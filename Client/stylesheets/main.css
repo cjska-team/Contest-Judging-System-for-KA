@@ -31,22 +31,22 @@
 .contest img {
     border: 1px dashed #000;
 }
-
+/*Give the links to the entries 5xp of vertical margin and full width*/
 .viewEntries {
     margin: 5px auto 5px auto;
     width: 100%;
 }
-
-.entry { }
-
+/*This will be added for use eventually.*/
+/*.entry { }*/
+/*Give all images inside entries a thin solid black border*/
 .entry img {
     border: 1px solid #000;
 }
-
+/*Get rid of vertical mergins of the program preview*/
 .program-preview {
     margin: 0 auto 0 auto;
 }
-
+/*Get rid of borders inside the program preview*/
 .program-preview * {
     border: 0;
 }
