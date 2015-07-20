@@ -2,12 +2,13 @@
 #loading {
 	text-align: center;
 }
-/*Have the spin or spin2 animation run infinitely so .glyphicon-refresh-animate spins round and round forever*/
+/*Have the spin, spin2, or spin3 animation run infinitely so .glyphicon-refresh-animate spins round and round forever*/
 .glyphicon-refresh-animate {
     -animation: spin .7s infinite linear;
     -webkit-animation: spin2 .7s infinite linear;
+    -moz-animation: spin3 .7s infinite linear;
 }
-/*The following two animations make .glyphicon-refresh-animate spin one full rotation*/
+/*The following three animations make .glyphicon-refresh-animate spin one full rotation*/
 @keyframes spin {
     from { transform: scale(1) rotate(0deg);}
     to { transform: scale(1) rotate(360deg);}
@@ -15,6 +16,10 @@
 @-webkit-keyframes spin2 {
     from { -webkit-transform: rotate(0deg);}
     to { -webkit-transform: rotate(360deg);}
+}
+@-moz-keyframes spin3 {
+    from { -moz-transform: rotate(0deg);}
+    to { -moz-transform: rotate(360deg);}
 }
 /*Give all .contest <div>s a margin, some padding, and a thin solid black border.*/
 .contest {
@@ -26,22 +31,22 @@
 .contest img {
     border: 1px dashed #000;
 }
-
+/*Give the links to the entries 5xp of vertical margin and full width*/
 .viewEntries {
     margin: 5px auto 5px auto;
     width: 100%;
 }
-
-.entry { }
-
+/*This will be added for use eventually.*/
+/*.entry { }*/
+/*Give all images inside entries a thin solid black border*/
 .entry img {
     border: 1px solid #000;
 }
-
+/*Get rid of vertical mergins of the program preview*/
 .program-preview {
     margin: 0 auto 0 auto;
 }
-
+/*Get rid of borders inside the program preview*/
 .program-preview * {
     border: 0;
 }
