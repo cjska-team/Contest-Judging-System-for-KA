@@ -337,6 +337,8 @@ window.Contest_Judging_System = (function() {
 
                             var thisEntry = new Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contest + "/entries/" + entry + "/scores/");
                             thisEntry.child("rubric").set(newScoreObj);
+
+                            window.location.reload();
                         } else {
                             alert("You've already judged this entry!");
                         }
