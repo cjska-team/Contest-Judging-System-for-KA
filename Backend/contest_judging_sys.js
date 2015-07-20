@@ -104,10 +104,6 @@ window.Contest_Judging_System = (function() {
             var numberOfEntries = 0;
 
             Contest_Judging_System.loadContest(contestId, function(contestData) {
-                /* Loop through all of the entries, and determine the total number of entries that have been submitted. */
-                for (var i in contestData.entries) {
-                    numberOfEntries++;
-                }
 
                 /* Declare a variable to hold an array of keys for entries */
                 var entriesKeys = Object.keys(contestData.entries);
@@ -115,9 +111,10 @@ window.Contest_Judging_System = (function() {
                 /* An array to store the keys that we've already picked */
                 var pickedKeys = [ ];
 
-                for (var i = 0; i < n; i++) {
+                /* While we still need keys to return... */
+                while (pickedKeys.length < n) {
                     /* Pick a random index */
-                    var randIndex = Math.floor( (Math.random() * (numberOfEntries - 1)) );
+                    var randIndex = Math.floor( Math.random() * entriesKeys.length );
 
                     /* Get the key from the index that we picked */
                     var pickedKey = entriesKeys[randIndex];
@@ -127,9 +124,6 @@ window.Contest_Judging_System = (function() {
                         /* ...pick it. */
                         pickedEntries[pickedKey] = contestData.entries[pickedKey];
                         pickedKeys.push(pickedKey);
-                    } else {
-                        /* Go back and try again. */
-                        i--;
                     }
                 }
 
