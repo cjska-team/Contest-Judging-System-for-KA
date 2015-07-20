@@ -89,6 +89,8 @@ Contest_Judging_System.loadContest(contestId, function(contest) {
 
 								Contest_Judging_System.getRubrics(function(rubrics) {
 									var max = rubrics[currRubric].max;
+									/* Credit to @NobleMushtak for the following idea. */
+									var selectedRubric = currRubric.replace(/_/gi, " ");
 
 									if (rubrics[currRubric].hasOwnProperty("keys")) {
 										console.log(rubrics[currRubric].keys);
@@ -96,12 +98,12 @@ Contest_Judging_System.loadContest(contestId, function(contest) {
 										console.log("Value switched to a key!");
 
 										var listItem = document.createElement("li");
-										listItem.textContent = currRubric + ": " + val;
+										listItem.textContent = selectedRubric + ": " + val;
 
 										scoreList.appendChild(listItem);
 									} else {
 										var listItem = document.createElement("li");
-										listItem.textContent = currRubric + ": " + val + " out of " + max;
+										listItem.textContent = selectedRubric + ": " + val + " out of " + max;
 										scoreList.appendChild(listItem);
 									}
 								});
