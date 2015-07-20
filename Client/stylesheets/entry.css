@@ -1,0 +1,16 @@
+/*Get rid of vertical margins of the program preview*/
+.program-preview {
+    margin: 0 auto 0 auto;
+}
+/*Get rid of borders inside the program preview*/
+.program-preview * {
+    border: 0;
+}
+/*Give form parts and <p>s a bigger font size*/
+button.toggleCode, label, select, input, p {
+    font-size: 1.1em;
+}
+/*Give form parts some space around them*/
+label, select, input {
+     margin: 5px;
+}

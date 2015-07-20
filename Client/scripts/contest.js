@@ -34,7 +34,7 @@ Contest_Judging_System.loadContest(contestId, function(contest) {
 		var detailsDiv = document.getElementById("contestDescription");
 		detailsDiv.innerHTML = contest.desc || "No description found!";
 
-		console.log(contest.description);
+		console.log(contest.desc);
 		/* Add all entries to the page */
 		for (var i in entries) {
 			(function() {

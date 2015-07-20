@@ -126,10 +126,11 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 	creativityInput.max = "5";
 
 	/* Create a button element that'll be used to submit the scores */
-	var submitBtn = document.createElement("button");
+	var submitBtn = document.createElement("input");
+    submitBtn.type = "submit";
 	submitBtn.className = "btn btn-success";
 	submitBtn.disabled = "disabled";
-	submitBtn.textContent = "Submit scores";
+	submitBtn.value = "Submit Scores";
 
 	/* Append everything to whatever it needs to be appended to */
 	levelGroup.appendChild(levelLabel);

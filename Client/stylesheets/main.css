@@ -25,32 +25,18 @@ summary * {
     from { -moz-transform: rotate(0deg);}
     to { -moz-transform: rotate(360deg);}
 }
-/*Give all .contest <div>s a margin, some padding, and a thin solid black border.*/
-.contest {
+/*Give all .contest and .entry <div>s a margin, some padding, and a thin solid black border.*/
+.contest, .entry {
 	margin: 5px;
 	padding: 20px;
 	border: 1px solid #000;
 }
-/*Give all <img>s within the .contest <div>s a thin dashed black border.*/
-.contest img {
+/*Give all <img>s within the .contest and .entry <div>s a thin dashed black border.*/
+.contest img, .entry img {
     border: 1px dashed #000;
 }
-/*Give the links to the entries 5xp of vertical margin and full width*/
+/*Give the links to the entries 5px of vertical margin and full width*/
 .viewEntries {
     margin: 5px auto 5px auto;
     width: 100%;
-}
-/*This will be added for use eventually.*/
-/*.entry { }*/
-/*Give all images inside entries a thin solid black border*/
-.entry img {
-    border: 1px solid #000;
-}
-/*Get rid of vertical mergins of the program preview*/
-.program-preview {
-    margin: 0 auto 0 auto;
-}
-/*Get rid of borders inside the program preview*/
-.program-preview * {
-    border: 0;
 }

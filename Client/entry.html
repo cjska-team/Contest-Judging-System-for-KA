@@ -5,6 +5,7 @@
 		<title>Viewing entry</title>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
         <link rel="stylesheet" href="stylesheets/main.css">
+        <link rel="stylesheet" href="stylesheets/entry.css">
 	</head>
 	<body>
 		<div class="container">
@@ -13,6 +14,10 @@
 				<div class="program-preview">
 					<!--<script src="https://www.khanacademy.org/computer-programming/gradient-background/6041840424583168/embed.js?editor=yes&amp;buttons=yes&amp;author=yes&amp;embed=yes"></script>-->
 				</div>
+                <div class="program-controls">
+                    <h4>Program Controls:</h4>
+                    <button class="btn btn-xs btn-primary toggleCode">Toggle Code</button>
+                </div>
 				<!-- TODO: Load these onto the page dynamically! -->
 				<div class="judging-pane">
 					<div class="current-score">
@@ -23,7 +28,7 @@
 						<p><strong>Overall</strong>: 1</p>-->
 					</div>
 					<h4>Judging Controls:</h4>
-					<div class="rubrics">
+					<form class="rubrics">
 						<!--<div id="level">
 							<label for="level_select">Level:</label>
 							<select id="level_select">
@@ -40,18 +45,11 @@
 							<label for="creativity_level">Creativity:</label>
 							<input type="number" id="creativity_level" name="creativity_level" min="1" max="5" value="1">
 						</div>
-						<div id="overall">
-							<label for="overall_score">Overall:</label>
-							<input type="number" id="overall_score" name="overall_score" min="1" max="5" value="1">
-						</div>-->
+						<input type="button" class="btn btn-success" disabled="">Submit scores</button>-->
 					</div>
 				</div>
 			</div>
 			<br>
-			<div class="other-controls">
-				<h4>Other Controls:</h4>
-				<button class="btn btn-xs btn-primary toggleCode">Toggle Code</button>
-			</div>
 		</div>
 		<script src="../Resources/firebase.js"></script>
         <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
