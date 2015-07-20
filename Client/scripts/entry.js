@@ -40,9 +40,11 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 	programIframe.scrolling = "no";
 	programIframe.frameborder = 0;
 
+	/* Append our program iframe to the "program-preview" div. */
 	document.querySelector(".program-preview").appendChild(programIframe);
 });
 
+/* Whenever we click the toggleCode button; toggle the code. */
 $(".toggleCode").on("click", function() {
 	var currentSrc = $("iframe").attr("src");
 
