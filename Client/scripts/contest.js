@@ -31,15 +31,8 @@ Contest_Judging_System.loadContest(contestId, function(contest) {
 		$("#contestName").text(contest.name);
 		$("#contestDescription").html("Description coming soon!");
 
-		$.ajax({
-			type: 'GET',
-			url: "http://www.khanacademy.org/api/labs/scratchpads/" + contest.id,
-			async: true,
-			complete: function(data) {
-				var detailsDiv = document.getElementById("contestDescription");
-				detailsDiv.innerHTML = data.responseJSON.description || "No description provided!";
-			}
-		})
+		var detailsDiv = document.getElementById("contestDescription");
+		detailsDiv.innerHTML = contest.desc;
 
 		console.log(contest.description);
 		/* Add all entries to the page */
