@@ -2,6 +2,10 @@
 #loading {
 	text-align: center;
 }
+/*Everything inside <summary>s should be inline so the summary doesn't go into multiple lines*/
+summary * {
+    display: inline;
+}
 /*Have the spin, spin2, or spin3 animation run infinitely so .glyphicon-refresh-animate spins round and round forever*/
 .glyphicon-refresh-animate {
     -animation: spin .7s infinite linear;
