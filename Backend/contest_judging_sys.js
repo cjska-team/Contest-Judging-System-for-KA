@@ -312,7 +312,7 @@ window.Contest_Judging_System = (function() {
                         var judgesWhoVoted = entryData.scores.rubric.judgesWhoVoted === undefined ? [] : entryData.scores.rubric.judgesWhoVoted;
                         if (judgesWhoVoted.indexOf(Contest_Judging_System.getCookie("uid")) === -1) {
                             judgesWhoVoted.push(Contest_Judging_System.getCookie("uid"));
-                            console.log(newNumberOfJudges);
+                            
                             /* Create a new object for storing scores */
                             var newScoreObj = {
                                 "Level": {
