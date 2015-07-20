@@ -14,7 +14,7 @@
 				<div class="program-preview">
 					<!--<script src="https://www.khanacademy.org/computer-programming/gradient-background/6041840424583168/embed.js?editor=yes&amp;buttons=yes&amp;author=yes&amp;embed=yes"></script>-->
 				</div>
-                <div class="program-controls">
+                <div class="other-controls">
                     <h4>Program Controls:</h4>
                     <button class="btn btn-xs btn-primary toggleCode">Toggle Code</button>
                 </div>
@@ -28,7 +28,7 @@
 						<p><strong>Overall</strong>: 1</p>-->
 					</div>
 					<h4>Judging Controls:</h4>
-					<form class="rubrics">
+					<div class="rubrics">
 						<!--<div id="level">
 							<label for="level_select">Level:</label>
 							<select id="level_select">
@@ -45,8 +45,12 @@
 							<label for="creativity_level">Creativity:</label>
 							<input type="number" id="creativity_level" name="creativity_level" min="1" max="5" value="1">
 						</div>
-						<input type="button" class="btn btn-success" disabled="">Submit scores</button>-->
+						<div id="overall">
+							<label for="overall_score">Overall:</label>
+							<input type="number" id="overall_score" name="overall_score" min="1" max="5" value="1">
+						</div>-->
 					</div>
+					<button id="submitBtn" class="btn btn-success">Submit your vote</button>
 				</div>
 			</div>
 			<br>

@@ -53,12 +53,25 @@ window.KA_API = (function() {
                             /* Program Scores */
                             scores: {
                                 rubric: {
-                                    "Clean_Code": 1,
-                                    "Creativity": 1,
-                                    "Level": 1,
-                                    "Overall": 1
-                                },
-                                judge: 0
+                                    "Clean_Code": {
+                                        "rough": 1,
+                                        "avg": 1
+                                    },
+                                    "Creativity": {
+                                        "rough": 1,
+                                        "avg": 1
+                                    },
+                                    "Level": {
+                                        "rough": 1,
+                                        "avg": 1
+                                    },
+                                    "Overall": {
+                                        "rough": 1,
+                                        "avg": 1
+                                    },
+                                    "NumberOfJudges": 1,
+                                    "judgesWhoVoted": [ ]
+                                }
                             }
                         };
                     }

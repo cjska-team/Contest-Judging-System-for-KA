@@ -87,7 +87,7 @@ Contest_Judging_System.loadContest(contestId, function(contest) {
 						for (var rubric in curr.scores.rubric) {
 							(function() {
 								var currRubric = rubric;
-								var val = curr.scores.rubric[rubric];
+								var val = Math.floor(curr.scores.rubric[rubric].avg);
 
 								console.log(val);
 
