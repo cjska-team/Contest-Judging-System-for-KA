@@ -31,6 +31,10 @@ Contest_Judging_System.loadContest(contestId, function(contest) {
 		$("#contestName").text(contest.name);
 		$("#contestDescription").html("Description coming soon!");
 
+		var detailsDiv = document.getElementById("contestDescription");
+		detailsDiv.innerHTML = contest.desc;
+
+		console.log(contest.description);
 		/* Add all entries to the page */
 		for (var i in entries) {
 			(function() {
