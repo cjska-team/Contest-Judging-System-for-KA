@@ -312,7 +312,7 @@ window.Contest_Judging_System = (function() {
                         var judgesWhoVoted = entryData.scores.rubric.judgesWhoVoted === undefined ? [] : entryData.scores.rubric.judgesWhoVoted;
                         if (judgesWhoVoted.indexOf(Contest_Judging_System.getCookie("uid")) === -1) {
                             judgesWhoVoted.push(Contest_Judging_System.getCookie("uid"));
-                            console.log(newNumberOfJudges);
+                            
                             /* Create a new object for storing scores */
                             var newScoreObj = {
                                 "Level": {
@@ -337,6 +337,8 @@ window.Contest_Judging_System = (function() {
 
                             var thisEntry = new Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contest + "/entries/" + entry + "/scores/");
                             thisEntry.child("rubric").set(newScoreObj);
+
+                            window.location.reload();
                         } else {
                             alert("You've already judged this entry!");
                         }
