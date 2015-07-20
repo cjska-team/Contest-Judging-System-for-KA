@@ -3,8 +3,18 @@ var loadingDiv = document.querySelector("#loading");
 //This is the contests element that shows info on all of the contests.
 var contestsDiv = document.querySelector("#contests");
 
-//Get all of the stored contests from the Firebase database
-Contest_Judging_System.getStoredContests(function(contests) {
+//The "Sync Data" button (this click event will not work until sync is enabled by finishRequest())
+var sync = $("#sync");
+sync.on("click", function() {
+    /* Sync all the data */
+    /* Make sure the user doesn't try to sync while it's already syncing. */
+    sync.prop("disabled", true);
+    sync.text("Please wait...");
+    /* Call finishRequest when done */
+    Contest_Judging_System.sync(finishRequest);
+});
+
+function finishRequest(contests) {
     /* When the request is finished... */
         
     //Loop through contests
@@ -98,11 +108,13 @@ Contest_Judging_System.getStoredContests(function(contests) {
 
         //If we're done, get rid of the loading screen and stop checking if we're done.
         clearTimeout(finishedTimeout);
-        loadingDiv.style.display = "none";
-    });
+        loadingDiv.style.display = "none";//The "Sync Data" button"
 
-    $("#sync").on("click", function() {
-        /* Sync all the data */
-        Contest_Judging_System.sync();
+        //When done, enable the "Sync Data" button again.
+        sync.removeAttr("disabled");
+        sync.text("Sync Data");
     });
-});
+}
+
+//Get all of the stored contests from the Firebase database and call finishRequest when done
+Contest_Judging_System.getStoredContests(finishRequest);

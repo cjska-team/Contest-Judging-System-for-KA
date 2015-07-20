@@ -150,7 +150,6 @@ window.Contest_Judging_System = (function() {
              * Once both requests have finished, we set fbData to kaData using the Firebase set() method.
              * Originally authored by Gigabyte Giant
              * TODO: Perform added/deleted checking on contest entries.
-             * TODO: Actually do something with callback
              * TODO: Actually do something with fbData
              */
             /* These two Booleans check whether or not both requests have been completed. */
@@ -186,6 +185,7 @@ window.Contest_Judging_System = (function() {
                     clearInterval(recievedData);
                     fbRef.set(kaData);
                     console.log("Sync Completed");
+                    callback(kaData);
                 }
             }, 1000);
         }
