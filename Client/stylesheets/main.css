@@ -38,6 +38,10 @@
     border: 1px solid #000;
 }
 
-iframe {
-    border: 1px solid #000;
+.program-preview {
+    margin: 0 auto 0 auto;
+}
+
+.program-preview * {
+    border: 0;
 }

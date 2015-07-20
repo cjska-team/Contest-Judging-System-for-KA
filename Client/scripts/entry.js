@@ -18,7 +18,7 @@ var contestId = window.location.href.split("?contest=")[1].split("&")[0];
 /* Locate the entry ID in the URL, and store it for later use. */
 var entryId = window.location.href.split("&entry=")[1];
 
-var baseURL = "http://www.khanacademy.org/computer-programming/entry/{entryID}/embed.js?editor=no&amp;buttons=no&amp;author=no&amp;embed=yes";
+var baseURL = "https://www.khanacademy.org/computer-programming/entry/{ENTRYID}/embedded?buttons=no&editor=no&author=no&embed=yes";
 
 /* Print the contest ID that we found, to the console. */
 console.log("Contest ID: " + contestId);
@@ -30,7 +30,18 @@ console.log("Entry ID: " + entryId);
 Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 	console.log(entryData);
 
+	document.querySelector("#program-name").textContent = entryData.name;
+
 	/* TODO: Load a program using the embed code provided by Khan Academy */
+	// https://www.khanacademy.org/computer-programming/gradient-background/6041840424583168/embedded?id=1437401965968-0.06310267560184002&origin=http%3A%2F%2F127.0.0.1%3A25565&buttons=yes&embed=yes&editor=yes&author=yes
+	var programIframe = document.createElement("iframe");
+	programIframe.src = baseURL.replace("{ENTRYID}", entryData.id);
+	programIframe.width = 940;
+	programIframe.height = 400;
+	programIframe.scrolling = "no";
+	programIframe.frameborder = 0;
+
+	document.querySelector(".program-preview").appendChild(programIframe);	
 });
 
 $(".toggleCode").on("click", function() {
