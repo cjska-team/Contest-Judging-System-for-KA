@@ -100,4 +100,9 @@ Contest_Judging_System.getStoredContests(function(contests) {
         clearTimeout(finishedTimeout);
         loadingDiv.style.display = "none";
     });
+
+    $("#sync").on("click", function() {
+        /* Sync all the data */
+        Contest_Judging_System.sync();
+    });
 });

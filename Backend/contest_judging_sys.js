@@ -185,6 +185,7 @@ window.Contest_Judging_System = (function() {
                 if (completed.firebase && completed.khanacademy) {
                     clearInterval(recievedData);
                     fbRef.set(kaData);
+                    console.log("Sync Completed");
                 }
             }, 1000);
         }
