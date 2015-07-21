@@ -26,6 +26,14 @@ var programPreview = document.querySelector(".program-preview");
 var judgingPane = document.querySelector(".judging-pane");
 var currentScore = document.querySelector(".current-score");
 var rubricsDiv = document.querySelector(".rubrics");
+currentScore.addEventListener("click", function() {
+	if (currentScore.className.indexOf("hidden-data") !== -1) {
+		currentScore.className = currentScore.className.replace("hidden-data", "");
+	} else {
+		currentScore.className += " hidden-data";
+	}
+	console.log(currentScore.className);
+});
 
 /* Print the contest ID that we found, to the console. */
 console.log("Contest ID: " + contestId);
