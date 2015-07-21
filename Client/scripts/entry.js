@@ -1,5 +1,3 @@
-Contest_Judging_System.tryAuthentication();
-
 /* If it doesn't look like there's a contest ID in the URL, show an alert, and go back one page. */
 if (window.location.search.indexOf("?contest") === -1) {
 	alert("Contest ID not found!");
@@ -186,6 +184,13 @@ $(".toggleCode").on("click", function() {
 	}
 });
 
+function judgeEntry() {
+    /* This function simply judges the entry */
+    Contest_Judging_System.judgeEntry(contestId, entryId, scoreData, function(data) {
+		console.log("Submitted scores!");
+	});
+}
+var authenticated = false;
 $("#submitBtn").on("click", function() {
 	console.log("Button clicked!");
 	var scoreData = {};
@@ -195,7 +200,10 @@ $("#submitBtn").on("click", function() {
 	scoreData.Creativity = parseInt($("#creativity").val(), 10);
 	scoreData.Overall = parseInt($("#overall").val(), 10);
 
-	Contest_Judging_System.judgeEntry(contestId, entryId, scoreData, function(data) {
-		console.log("Submitted scores!");
-	});
+	if (!authenticated) Contest_Judging_System.tryAuthentication(function(valid) {
+        authenticated = valid;
+        if (valid) judgeEntry();
+        else alert("You aren't in the allowed judges list!");
+    });
+    else judgeEntry();
 });
