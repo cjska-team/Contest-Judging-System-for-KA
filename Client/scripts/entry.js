@@ -11,7 +11,10 @@ if (window.location.search.indexOf("&entry=") === -1) {
 
 	window.history.back();
 }
-
+var selectedLvlBtn = "n/a";
+var selectedCleanCodeBtn = "n/a";
+var selectedCreativityBtn = "n/a";
+var selectedOverallBtn = "n/a";
 /* Locate the contest ID in the URL, and store it for later use. */
 var contestId = window.location.href.split("?contest=")[1].split("&")[0];
 
@@ -83,27 +86,33 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 	var levelLabel = document.createElement("label");
 	levelLabel.htmlFor = "level";
 	levelLabel.textContent = "Level: ";
+	/*
+	<div class="btn-toolbar" role="toolbar" aria-label="...">
+	  <div class="btn-group" role="group" aria-label="...">...</div>
+	  <div class="btn-group" role="group" aria-label="...">...</div>
+	  <div class="btn-group" role="group" aria-label="...">...</div>
+	</div>
+	*/
 
-	var levelSelect = document.createElement("select");
-	levelSelect.id = "level";
+	var levelSelect = document.createElement("div");
+	levelSelect.id = "level-btn-toolbar";
+	levelSelect.className = "btn-toolbar";
+	
+	var levelSelectBtnGroup = document.createElement("div");
+	levelSelectBtnGroup.className = "btn-group";
+	levelSelectBtnGroup.role = "group";
 
-	var beginnerOption = document.createElement("option");
-	beginnerOption.value = 1;
-	beginnerOption.textContent = "Beginner";
+	var levelSelectBtns = [];
+	var levels = ["Beginner", "Intermediate", "Advanced"];
+	for(var i = 0; i < 3; i++){
+		var levelSelectButton = document.createElement("button");
+		levelSelectButton.type = "button";
+		levelSelectButton.id = "lvlSelectButton" + (i+1).toString();
+		levelSelectButton.className = "btn btn-sm btn-default";
+		levelSelectButton.textContent = levels[i];
+		levelSelectBtns.push(levelSelectButton);
+	}
 
-	var intermediateOption = document.createElement("option");
-	intermediateOption.value = 2;
-	intermediateOption.textContent = "Intermediate";
-
-	var advancedOption = document.createElement("option");
-	advancedOption.value = 3;
-	advancedOption.textContent = "Advanced";
-
-	levelSelect.add(beginnerOption);
-	levelSelect.add(intermediateOption);
-	levelSelect.add(advancedOption);
-
-	levelSelect.selectedIndex = 0;
 
 	/* Create all the elements we'll need for the "Clean_Code" rubric */
 	var cleanCodeGroup = document.createElement("div");
@@ -113,12 +122,23 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 	cleanCodeLabel.htmlFor = "clean_code";
 	cleanCodeLabel.textContent = "Clean Code: ";
 
-	var cleanCodeInput = document.createElement("input");
-	cleanCodeInput.id = "clean_code";
-	cleanCodeInput.type = "number";
-	cleanCodeInput.min = "1";
-	cleanCodeInput.value = "1";
-	cleanCodeInput.max = "5";
+	var cleanCodeSelect = document.createElement("div");
+	cleanCodeSelect.id = "level-btn-toolbar";
+	cleanCodeSelect.className = "btn-toolbar";
+	
+	var cleanCodeSelectBtnGroup = document.createElement("div");
+	cleanCodeSelectBtnGroup.className = "btn-group";
+	cleanCodeSelectBtnGroup.role = "group";
+
+	var cleanCodeSelectBtns = [];
+	for(var i = 0; i < 5; i++){
+		var cleanCodeSelectButton = document.createElement("button");
+		cleanCodeSelectButton.type = "button";
+		cleanCodeSelectButton.id = "cleanCodeSelectButton" + (i+1).toString();
+		cleanCodeSelectButton.className = "btn btn-sm btn-default";
+		cleanCodeSelectButton.textContent = (i+1).toString();
+		cleanCodeSelectBtns.push(cleanCodeSelectButton);
+	}
 
 	/* Create all the elements we'll need for the "Creativity" rubric */
 	var creativityGroup = document.createElement("div");
@@ -128,12 +148,23 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 	creativityLabel.htmlFor = "creativity";
 	creativityLabel.textContent = "Creativity: ";
 
-	var creativityInput = document.createElement("input");
-	creativityInput.id = "creativity";
-	creativityInput.type = "number";
-	creativityInput.min = "1";
-	creativityInput.value = "1";
-	creativityInput.max = "5";
+	var creativitySelect = document.createElement("div");
+	creativitySelect.id = "level-btn-toolbar";
+	creativitySelect.className = "btn-toolbar";
+	
+	var creativitySelectBtnGroup = document.createElement("div");
+	creativitySelectBtnGroup.className = "btn-group";
+	creativitySelectBtnGroup.role = "group";
+
+	var creativitySelectBtns = [];
+	for(var i = 0; i < 5; i++){
+		var creativitySelectButton = document.createElement("button");
+		creativitySelectButton.type = "button";
+		creativitySelectButton.id = "creativitySelectButton" + (i+1).toString();
+		creativitySelectButton.className = "btn btn-sm btn-default";
+		creativitySelectButton.textContent = (i+1).toString();
+		creativitySelectBtns.push(creativitySelectButton);
+	}
 
 	var overallGroup = document.createElement("div");
 	overallGroup.id = "overall_group";
@@ -142,25 +173,53 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 	overallLabel.htmlFor = "overall";
 	overallLabel.textContent = "Overall: ";
 
-	var overallInput = document.createElement("input");
-	overallInput.id = "overall";
-	overallInput.type = "number";
-	overallInput.min = "1";
-	overallInput.value = "1";
-	overallInput.max = "5";
+	var overallSelect = document.createElement("div");
+	overallSelect.id = "level-btn-toolbar";
+	overallSelect.className = "btn-toolbar";
+	
+	var overallSelectBtnGroup = document.createElement("div");
+	overallSelectBtnGroup.className = "btn-group";
+	overallSelectBtnGroup.role = "group";
+
+	var overallSelectBtns = [];
+	for(var i = 0; i < 5; i++){
+		var overallSelectButton = document.createElement("button");
+		overallSelectButton.type = "button";
+		overallSelectButton.id = "overallSelectButton" + (i+1).toString();
+		overallSelectButton.className = "btn btn-sm btn-default";
+		overallSelectButton.textContent = (i+1).toString();
+		overallSelectBtns.push(overallSelectButton);
+	}
+	
 
 	/* Append everything to whatever it needs to be appended to */
+	for(var i = 0; i < levelSelectBtns.length; i++){
+		levelSelectBtnGroup.appendChild(levelSelectBtns[i]);
+	}
+	levelSelect.appendChild(levelSelectBtnGroup);
 	levelGroup.appendChild(levelLabel);
 	levelGroup.appendChild(levelSelect);
 
 	cleanCodeGroup.appendChild(cleanCodeLabel);
-	cleanCodeGroup.appendChild(cleanCodeInput);
+	for(var i = 0; i < cleanCodeSelectBtns.length; i++){
+		cleanCodeSelectBtnGroup.appendChild(cleanCodeSelectBtns[i]);
+	}
+	cleanCodeSelect.appendChild(cleanCodeSelectBtnGroup);
+	cleanCodeGroup.appendChild(cleanCodeSelect);
 
 	creativityGroup.appendChild(creativityLabel);
-	creativityGroup.appendChild(creativityInput);
+	for(var i = 0; i < creativitySelectBtns.length; i++){
+		creativitySelectBtnGroup.appendChild(creativitySelectBtns[i]);
+	}
+	creativitySelect.appendChild(creativitySelectBtnGroup);
+	creativityGroup.appendChild(creativitySelect);
 
 	overallGroup.appendChild(overallLabel);
-	overallGroup.appendChild(overallInput);
+	for(var i = 0; i < overallSelectBtns.length; i++){
+		overallSelectBtnGroup.appendChild(overallSelectBtns[i]);
+	}
+	overallSelect.appendChild(overallSelectBtnGroup);
+	overallGroup.appendChild(overallSelect);
 
 	/* Append all of our judging tools to the rubrics div */
 	rubricsDiv.appendChild(levelGroup);
@@ -178,7 +237,49 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 	currentScoreDiv.appendChild(overallRubric);
 	currentScore.appendChild(currentScoreDiv);
 
+	/* Bind to click for Level Select */
+	for(var i = 0; i < 3; i++){
+		$("#lvlSelectButton" + (i+1).toString()).click(function(event){
+			var id = event.target.id;
+			if(selectedLvlBtn != "n/a"&&selectedLvlBtn != id){
+				$("#" + selectedLvlBtn).removeClass("btn-success").addClass("btn-default");
+			}
+			selectedLvlBtn = id;
+			$("#" + id).removeClass("btn-default").addClass("btn-success");
+		})
+	}
+	for(var i = 0; i < 5; i++){
+		$("#cleanCodeSelectButton" + (i+1).toString()).click(function(event){
+			var id = event.target.id;
+			if(selectedCleanCodeBtn != "n/a"&&selectedCleanCodeBtn != id){
+				$("#" + selectedCleanCodeBtn).removeClass("btn-success").addClass("btn-default");
+			}
+			selectedCleanCodeBtn = id;
+			$("#" + id).removeClass("btn-default").addClass("btn-success");
+		})
+	}
+	for(var i = 0; i < 5; i++){
+		$("#creativitySelectButton" + (i+1).toString()).click(function(event){
+			var id = event.target.id;
+			if(selectedCreativityBtn != "n/a"&&selectedCreativityBtn != id){
+				$("#" + selectedCreativityBtn).removeClass("btn-success").addClass("btn-default");
+			}
+			selectedCreativityBtn = id;
+			$("#" + id).removeClass("btn-default").addClass("btn-success");
+		})
+	}
+	for(var i = 0; i < 5; i++){
+		$("#overallSelectButton" + (i+1).toString()).click(function(event){
+			var id = event.target.id;
+			if(selectedOverallBtn != "n/a"&&selectedOverallBtn != id){
+				$("#" + selectedOverallBtn).removeClass("btn-success").addClass("btn-default");
+			}
+			selectedOverallBtn = id;
+			$("#" + id).removeClass("btn-default").addClass("btn-success");
+		})
+	}
 	console.log("Exiting loadEntry callback!");
+
 });
 
 /* Whenever we click the toggleCode button; toggle the code. */
@@ -204,11 +305,15 @@ var authenticated = false;
 $("#submitBtn").on("click", function() {
 	console.log("Button clicked!");
 	var scoreData = {};
-
-	scoreData.Level = parseInt($("#level").val(), 10);
-	scoreData.Clean_Code = parseInt($("#clean_code").val(), 10);
-	scoreData.Creativity = parseInt($("#creativity").val(), 10);
-	scoreData.Overall = parseInt($("#overall").val(), 10);
+	if(selectedLvlBtn != "n/a"&&selectedOverallBtn != "n/a"&&selectedCreativityBtn != "n/a"&&selectedCleanCodeBtn != "n/a"){
+		scoreData.Level = parseInt(selectedLvlBtn.replace("lvlSelectButton",""), 10);
+		scoreData.Clean_Code = parseInt(selectedCleanCodeBtn.replace("cleanCodeSelectButton",""), 10);
+		scoreData.Creativity = parseInt(selectedCreativityBtn.replace("creativitySelectButton",""), 10);
+		scoreData.Overall = parseInt(selectedOverallBtn.replace("overallSelectButton",""), 10);
+	}else{
+		alert("Please fill out all criteria.");
+		return;
+	}
 
     /* If the user hasn't been authenticated, try to authenticate them and judge the entry if they are a valid judge. */
     /* Notice that this gives them a way to be authenticated multiple times in case a valid judge messes up in logging in the first time. */
