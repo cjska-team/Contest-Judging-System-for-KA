@@ -193,12 +193,14 @@ window.Contest_Judging_System = (function() {
                     for (var i in kaData) {
                         if (!fbData.hasOwnProperty(i)) {
                             // Most likely a new contest; add it to Firebase!
+                            console.log("We found a new contest! Contest ID: " + i);
                             toAddToFirebase[i] = kaData[i];
                         } else {
                             // We have this contest in Firebase; so now let's see if we have all the entries
                             for (var j in kaData[i].entries) {
                                 if (!fbData[i].entries.hasOwnProperty(j)) {
                                     // New entry! Add to Firebase.
+                                    console.log("We found a new entry! Contest ID: " + i + ". Entry ID: " + j);
                                     /* TODO */
                                     if (!entriesToAdd.hasOwnProperty(i)) {
                                         entriesToAdd[i] = [j];
@@ -214,12 +216,14 @@ window.Contest_Judging_System = (function() {
                     for (var i in fbData) {
                         if (!kaData.hasOwnProperty(i)) {
                             // Contest removed. Delete from Firebase
+                            console.log("We found a contest that no longer exists. ID: " + i);
                             toRemoveFromFirebase[i] = fbData[i];
                         } else {
                             // Contest still exists. Now let's see if any entries have been removed.
                             for (var j in fbData[i].entries) {
                                 if (!kaData[i].entries.hasOwnProperty(j) {
                                     // Entry no longer exists on Khan Academy; delete from Firebase (or mark as archived).
+                                    console.log("We found an entry that doesn't exist anymore! Contest ID: " + i + ". Entry ID: " + j);
                                     /* TODO */
                                     if (!entriesToRemove.hasOwnProperty(i)) {
                                         entriesToRemove[i] = [j];
