@@ -188,40 +188,6 @@ window.Contest_Judging_System = (function() {
                 }
             }, 1000);
         },
-        validateAuthToken: function(authToken, callback) {
-            /* Validate the authToken as a valid authentication token. */
-            /* TODO: Figure out what to do with callback. */
-            
-            /* This variable is true iff we're done validating. */
-            var done = false;
-            /* This variable is true iff the authToken is valid. */
-            var valid = true;
-
-            /* Send an AJAX POST request to Google Auth. */
-            $.ajax({
-                type: "POST",
-                url: "https://www.googleapis.com/oauth2/v1/tokeninfo",
-                async: true,
-                /* Send authToken as data in request */
-                data: {
-                    "access_token": authToken
-                },
-                complete: function(responseData) {
-                    /* Set valid and done */
-                    /* NOTE: Where does .googleClientId come from? */
-                    valid = (responseData.audience == Contest_Judging_System.googleClientId);
-                    done = true;
-                }
-            });
-
-            /* This essentially does loops around and around for nothing, arbitrarily returning valid for nought iff done, but we'll figure out what to do with this eventually. */
-            /* NOTE: Perhaps call callback(valid)? */
-            /*var returnInterval = setInterval(function() {
-                if (done) {
-                    return valid;
-                }
-            }, 1000);*/
-        },
         /* Cookie functions provided by w3schools */
         getCookie: function(cookie) {
             /* Get the cookie with name cookie (return "" if non-existent) */
