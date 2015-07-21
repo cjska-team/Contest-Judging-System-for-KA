@@ -191,16 +191,16 @@ window.Contest_Judging_System = (function() {
 
                     /* Loop through all the data we recieved from Khan Academy; and see if we already have it in Firebase. */
                     for (var i in kaData) {
-                        if (fbData[i] === undefined) {
+                        if (!fbData.hasOwnProperty(i)) {
                             // Most likely a new contest; add it to Firebase!
                             toAddToFirebase[i] = kaData[i];
                         } else {
                             // We have this contest in Firebase; so now let's see if we have all the entries
                             for (var j in kaData[i].entries) {
-                                if (fbData[i].entries[j] === undefined) {
+                                if (!fbData[i].entries.hasOwnProperty(j)) {
                                     // New entry! Add to Firebase.
                                     /* TODO */
-                                    if (entriesToAdd[i] === undefined) {
+                                    if (!entriesToAdd.hasOwnProperty(i)) {
                                         entriesToAdd[i] = [j];
                                     } else {
                                         entriesToAdd[i].push(j);
@@ -212,16 +212,16 @@ window.Contest_Judging_System = (function() {
 
                     /* Loop through all the data we recieved from Firebase; and see if it still exists on Khan Academy. */
                     for (var i in fbData) {
-                        if (kaData[i] === undefined) {
+                        if (!kaData.hasOwnProperty(i)) {
                             // Contest removed. Delete from Firebase
                             toRemoveFromFirebase[i] = fbData[i];
                         } else {
                             // Contest still exists. Now let's see if any entries have been removed.
                             for (var j in fbData[i].entries) {
-                                if (kaData[i].entries[j] === undefined) {
+                                if (!kaData[i].entries.hasOwnProperty(j) {
                                     // Entry no longer exists on Khan Academy; delete from Firebase (or mark as archived).
                                     /* TODO */
-                                    if (entriesToRemove[i] === undefined) {
+                                    if (!entriesToRemove.hasOwnProperty(i)) {
                                         entriesToRemove[i] = [j];
                                     } else {
                                         entriesToRemove[i].push( kaData[i].entries[j] );
