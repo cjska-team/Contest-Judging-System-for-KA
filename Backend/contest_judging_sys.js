@@ -186,6 +186,8 @@ window.Contest_Judging_System = (function() {
                     /* The following objects are used for our "diff" checking */
                     var toAddToFirebase = { };
                     var toRemoveFromFirebase = { };
+                    var entriesToAdd = { };
+                    var entriesToRemove = { };
 
                     /* Loop through all the data we recieved from Khan Academy; and see if we already have it in Firebase. */
                     for (var i in kaData) {
@@ -198,6 +200,11 @@ window.Contest_Judging_System = (function() {
                                 if (fbData[i].entries[j] === undefined) {
                                     // New entry! Add to Firebase.
                                     /* TODO */
+                                    if (entriesToAdd[i] === undefined) {
+                                        entriesToAdd[i] = [j];
+                                    } else {
+                                        entriesToAdd[i].push(j);
+                                    }
                                 }
                             }
                         }
@@ -212,8 +219,13 @@ window.Contest_Judging_System = (function() {
                             // Contest still exists. Now let's see if any entries have been removed.
                             for (var j in fbData[i].entries) {
                                 if (kaData[i].entries[j] === undefined) {
-                                    // Entry no longer exists on Khan Academy; delete from Firebase.
+                                    // Entry no longer exists on Khan Academy; delete from Firebase (or mark as archived).
                                     /* TODO */
+                                    if (entriesToRemove[i] === undefined) {
+                                        entriesToRemove[i] = [j];
+                                    } else {
+                                        entriesToRemove[i].push( kaData[i].entries[j] );
+                                    }
                                 }
                             }
                         }
@@ -227,6 +239,16 @@ window.Contest_Judging_System = (function() {
                     for (var r in toRemoveFromFirebase) {
                         // Remove from Firebase!
                         fbRef.child(r).set(null);
+                    }
+                    for (var ea in entriesToAdd) {
+                        for (var i = 0; i < entriesToAdd[ea].length; i++) {
+                            fbRef.child(ea).child(entriesToAdd[i].id).set(entriesToAdd[i]);
+                        }
+                    }
+                    for (var er in entriesToRemove) {
+                        for (var i = 0; i < entriesToRemove[er].length; i++) {
+                            fbRef.child(er).child(entriesToRemove[i]).set(null);
+                        }
                     }
 
                     console.log("Sync Completed");
