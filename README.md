@@ -2,12 +2,12 @@
 As mentioned by Pamela Fox ( @pamelafox )
 
 ## Running
-Currently, we don't have this published anywhere. The project contributors use Python's `SimpleHTTPServer` to run this.
+Currently, we don't have this published anywhere. The project contributors use Python3's `http.server` to run this.
 
 To run this...
  * ...clone this repository with `git clone https://github.com/Team-Delta-KA/KA-Contest-Judging-System.git`
  * ...navigate to the directory that you cloned the repo into.
- * ...launch a new Python HTTP Server with `python -m SimpleHTTPServer 8000`
+ * ...launch a new Python HTTP Server with `python3 -m http.server`
  * ...navigate to `127.0.0.1:8000/Client` in your browser.
 
 ## Links
