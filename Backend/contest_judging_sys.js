@@ -221,7 +221,7 @@ window.Contest_Judging_System = (function() {
                         } else {
                             // Contest still exists. Now let's see if any entries have been removed.
                             for (var j in fbData[i].entries) {
-                                if (!kaData[i].entries.hasOwnProperty(j) {
+                                if (!kaData[i].entries.hasOwnProperty(j)) {
                                     // Entry no longer exists on Khan Academy; delete from Firebase (or mark as archived).
                                     console.log("We found an entry that doesn't exist anymore! Contest ID: " + i + ". Entry ID: " + j);
                                     /* TODO */
