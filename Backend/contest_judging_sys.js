@@ -386,60 +386,57 @@ window.Contest_Judging_System = (function() {
             /* All entries of this contest */
             var entries = fbContestRef.child("entries");
 
-            /* Check that the judge is allowed */
-            Contest_Judging_System.isJudgeAllowed(Contest_Judging_System.getCookie("uid"), function(judgeAllowed) {
-                /* Load the Firebase data of this entry of this contest and then... */
-                Contest_Judging_System.loadEntry(contest, entry, function(entryData) {
-                    /* Get all of the rubrics from Firebase */
-                    /* NOTE: What's the point of calling getRubrics() if we're not using allRubrics? */
-                    /* TODO: Figure out what to do with allRubrics */
-                    Contest_Judging_System.getRubrics(function(allRubrics) {
-                        /* Get the current rubric score */
-                        var currentRubricScore = entryData.scores.rubric;
-                        /* Get the new number of judges by adding the number of judges by 1 */
-                        var newNumberOfJudges = parseInt(entryData.scores.rubric.NumberOfJudges, 10)+1;
-                        /* Find the judges who voted (or an empty array if noone voted yet) */
-                        var judgesWhoVoted = entryData.scores.rubric.judgesWhoVoted === undefined ? [] : entryData.scores.rubric.judgesWhoVoted;
+            /* Load the Firebase data of this entry of this contest and then... */
+            Contest_Judging_System.loadEntry(contest, entry, function(entryData) {
+                /* Get all of the rubrics from Firebase */
+                /* NOTE: What's the point of calling getRubrics() if we're not using allRubrics? */
+                /* TODO: Figure out what to do with allRubrics */
+                Contest_Judging_System.getRubrics(function(allRubrics) {
+                    /* Get the current rubric score */
+                    var currentRubricScore = entryData.scores.rubric;
+                    /* Get the new number of judges by adding the number of judges by 1 */
+                    var newNumberOfJudges = parseInt(entryData.scores.rubric.NumberOfJudges, 10)+1;
+                    /* Find the judges who voted (or an empty array if noone voted yet) */
+                    var judgesWhoVoted = entryData.scores.rubric.judgesWhoVoted === undefined ? [] : entryData.scores.rubric.judgesWhoVoted;
 
-                        /* If this judge hasn't voted on this entry yet... */
-                        if (judgesWhoVoted.indexOf(Contest_Judging_System.getCookie("uid")) === -1) {
-                            /* Push the uid of this judge into judgesWhoVoted */
-                            /* NOTE: We never actually use judgesWhoVoted to set Firebase data anywhere. This way, can't judges still vote multiple times? */
-                            judgesWhoVoted.push(Contest_Judging_System.getCookie("uid"));
-                            
-                            /* Create a new object for storing scores */
-                            var newScoreObj = {
-                                "Level": {
-                                    "rough": entryData.scores.rubric.Level.rough + scoreData.Level,
-                                    "avg": Math.round((parseInt(entryData.scores.rubric.Level.rough, 10) + scoreData.Level) / newNumberOfJudges)
-                                },
-                                "Clean_Code": {
-                                    "rough": entryData.scores.rubric.Clean_Code.rough + scoreData.Clean_Code,
-                                    "avg": (parseInt(entryData.scores.rubric.Clean_Code.rough, 10) + scoreData.Clean_Code) / newNumberOfJudges
-                                },
-                                "Creativity": {
-                                    "rough": entryData.scores.rubric.Creativity.rough + scoreData.Creativity,
-                                    "avg": (parseInt(entryData.scores.rubric.Creativity.rough, 10) + scoreData.Creativity) / newNumberOfJudges
-                                },
-                                "Overall": {
-                                    "rough": entryData.scores.rubric.Overall.rough + scoreData.Overall,
-                                    "avg": (parseInt(entryData.scores.rubric.Overall.rough, 10) + scoreData.Overall) / newNumberOfJudges
-                                },
-                                "NumberOfJudges": parseInt(newNumberOfJudges, 10),
-                                "judgesWhoVoted": judgesWhoVoted
-                            };
+                    /* If this judge hasn't voted on this entry yet... */
+                    if (judgesWhoVoted.indexOf(Contest_Judging_System.getCookie("uid")) === -1) {
+                        /* Push the uid of this judge into judgesWhoVoted */
+                        /* NOTE: We never actually use judgesWhoVoted to set Firebase data anywhere. This way, can't judges still vote multiple times? */
+                        judgesWhoVoted.push(Contest_Judging_System.getCookie("uid"));
+                        
+                        /* Create a new object for storing scores */
+                        var newScoreObj = {
+                            "Level": {
+                                "rough": entryData.scores.rubric.Level.rough + scoreData.Level,
+                                "avg": Math.round((parseInt(entryData.scores.rubric.Level.rough, 10) + scoreData.Level) / newNumberOfJudges)
+                            },
+                            "Clean_Code": {
+                                "rough": entryData.scores.rubric.Clean_Code.rough + scoreData.Clean_Code,
+                                "avg": (parseInt(entryData.scores.rubric.Clean_Code.rough, 10) + scoreData.Clean_Code) / newNumberOfJudges
+                            },
+                            "Creativity": {
+                                "rough": entryData.scores.rubric.Creativity.rough + scoreData.Creativity,
+                                "avg": (parseInt(entryData.scores.rubric.Creativity.rough, 10) + scoreData.Creativity) / newNumberOfJudges
+                            },
+                            "Overall": {
+                                "rough": entryData.scores.rubric.Overall.rough + scoreData.Overall,
+                                "avg": (parseInt(entryData.scores.rubric.Overall.rough, 10) + scoreData.Overall) / newNumberOfJudges
+                            },
+                            "NumberOfJudges": parseInt(newNumberOfJudges, 10),
+                            "judgesWhoVoted": judgesWhoVoted
+                        };
 
-                            /* Set the new scores to newScoreObj */
-                            var thisEntry = new Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contest + "/entries/" + entry + "/scores/");
-                            thisEntry.child("rubric").set(newScoreObj);
-                            /* Reload the page now that we're done. */
-                            window.location.reload();
-                        }
-                        /* If this judge has already judged this entry, tell them that they've already done so. */
-                        else {
-                            alert("You've already judged this entry!");
-                        }
-                    });
+                        /* Set the new scores to newScoreObj */
+                        var thisEntry = new Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contest + "/entries/" + entry + "/scores/");
+                        thisEntry.child("rubric").set(newScoreObj);
+                        /* Reload the page now that we're done. */
+                        window.location.reload();
+                    }
+                    /* If this judge has already judged this entry, tell them that they've already done so. */
+                    else {
+                        alert("You've already judged this entry!");
+                    }
                 });
             });
         }
