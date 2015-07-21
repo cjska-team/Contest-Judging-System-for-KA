@@ -2,7 +2,8 @@
 ## This is our actual client application that will eventually run the contest judging system. For now, though, it just shows a list of the contests that the judge can use to browse the contests.
 * `index.html` runs the main application. We name it `index.html` so one only has to visit the root of the `Client` folder in order to reach the application.
 * `contest.html` is used for viewing entries to a specific contest.
-* `entry.html` is used for viewing a specific entry
+* `entry.html` is used for viewing a specific entry.
+* `permissionDenied.html` is used for showing people that they're not judges a "Sorry!" message instead of `entry.html`.
 * `stylesheets` holds all of the CSS files for the application.
 * * `stylesheets/main.css` is the main CSS file for all HTML files.
 * `scripts` holds all of the JavaScript files for the application.
