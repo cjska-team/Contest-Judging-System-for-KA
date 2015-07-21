@@ -53,12 +53,25 @@ window.KA_API = (function() {
                             /* Program Scores */
                             scores: {
                                 rubric: {
-                                    "Clean_Code": 1,
-                                    "Creativity": 1,
-                                    "Level": 1,
-                                    "Overall": 1
-                                },
-                                judge: 0
+                                    "Clean_Code": {
+                                        "rough": 1,
+                                        "avg": 1
+                                    },
+                                    "Creativity": {
+                                        "rough": 1,
+                                        "avg": 1
+                                    },
+                                    "Level": {
+                                        "rough": 1,
+                                        "avg": 1
+                                    },
+                                    "Overall": {
+                                        "rough": 1,
+                                        "avg": 1
+                                    },
+                                    "NumberOfJudges": 1,
+                                    "judgesWhoVoted": [ ]
+                                }
                             }
                         };
                     }
@@ -89,8 +102,10 @@ window.KA_API = (function() {
                         /* For now, let's only accept contests from pamela. Also, all contests must have "Contest" in their title. */
                         if (allPrograms[i].authorNickname.match("pamela") !== null && allPrograms[i].translatedTitle.match("Contest") !== null) {
                             var programID = allPrograms[i].url.split("/")[5];
-                            allContests = (function(programID, scratchpad, currContests) {
-                                var contests = currContests;
+                            /* Make an empty object in allContests to alert the setTimeout() function below that such an object has yet to be set. */
+                            allContests[programID] = {};
+                            /* Put this in a function wrapper so the parameters will be saved. */
+                            (function(programID, scratchpad, contests) {
                                 $.ajax({
                                     type: 'GET',
                                     url: KA_API.urls.scratchpadInfo(programID),
@@ -114,10 +129,11 @@ window.KA_API = (function() {
                                         });
                                     }
                                 });
-                                return contests;
                             })(programID, allPrograms[i], allContests);
+                            /* Pass in the parameters to this function as above. */
                         }
                     }
+                    /* Once we're done with the AJAX request, set apiQueryDone to true. */
                     apiQueryDone = true;
                 }
             });

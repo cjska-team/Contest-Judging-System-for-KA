@@ -7,6 +7,10 @@ var contestsDiv = document.querySelector("#contests");
 var sync = $("#sync");
 sync.on("click", function() {
     /* Sync all the data */
+
+    /* Empty contestsDiv and show loadingDiv */
+    contestsDiv.textContent = "";
+    loadingDiv.style.display = "block";
     /* Make sure the user doesn't try to sync while it's already syncing. */
     sync.prop("disabled", true);
     sync.text("Please wait...");
@@ -16,7 +20,7 @@ sync.on("click", function() {
 
 function finishRequest(contests) {
     /* When the request is finished... */
-        
+
     //Loop through contests
     for (var i in contests) {
         (function() {
@@ -104,7 +108,7 @@ function finishRequest(contests) {
     //We check if we're done with the above AJAX requests every second.
     var finishedTimeout = setTimeout(function() {
         //Make sure data has been retreived for all contests. If not, return
-        for (i in contests) if (contests.hasOwnProperty("done")) return;
+        for (i in contests) if (contests[i].hasOwnProperty("done")) return;
 
         //If we're done, get rid of the loading screen and stop checking if we're done.
         clearTimeout(finishedTimeout);

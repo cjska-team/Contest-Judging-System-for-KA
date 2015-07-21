@@ -32,9 +32,9 @@ Contest_Judging_System.loadContest(contestId, function(contest) {
 		$("#contestDescription").html("Description coming soon!");
 
 		var detailsDiv = document.getElementById("contestDescription");
-		detailsDiv.innerHTML = contest.desc;
+		detailsDiv.innerHTML = contest.desc || "No description found!";
 
-		console.log(contest.description);
+		console.log(contest.desc);
 		/* Add all entries to the page */
 		for (var i in entries) {
 			(function() {
@@ -85,10 +85,11 @@ Contest_Judging_System.loadContest(contestId, function(contest) {
 
 						/* Go through all the score information for this entry, and create a list item for it. */
 						for (var rubric in curr.scores.rubric) {
+                            /* NOTE: An error occurs when trying to process NumberOfJudges because it has no max. Perhaps the following could be useful? */
+                            //if (rubric == "NumberOfJudges") continue;
 							(function() {
 								var currRubric = rubric;
-								var val = curr.scores.rubric[rubric];
-
+								var val = Math.floor(curr.scores.rubric[rubric].avg);
 								console.log(val);
 
 								Contest_Judging_System.getRubrics(function(rubrics) {

@@ -1,3 +1,5 @@
+Contest_Judging_System.tryAuthentication();
+
 /* If it doesn't look like there's a contest ID in the URL, show an alert, and go back one page. */
 if (window.location.search.indexOf("?contest") === -1) {
 	alert("Contest ID not found!");
@@ -21,6 +23,12 @@ var entryId = window.location.href.split("&entry=")[1];
 /* The base URL for the program preview Iframe. */
 var baseURL = "https://www.khanacademy.org/computer-programming/entry/{ENTRYID}/embedded?buttons=no&editor=no&author=no&embed=yes";
 
+/* A couple elements that we'll be using later on */
+var programPreview = document.querySelector(".program-preview");
+var judgingPane = document.querySelector(".judging-pane");
+var currentScore = document.querySelector(".current-score");
+var rubricsDiv = document.querySelector(".rubrics");
+
 /* Print the contest ID that we found, to the console. */
 console.log("Contest ID: " + contestId);
 
@@ -28,7 +36,9 @@ console.log("Contest ID: " + contestId);
 console.log("Entry ID: " + entryId);
 
 /* Fetch the data for this contest entry, and then use the data to build up the current page. */
-Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {	
+Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
+	console.log("Entered loadEntry callback!");
+
 	/* Set the text of our "program-name" heading to the name of the current entry */
 	document.querySelector("#program-name").textContent = entryData.name;
 
@@ -40,8 +50,129 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 	programIframe.scrolling = "no";
 	programIframe.frameborder = 0;
 
+	/* Create a div that will hold all of the elements required to show the current score for this entry */
+	var currentScoreDiv = document.createElement("div");
+	currentScoreDiv.className = "current-score";
+
+	/* Create a paragraph element to display the level rubric */
+	var levelRubric = document.createElement("p");
+	levelRubric.textContent = "Level: " + entryData.scores.rubric.Level.avg;
+
+	/* Create a paragraph element to display the clean code rubric */
+	var cleanCodeRubric = document.createElement("p");
+	cleanCodeRubric.textContent = "Clean Code: " + Math.round(entryData.scores.rubric.Clean_Code.avg);
+
+	/* Create a paragraph element to display the creativity rubric */
+	var creativityRubric = document.createElement("p");
+	creativityRubric.textContent = "Creativity: " + Math.round(entryData.scores.rubric.Creativity.avg);
+
+	/* Create a paragraph element to display the overall rubric */
+	var overallRubric = document.createElement("p");
+	overallRubric.textContent = "Overall: " + Math.round(entryData.scores.rubric.Overall.avg); 
+
+	/* Create all the elements we'll need for the "Level" rubric */
+	var levelGroup = document.createElement("div");
+	levelGroup.id = "level_group";
+
+	var levelLabel = document.createElement("label");
+	levelLabel.htmlFor = "level";
+	levelLabel.textContent = "Level: ";
+
+	var levelSelect = document.createElement("select");
+	levelSelect.id = "level";
+
+	var beginnerOption = document.createElement("option");
+	beginnerOption.value = 1;
+	beginnerOption.textContent = "Beginner";
+
+	var intermediateOption = document.createElement("option");
+	intermediateOption.value = 2;
+	intermediateOption.textContent = "Intermediate";
+
+	var advancedOption = document.createElement("option");
+	advancedOption.value = 3;
+	advancedOption.textContent = "Advanced";
+
+	levelSelect.add(beginnerOption);
+	levelSelect.add(intermediateOption);
+	levelSelect.add(advancedOption);
+
+	levelSelect.selectedIndex = 0;
+
+	/* Create all the elements we'll need for the "Clean_Code" rubric */
+	var cleanCodeGroup = document.createElement("div");
+	cleanCodeGroup.id = "clean_code_group";
+
+	var cleanCodeLabel = document.createElement("label");
+	cleanCodeLabel.htmlFor = "clean_code";
+	cleanCodeLabel.textContent = "Clean Code: ";
+
+	var cleanCodeInput = document.createElement("input");
+	cleanCodeInput.id = "clean_code";
+	cleanCodeInput.type = "number";
+	cleanCodeInput.min = "1";
+	cleanCodeInput.value = "1";
+	cleanCodeInput.max = "5";
+
+	/* Create all the elements we'll need for the "Creativity" rubric */
+	var creativityGroup = document.createElement("div");
+	creativityGroup.id = "creativity_group";
+
+	var creativityLabel = document.createElement("label");
+	creativityLabel.htmlFor = "creativity";
+	creativityLabel.textContent = "Creativity: ";
+
+	var creativityInput = document.createElement("input");
+	creativityInput.id = "creativity";
+	creativityInput.type = "number";
+	creativityInput.min = "1";
+	creativityInput.value = "1";
+	creativityInput.max = "5";
+
+	var overallGroup = document.createElement("div");
+	overallGroup.id = "overall_group";
+
+	var overallLabel = document.createElement("label");
+	overallLabel.htmlFor = "overall";
+	overallLabel.textContent = "Overall: ";
+
+	var overallInput = document.createElement("input");
+	overallInput.id = "overall";
+	overallInput.type = "number";
+	overallInput.min = "1";
+	overallInput.value = "1";
+	overallInput.max = "5";
+
+	/* Append everything to whatever it needs to be appended to */
+	levelGroup.appendChild(levelLabel);
+	levelGroup.appendChild(levelSelect);
+
+	cleanCodeGroup.appendChild(cleanCodeLabel);
+	cleanCodeGroup.appendChild(cleanCodeInput);
+
+	creativityGroup.appendChild(creativityLabel);
+	creativityGroup.appendChild(creativityInput);
+
+	overallGroup.appendChild(overallLabel);
+	overallGroup.appendChild(overallInput);
+
+	/* Append all of our judging tools to the rubrics div */
+	rubricsDiv.appendChild(levelGroup);
+	rubricsDiv.appendChild(cleanCodeGroup);
+	rubricsDiv.appendChild(creativityGroup);
+	rubricsDiv.appendChild(overallGroup);
+
 	/* Append our program iframe to the "program-preview" div. */
-	document.querySelector(".program-preview").appendChild(programIframe);
+	programPreview.appendChild(programIframe);
+
+	/* Append all of the score information to the page. */
+	currentScoreDiv.appendChild(levelRubric);
+	currentScoreDiv.appendChild(cleanCodeRubric);
+	currentScoreDiv.appendChild(creativityRubric);
+	currentScoreDiv.appendChild(overallRubric);
+	currentScore.appendChild(currentScoreDiv);
+
+	console.log("Exiting loadEntry callback!");
 });
 
 /* Whenever we click the toggleCode button; toggle the code. */
@@ -53,4 +184,18 @@ $(".toggleCode").on("click", function() {
 	} else {
 		$("iframe").attr("src", currentSrc.replace("editor=no", "editor=yes"));
 	}
+});
+
+$("#submitBtn").on("click", function() {
+	console.log("Button clicked!");
+	var scoreData = {};
+
+	scoreData.Level = parseInt($("#level").val(), 10);
+	scoreData.Clean_Code = parseInt($("#clean_code").val(), 10);
+	scoreData.Creativity = parseInt($("#creativity").val(), 10);
+	scoreData.Overall = parseInt($("#overall").val(), 10);
+
+	Contest_Judging_System.judgeEntry(contestId, entryId, scoreData, function(data) {
+		console.log("Submitted scores!");
+	});
 });

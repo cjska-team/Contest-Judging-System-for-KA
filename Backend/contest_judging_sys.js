@@ -33,7 +33,7 @@ window.Contest_Judging_System = (function() {
             var fbRubrics = firebaseRef.child("rubrics");
 
             /* This array will hold all of the Rubrics that we've defined in our array. */
-            var rubrics = [ ];
+            var rubrics = { };
 
             /* Query all the data from Firebase, and push the JSON keys into our array. */
             fbRubrics.orderByKey().on("child_added", function(responseData) {
@@ -89,13 +89,14 @@ window.Contest_Judging_System = (function() {
             var firebaseRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
             /* Since we're only going to be dealing with contests in this function, go ahead and create a reference to the "contests" "child". */
             var contestsRef = firebaseRef.child("contests");
-
+            
             contestsRef.orderByChild("id").equalTo(contestId).on("child_added", function(contestData) {
                 callback(contestData.val());
             });
         },
         /* Gets N random entries (where N is the number of contests to get) and passes them into a callback. */
         get_N_Entries: function(n, contestId, callback) {
+            /* This bool is true iff we're done picking the n entries. */
             var done = false;
             /* This JSON object stores each of the entries we've picked out to display to the judge */
             var pickedEntries = { };
@@ -107,12 +108,14 @@ window.Contest_Judging_System = (function() {
 
                 /* Declare a variable to hold an array of keys for entries */
                 var entriesKeys = Object.keys(contestData.entries);
+                /* These are the number of entries we will turn. We will turn either n entries or all of the entriess if there are less than n. */
+                var numEntries = (entriesKeys.length < n) ? entriesKeys.length : n;
 
                 /* An array to store the keys that we've already picked */
                 var pickedKeys = [ ];
 
                 /* While we still need keys to return... */
-                while (pickedKeys.length < n) {
+                while (pickedKeys.length < numEntries) {
                     /* Pick a random index */
                     var randIndex = Math.floor( Math.random() * entriesKeys.length );
 
@@ -126,10 +129,12 @@ window.Contest_Judging_System = (function() {
                         pickedKeys.push(pickedKey);
                     }
                 }
-
+                    
+                /* Tell the below setInterval() that we're done when we're done. */
                 done = true;
             });
 
+            /* Check if we're done every second and when we are, call the callback and stop checking if we're done. */
             var finishedInterval = setInterval(function() {
                 if (done) {
                     clearInterval(finishedInterval);
@@ -177,11 +182,271 @@ window.Contest_Judging_System = (function() {
             var recievedData = setInterval(function() {
                 if (completed.firebase && completed.khanacademy) {
                     clearInterval(recievedData);
-                    fbRef.set(kaData);
+
+                    /* The following objects are used for our "diff" checking */
+                    var toAddToFirebase = { };
+                    var toRemoveFromFirebase = { };
+                    var entriesToAdd = { };
+                    var entriesToRemove = { };
+
+                    /* Loop through all the data we recieved from Khan Academy; and see if we already have it in Firebase. */
+                    for (var i in kaData) {
+                        if (!fbData.hasOwnProperty(i)) {
+                            // Most likely a new contest; add it to Firebase!
+                            console.log("We found a new contest! Contest ID: " + i);
+                            toAddToFirebase[i] = kaData[i];
+                        } else {
+                            // We have this contest in Firebase; so now let's see if we have all the entries
+                            for (var j in kaData[i].entries) {
+                                if (!fbData[i].entries.hasOwnProperty(j)) {
+                                    // New entry! Add to Firebase.
+                                    console.log("We found a new entry! Contest ID: " + i + ". Entry ID: " + j);
+                                    /* TODO */
+                                    if (!entriesToAdd.hasOwnProperty(i)) {
+                                        entriesToAdd[i] = [];
+                                        entriesToAdd[i].push( kaData[i].entries[j] );
+                                    } else {
+                                        entriesToAdd[i].push( kaData[i].entries[j] );
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    console.log(entriesToAdd);
+                    /* Loop through all the data we recieved from Firebase; and see if it still exists on Khan Academy. */
+                    for (var i in fbData) {
+                        if (!kaData.hasOwnProperty(i)) {
+                            // Contest removed. Delete from Firebase
+                            console.log("We found a contest that no longer exists. ID: " + i);
+                            toRemoveFromFirebase[i] = fbData[i];
+                        } else {
+                            // Contest still exists. Now let's see if any entries have been removed.
+                            for (var j in fbData[i].entries) {
+                                if (!kaData[i].entries.hasOwnProperty(j)) {
+                                    // Entry no longer exists on Khan Academy; delete from Firebase (or mark as archived).
+                                    console.log("We found an entry that doesn't exist anymore! Contest ID: " + i + ". Entry ID: " + j);
+                                    /* TODO */
+                                    if (!entriesToRemove.hasOwnProperty(i)) {
+                                        entriesToRemove[i] = [];
+                                        entriesToRemove[i].push(j);
+                                    } else {
+                                        entriesToRemove[i].push(j);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    /* Add what we don't have; and remove what Khan Academy *doesn't* have. */
+                    for (var a in toAddToFirebase) {
+                        // Add to Firebase!
+                        fbRef.child(a).set(toAddToFirebase[a]);
+                    }
+                    for (var r in toRemoveFromFirebase) {
+                        // Remove from Firebase!
+                        fbRef.child(r).set(null);
+                    }
+                    for (var ea in entriesToAdd) {
+                        /* Add all the new entries to Firebase */
+                        for (var i = 0; i < entriesToAdd[ea].length; i++) {
+                            console.log("Adding " + entriesToAdd[ea][i].id + " to Firebase.");
+                            fbRef.child(ea).child("entries").child(entriesToAdd[ea][i].id).set(entriesToAdd[ea][i]);
+                        }
+                    }
+                    for (var er in entriesToRemove) {
+                        /* Remove all the old entries from Firebase */
+                        for (var i = 0; i < entriesToRemove[er].length; i++) {
+                            console.log("Removing " + entriesToRemove[er][i] + " from Firebase!");
+                            fbRef.child(er).child("entries").child(entriesToRemove[er][i]).set(null);
+                        }
+                    }
+
                     console.log("Sync Completed");
                     callback(kaData);
                 }
             }, 1000);
+        },
+        /* Cookie functions provided by w3schools */
+        getCookie: function(cookie) {
+            /* Get the cookie with name cookie (return "" if non-existent) */
+            var name = cookie + "=";
+            /* Check all of the cookies and try to find the one containing name. */
+            var cookieList = document.cookie.split(';');
+            for (var i = 0; i < cookieList.length; i++) {
+                var curCookie = cookieList[i];
+                while (curCookie[0] == ' ') curCookie = curCookie.substring(1);
+                /* If we've found the right cookie, return its value. */
+                if (curCookie.indexOf(name) == 0) return curCookie.substring(name.length, curCookie.length);
+            }
+            /* Otherwise, if the cookie doesn't exist, return "" */
+            return "";
+        },
+        setCookie: function(cookie, value) {
+            /* Set a cookie with name cookie and value cookie that will expire 30 days from now. */
+            var d = new Date();
+            d.setTime(d.getTime() + (30*24*60*60*1000));
+            var expires = "expires="+d.toUTCString();
+            document.cookie = cookie + "=" + value + "; " + expires;
+        },
+        tryAuthentication: function() {
+            /* Attempts authentication */
+            
+            console.log("tryAuthentication invoked!");
+            /* Get Firebase data */
+            var firebaseRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
+            var judges = firebaseRef.child("loggedInJudges");
+            var allowed = firebaseRef.child("allowedJudges");
+
+            /* Access the Firebase ref with Google Auth validation as a popup. */
+            firebaseRef.authWithOAuthPopup("google", function(error, authData) {
+                if (error) {
+                    /* Log errors in dev console */
+                    console.log(error);
+                } else {
+                    /* Set authId and uid cookies */
+                    Contest_Judging_System.setCookie("authId", authData.google.accessToken);
+                    Contest_Judging_System.setCookie("uid", authData.uid);
+                    /* Set authData in database using uid */
+                    judges.child(authData.uid).set(authData);
+
+                    /* Use allowed to set allowedJudges */
+                    var allowedJudges = {};
+                    allowed.orderByKey().on("child_added", function(snapshot) {
+                        allowedJudges[snapshot.key()] = snapshot.val();
+                    });
+
+                    /* Once all of the allowedJudges have been added... */
+                    allowed.once("value", function(data) {
+                        /* Loop through allowedJudges and if any of them are allowed, log "Access granted!" and exit the function. */
+                        for (var i in allowedJudges) {
+                            if (allowedJudges[i].uid === Contest_Judging_System.getCookie("uid")) {
+                                console.log("Access granted!");
+                                return;
+                            }
+                        }
+                        /* If we haven't existed, then this judge is not authenticated, so we redirect to permissionDenied.html. */
+                        window.location.assign("permissionDenied.html");
+                    });
+                }
+            });
+        },
+        isJudgeAllowed: function(uid, callback) {
+            /* Check if the judge with id of uid is allowed and then call callback with the Bool that is true iff such is true. */
+
+            /* Get the Firebase data */
+            var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
+            var allowedJudges = fbRef.child("allowedJudges");
+            /* All allowed judges as JSON */
+            var allAllowedJudges = { };
+            /* True iff we've finished */
+            var done = false;
+            /* True iff uid is valid */
+            var valid = false;
+            
+            /* Add in allowedJudges using Firebase */
+            allowedJudges.orderByKey().on("child_added", function(data) {
+                allAllowedJudges[data.key()] = data.val();
+            });
+
+            /* Once all of the allAllowedJudges have been added... */
+            allowedJudges.once("value", function() {
+                /* If the uid is valid, set valid and done to true.
+                for (var i in allAllowedJudges) {
+                    if (allAllowedJudges[i].uid == uid && allAllowedJudges[i].allowed == true) {
+                        valid = true;
+                        done = true;
+                    }
+                }
+                /* At this point, valid has been set correctly, so we keep valid as it is (false or true) and simply set done to true. */
+                done = true;
+            });
+
+            /* Check if we're done every second and if we are, stop checking if we're true and pass callback into valid. */
+            var returnWait = setInterval(function() {
+                if (done) {
+                    clearInterval(returnWait);
+                    callback(valid);
+                }
+            }, 1000);
+        },
+        addAllowedJudge: function(uid) {
+            /* This adds a judge with id of uid into the allowedJudges. */
+            var firebaseRef = new Firebase("https://contest-judging-sys.firebaseio.com");
+            var allowedJudges = firebaseRef.child("allowedJudges");
+            allowedJudges.push().set({uid: uid, allowed: true});
+        },
+        judgeEntry: function(contest, entry, scoreData, authToken, callback) {
+            /* This judges an entry entry of contest with scoreData from a judge with id as set in cookies. */
+            /* TODO: Figure out what to do with authToken. */
+            /* TODO: Figure out what to do with callback. */
+
+            /* Get Firebase data */
+            var fbContestRef = new Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contest);
+            /* All entries of this contest */
+            var entries = fbContestRef.child("entries");
+
+            /* Check that the judge is allowed */
+            Contest_Judging_System.isJudgeAllowed(Contest_Judging_System.getCookie("uid"), function(judgeAllowed) {
+                /* If the judge isn't allowed, tell them and then don't do anything else. */
+                if (!judgeAllowed) {
+                    alert("You aren't in the allowed judges list!");
+                    return;
+                }
+
+                /* Load the Firebase data of this entry of this contest and then... */
+                Contest_Judging_System.loadEntry(contest, entry, function(entryData) {
+                    /* Get all of the rubrics from Firebase */
+                    /* NOTE: What's the point of calling getRubrics() if we're not using allRubrics? */
+                    /* TODO: Figure out what to do with allRubrics */
+                    Contest_Judging_System.getRubrics(function(allRubrics) {
+                        /* Get the current rubric score */
+                        var currentRubricScore = entryData.scores.rubric;
+                        /* Get the new number of judges by adding the number of judges by 1 */
+                        var newNumberOfJudges = parseInt(entryData.scores.rubric.NumberOfJudges, 10)+1;
+                        /* Find the judges who voted (or an empty array if noone voted yet) */
+                        var judgesWhoVoted = entryData.scores.rubric.judgesWhoVoted === undefined ? [] : entryData.scores.rubric.judgesWhoVoted;
+
+                        /* If this judge hasn't voted on this entry yet... */
+                        if (judgesWhoVoted.indexOf(Contest_Judging_System.getCookie("uid")) === -1) {
+                            /* Push the uid of this judge into judgesWhoVoted */
+                            /* NOTE: We never actually use judgesWhoVoted to set Firebase data anywhere. This way, can't judges still vote multiple times? */
+                            judgesWhoVoted.push(Contest_Judging_System.getCookie("uid"));
+                            
+                            /* Create a new object for storing scores */
+                            var newScoreObj = {
+                                "Level": {
+                                    "rough": entryData.scores.rubric.Level.rough + scoreData.Level,
+                                    "avg": Math.round((parseInt(entryData.scores.rubric.Level.rough, 10) + scoreData.Level) / newNumberOfJudges)
+                                },
+                                "Clean_Code": {
+                                    "rough": entryData.scores.rubric.Clean_Code.rough + scoreData.Clean_Code,
+                                    "avg": (parseInt(entryData.scores.rubric.Clean_Code.rough, 10) + scoreData.Clean_Code) / newNumberOfJudges
+                                },
+                                "Creativity": {
+                                    "rough": entryData.scores.rubric.Creativity.rough + scoreData.Creativity,
+                                    "avg": (parseInt(entryData.scores.rubric.Creativity.rough, 10) + scoreData.Creativity) / newNumberOfJudges
+                                },
+                                "Overall": {
+                                    "rough": entryData.scores.rubric.Overall.rough + scoreData.Overall,
+                                    "avg": (parseInt(entryData.scores.rubric.Overall.rough, 10) + scoreData.Overall) / newNumberOfJudges
+                                },
+                                "NumberOfJudges": parseInt(newNumberOfJudges, 10),
+                                "judgesWhoVoted": judgesWhoVoted
+                            };
+
+                            /* Set the new scores to newScoreObj */
+                            var thisEntry = new Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contest + "/entries/" + entry + "/scores/");
+                            thisEntry.child("rubric").set(newScoreObj);
+                            /* Reload the page now that we're done. */
+                            window.location.reload();
+                        }
+                        /* If this judge has already judged this entry, tell them that they've already done so. */
+                        else {
+                            alert("You've already judged this entry!");
+                        }
+                    });
+                });
+            });
         }
     };
 })();
