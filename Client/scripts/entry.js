@@ -184,8 +184,8 @@ $(".toggleCode").on("click", function() {
 	}
 });
 
-function judgeEntry() {
-    /* This function simply judges the entry */
+function judgeEntry(scoreData) {
+    /* This function simply judges the entry using scoreData. */
     Contest_Judging_System.judgeEntry(contestId, entryId, scoreData, function(data) {
 		console.log("Submitted scores!");
 	});
@@ -206,9 +206,9 @@ $("#submitBtn").on("click", function() {
     /* Notice that this gives them a way to be authenticated multiple times in case a valid judge messes up in logging in the first time. */
 	if (!authenticated) Contest_Judging_System.tryAuthentication(function(valid) {
         authenticated = valid;
-        if (valid) judgeEntry();
+        if (valid) judgeEntry(scoreData);
         else alert("You aren't in the allowed judges list!");
     });
     /* Otherwise, if they've already been authenticated, just judge the entry. */
-    else judgeEntry();
+    else judgeEntry(scoreData);
 });
