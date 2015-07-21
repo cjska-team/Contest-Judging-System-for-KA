@@ -16,7 +16,7 @@ window.Contest_Judging_System = (function() {
     /* jQuery and Firebase are both dependencies for this project. If we don't have them, exit the function immediately. */
     /* TODO: If a project dependency doesn't exist, go ahead an inject it. */
     if (!window.jQuery || !window.Firebase || !window.KA_API) {
-        console.log("Needs jQuery, Firebase, and KA_API");
+        console.log("[Contest_Judging_System Namespace] Needs jQuery, Firebase, and KA_API");
         return;
     }
 
