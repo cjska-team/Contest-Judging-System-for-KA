@@ -182,7 +182,85 @@ window.Contest_Judging_System = (function() {
             var recievedData = setInterval(function() {
                 if (completed.firebase && completed.khanacademy) {
                     clearInterval(recievedData);
-                    fbRef.set(kaData);
+
+                    /* The following objects are used for our "diff" checking */
+                    var toAddToFirebase = { };
+                    var toRemoveFromFirebase = { };
+                    var entriesToAdd = { };
+                    var entriesToRemove = { };
+
+                    /* Loop through all the data we recieved from Khan Academy; and see if we already have it in Firebase. */
+                    for (var i in kaData) {
+                        if (!fbData.hasOwnProperty(i)) {
+                            // Most likely a new contest; add it to Firebase!
+                            console.log("We found a new contest! Contest ID: " + i);
+                            toAddToFirebase[i] = kaData[i];
+                        } else {
+                            // We have this contest in Firebase; so now let's see if we have all the entries
+                            for (var j in kaData[i].entries) {
+                                if (!fbData[i].entries.hasOwnProperty(j)) {
+                                    // New entry! Add to Firebase.
+                                    console.log("We found a new entry! Contest ID: " + i + ". Entry ID: " + j);
+                                    /* TODO */
+                                    if (!entriesToAdd.hasOwnProperty(i)) {
+                                        entriesToAdd[i] = [];
+                                        entriesToAdd[i].push( kaData[i].entries[j] );
+                                    } else {
+                                        entriesToAdd[i].push( kaData[i].entries[j] );
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    console.log(entriesToAdd);
+                    /* Loop through all the data we recieved from Firebase; and see if it still exists on Khan Academy. */
+                    for (var i in fbData) {
+                        if (!kaData.hasOwnProperty(i)) {
+                            // Contest removed. Delete from Firebase
+                            console.log("We found a contest that no longer exists. ID: " + i);
+                            toRemoveFromFirebase[i] = fbData[i];
+                        } else {
+                            // Contest still exists. Now let's see if any entries have been removed.
+                            for (var j in fbData[i].entries) {
+                                if (!kaData[i].entries.hasOwnProperty(j)) {
+                                    // Entry no longer exists on Khan Academy; delete from Firebase (or mark as archived).
+                                    console.log("We found an entry that doesn't exist anymore! Contest ID: " + i + ". Entry ID: " + j);
+                                    /* TODO */
+                                    if (!entriesToRemove.hasOwnProperty(i)) {
+                                        entriesToRemove[i] = [];
+                                        entriesToRemove[i].push(j);
+                                    } else {
+                                        entriesToRemove[i].push(j);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    /* Add what we don't have; and remove what Khan Academy *doesn't* have. */
+                    for (var a in toAddToFirebase) {
+                        // Add to Firebase!
+                        fbRef.child(a).set(toAddToFirebase[a]);
+                    }
+                    for (var r in toRemoveFromFirebase) {
+                        // Remove from Firebase!
+                        fbRef.child(r).set(null);
+                    }
+                    for (var ea in entriesToAdd) {
+                        /* Add all the new entries to Firebase */
+                        for (var i = 0; i < entriesToAdd[ea].length; i++) {
+                            console.log("Adding " + entriesToAdd[ea][i].id + " to Firebase.");
+                            fbRef.child(ea).child("entries").child(entriesToAdd[ea][i].id).set(entriesToAdd[ea][i]);
+                        }
+                    }
+                    for (var er in entriesToRemove) {
+                        /* Remove all the old entries from Firebase */
+                        for (var i = 0; i < entriesToRemove[er].length; i++) {
+                            console.log("Removing " + entriesToRemove[er][i] + " from Firebase!");
+                            fbRef.child(er).child("entries").child(entriesToRemove[er][i]).set(null);
+                        }
+                    }
+
                     console.log("Sync Completed");
                     callback(kaData);
                 }
