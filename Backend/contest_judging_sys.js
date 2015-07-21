@@ -203,15 +203,16 @@ window.Contest_Judging_System = (function() {
                                     console.log("We found a new entry! Contest ID: " + i + ". Entry ID: " + j);
                                     /* TODO */
                                     if (!entriesToAdd.hasOwnProperty(i)) {
-                                        entriesToAdd[i] = [j];
+                                        entriesToAdd[i] = [];
+                                        entriesToAdd[i].push( kaData[i].entries[j] );
                                     } else {
-                                        entriesToAdd[i].push(j);
+                                        entriesToAdd[i].push( kaData[i].entries[j] );
                                     }
                                 }
                             }
                         }
                     }
-
+                    console.log(entriesToAdd);
                     /* Loop through all the data we recieved from Firebase; and see if it still exists on Khan Academy. */
                     for (var i in fbData) {
                         if (!kaData.hasOwnProperty(i)) {
@@ -226,9 +227,10 @@ window.Contest_Judging_System = (function() {
                                     console.log("We found an entry that doesn't exist anymore! Contest ID: " + i + ". Entry ID: " + j);
                                     /* TODO */
                                     if (!entriesToRemove.hasOwnProperty(i)) {
-                                        entriesToRemove[i] = [j];
+                                        entriesToRemove[i] = [];
+                                        entriesToRemove[i].push(j);
                                     } else {
-                                        entriesToRemove[i].push( kaData[i].entries[j] );
+                                        entriesToRemove[i].push(j);
                                     }
                                 }
                             }
@@ -247,13 +249,15 @@ window.Contest_Judging_System = (function() {
                     for (var ea in entriesToAdd) {
                         /* Add all the new entries to Firebase */
                         for (var i = 0; i < entriesToAdd[ea].length; i++) {
-                            fbRef.child(ea).child(entriesToAdd[i].id).set(entriesToAdd[i]);
+                            console.log("Adding " + entriesToAdd[ea][i].id + " to Firebase.");
+                            fbRef.child(ea).child("entries").child(entriesToAdd[ea][i].id).set(entriesToAdd[ea][i]);
                         }
                     }
                     for (var er in entriesToRemove) {
                         /* Remove all the old entries from Firebase */
                         for (var i = 0; i < entriesToRemove[er].length; i++) {
-                            fbRef.child(er).child(entriesToRemove[i]).set(null);
+                            console.log("Removing " + entriesToRemove[er][i] + " from Firebase!");
+                            fbRef.child(er).child("entries").child(entriesToRemove[er][i]).set(null);
                         }
                     }
 
