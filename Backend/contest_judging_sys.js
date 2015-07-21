@@ -182,7 +182,53 @@ window.Contest_Judging_System = (function() {
             var recievedData = setInterval(function() {
                 if (completed.firebase && completed.khanacademy) {
                     clearInterval(recievedData);
-                    fbRef.set(kaData);
+
+                    /* The following objects are used for our "diff" checking */
+                    var toAddToFirebase = { };
+                    var toRemoveFromFirebase = { };
+
+                    /* Loop through all the data we recieved from Khan Academy; and see if we already have it in Firebase. */
+                    for (var i in kaData) {
+                        if (fbData[i] === undefined) {
+                            // Most likely a new contest; add it to Firebase!
+                            toAddToFirebase[i] = kaData[i];
+                        } else {
+                            // We have this contest in Firebase; so now let's see if we have all the entries
+                            for (var j in kaData[i].entries) {
+                                if (fbData[i].entries[j] === undefined) {
+                                    // New entry! Add to Firebase.
+                                    /* TODO */
+                                }
+                            }
+                        }
+                    }
+
+                    /* Loop through all the data we recieved from Firebase; and see if it still exists on Khan Academy. */
+                    for (var i in fbData) {
+                        if (kaData[i] === undefined) {
+                            // Contest removed. Delete from Firebase
+                            toRemoveFromFirebase[i] = fbData[i];
+                        } else {
+                            // Contest still exists. Now let's see if any entries have been removed.
+                            for (var j in fbData[i].entries) {
+                                if (kaData[i].entries[j] === undefined) {
+                                    // Entry no longer exists on Khan Academy; delete from Firebase.
+                                    /* TODO */
+                                }
+                            }
+                        }
+                    }
+
+                    /* Add what we don't have; and remove what Khan Academy *doesn't* have. */
+                    for (var a in toAddToFirebase) {
+                        // Add to Firebase!
+                        fbRef.child(a).set(toAddToFirebase[a]);
+                    }
+                    for (var r in toRemoveFromFirebase) {
+                        // Remove from Firebase!
+                        fbRef.child(r).set(null);
+                    }
+
                     console.log("Sync Completed");
                     callback(kaData);
                 }
