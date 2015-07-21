@@ -148,17 +148,13 @@ window.Contest_Judging_System = (function() {
              * We have two arrays of data; kaData and fbData. We get the data using the KA_API and the above getStoredContests() method.
              * Once both requests have finished, we set fbData to kaData using the Firebase set() method.
              * Originally authored by Gigabyte Giant
-             * TODO: Perform added/deleted checking on contest entries.
-             * TODO: Actually do something with fbData
              */
             /* These two Booleans check whether or not both requests have been completed. */
             var completed = {
                 firebase: false,
                 khanacademy: false
             };
-            /* Currently not used. Might be re-implemented in the future. */
-            /* var addedContests = [];
-            var removedContests = []; */
+            
             /* Our two arrays of data */
             var kaData;
             var fbData;
@@ -193,14 +189,14 @@ window.Contest_Judging_System = (function() {
                     for (var i in kaData) {
                         if (!fbData.hasOwnProperty(i)) {
                             // Most likely a new contest; add it to Firebase!
-                            console.log("We found a new contest! Contest ID: " + i);
+                            console.log("[sync] We found a new contest! Contest ID: " + i);
                             toAddToFirebase[i] = kaData[i];
                         } else {
                             // We have this contest in Firebase; so now let's see if we have all the entries
                             for (var j in kaData[i].entries) {
                                 if (!fbData[i].entries.hasOwnProperty(j)) {
                                     // New entry! Add to Firebase.
-                                    console.log("We found a new entry! Contest ID: " + i + ". Entry ID: " + j);
+                                    console.log("[sync] We found a new entry! Contest ID: " + i + ". Entry ID: " + j);
                                     /* TODO */
                                     if (!entriesToAdd.hasOwnProperty(i)) {
                                         entriesToAdd[i] = [];
@@ -217,14 +213,14 @@ window.Contest_Judging_System = (function() {
                     for (var i in fbData) {
                         if (!kaData.hasOwnProperty(i)) {
                             // Contest removed. Delete from Firebase
-                            console.log("We found a contest that no longer exists. ID: " + i);
+                            console.log("[sync] We found a contest that no longer exists. ID: " + i);
                             toRemoveFromFirebase[i] = fbData[i];
                         } else {
                             // Contest still exists. Now let's see if any entries have been removed.
                             for (var j in fbData[i].entries) {
                                 if (!kaData[i].entries.hasOwnProperty(j)) {
                                     // Entry no longer exists on Khan Academy; delete from Firebase (or mark as archived).
-                                    console.log("We found an entry that doesn't exist anymore! Contest ID: " + i + ". Entry ID: " + j);
+                                    console.log("[sync] We found an entry that doesn't exist anymore! Contest ID: " + i + ". Entry ID: " + j);
                                     /* TODO */
                                     if (!entriesToRemove.hasOwnProperty(i)) {
                                         entriesToRemove[i] = [];
@@ -249,19 +245,19 @@ window.Contest_Judging_System = (function() {
                     for (var ea in entriesToAdd) {
                         /* Add all the new entries to Firebase */
                         for (var i = 0; i < entriesToAdd[ea].length; i++) {
-                            console.log("Adding " + entriesToAdd[ea][i].id + " to Firebase.");
+                            console.log("[sync] Adding " + entriesToAdd[ea][i].id + " to Firebase.");
                             fbRef.child(ea).child("entries").child(entriesToAdd[ea][i].id).set(entriesToAdd[ea][i]);
                         }
                     }
                     for (var er in entriesToRemove) {
                         /* Remove all the old entries from Firebase */
                         for (var i = 0; i < entriesToRemove[er].length; i++) {
-                            console.log("Removing " + entriesToRemove[er][i] + " from Firebase!");
+                            console.log("[sync] Removing " + entriesToRemove[er][i] + " from Firebase!");
                             fbRef.child(er).child("entries").child(entriesToRemove[er][i]).set(null);
                         }
                     }
 
-                    console.log("Sync Completed");
+                    console.log("[sync] Done");
                     callback(kaData);
                 }
             }, 1000);
@@ -291,7 +287,7 @@ window.Contest_Judging_System = (function() {
         tryAuthentication: function(callback) {
             /* Attempts authentication and passes a Bool (true iff authentication worked) to callback */
             
-            console.log("tryAuthentication invoked!");
+            console.log("[tryAuthentication] Function entered");
             /* Get Firebase data */
             var firebaseRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
             var judges = firebaseRef.child("loggedInJudges");
@@ -301,7 +297,7 @@ window.Contest_Judging_System = (function() {
             firebaseRef.authWithOAuthPopup("google", function(error, authData) {
                 if (error) {
                     /* Log errors in dev console */
-                    console.log(error);
+                    console.log("[tryAuthentication] " + error);
                 } else {
                     /* Set authId and uid cookies */
                     Contest_Judging_System.setCookie("authId", authData.google.accessToken);
@@ -320,7 +316,7 @@ window.Contest_Judging_System = (function() {
                         /* Loop through allowedJudges and if any of them are allowed, log "Access granted!", pass true to callback and exit the function. */
                         for (var i in allowedJudges) {
                             if (allowedJudges[i].uid === Contest_Judging_System.getCookie("uid")) {
-                                console.log("Access granted!");
+                                console.log("[tryAuthentication] Access granted!");
                                 callback(true);
                                 return;
                             }
@@ -402,7 +398,6 @@ window.Contest_Judging_System = (function() {
                     /* If this judge hasn't voted on this entry yet... */
                     if (judgesWhoVoted.indexOf(Contest_Judging_System.getCookie("uid")) === -1) {
                         /* Push the uid of this judge into judgesWhoVoted */
-                        /* NOTE: We never actually use judgesWhoVoted to set Firebase data anywhere. This way, can't judges still vote multiple times? */
                         judgesWhoVoted.push(Contest_Judging_System.getCookie("uid"));
                         
                         /* Create a new object for storing scores */
