@@ -241,11 +241,13 @@ window.Contest_Judging_System = (function() {
                         fbRef.child(r).set(null);
                     }
                     for (var ea in entriesToAdd) {
+                        /* Add all the new entries to Firebase */
                         for (var i = 0; i < entriesToAdd[ea].length; i++) {
                             fbRef.child(ea).child(entriesToAdd[i].id).set(entriesToAdd[i]);
                         }
                     }
                     for (var er in entriesToRemove) {
+                        /* Remove all the old entries from Firebase */
                         for (var i = 0; i < entriesToRemove[er].length; i++) {
                             fbRef.child(er).child(entriesToRemove[i]).set(null);
                         }
