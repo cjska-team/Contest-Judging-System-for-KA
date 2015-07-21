@@ -288,8 +288,8 @@ window.Contest_Judging_System = (function() {
             var expires = "expires="+d.toUTCString();
             document.cookie = cookie + "=" + value + "; " + expires;
         },
-        tryAuthentication: function() {
-            /* Attempts authentication */
+        tryAuthentication: function(callback) {
+            /* Attempts authentication and passes a Bool (true iff authentication worked) to callback */
             
             console.log("tryAuthentication invoked!");
             /* Get Firebase data */
@@ -317,15 +317,16 @@ window.Contest_Judging_System = (function() {
 
                     /* Once all of the allowedJudges have been added... */
                     allowed.once("value", function(data) {
-                        /* Loop through allowedJudges and if any of them are allowed, log "Access granted!" and exit the function. */
+                        /* Loop through allowedJudges and if any of them are allowed, log "Access granted!", pass true to callback and exit the function. */
                         for (var i in allowedJudges) {
                             if (allowedJudges[i].uid === Contest_Judging_System.getCookie("uid")) {
                                 console.log("Access granted!");
+                                callback(true);
                                 return;
                             }
                         }
-                        /* If we haven't existed, then this judge is not authenticated, so we redirect to permissionDenied.html. */
-                        window.location.assign("permissionDenied.html");
+                        /* If we haven't exited, then this judge is not authenticated, so we pass false to callback. */
+                        callback(false);
                     });
                 }
             });

@@ -1,5 +1,3 @@
-Contest_Judging_System.tryAuthentication();
-
 /* If it doesn't look like there's a contest ID in the URL, show an alert, and go back one page. */
 if (window.location.search.indexOf("?contest") === -1) {
 	alert("Contest ID not found!");
@@ -186,6 +184,15 @@ $(".toggleCode").on("click", function() {
 	}
 });
 
+function judgeEntry() {
+    /* This function simply judges the entry */
+    Contest_Judging_System.judgeEntry(contestId, entryId, scoreData, function(data) {
+		console.log("Submitted scores!");
+	});
+}
+
+/* This bool is true iff the user has been authenticated. */
+var authenticated = false;
 $("#submitBtn").on("click", function() {
 	console.log("Button clicked!");
 	var scoreData = {};
@@ -195,7 +202,13 @@ $("#submitBtn").on("click", function() {
 	scoreData.Creativity = parseInt($("#creativity").val(), 10);
 	scoreData.Overall = parseInt($("#overall").val(), 10);
 
-	Contest_Judging_System.judgeEntry(contestId, entryId, scoreData, function(data) {
-		console.log("Submitted scores!");
-	});
+    /* If the user hasn't been authenticated, try to authenticate them and judge the entry if they are a valid judge. */
+    /* Notice that this gives them a way to be authenticated multiple times in case a valid judge messes up in logging in the first time. */
+	if (!authenticated) Contest_Judging_System.tryAuthentication(function(valid) {
+        authenticated = valid;
+        if (valid) judgeEntry();
+        else alert("You aren't in the allowed judges list!");
+    });
+    /* Otherwise, if they've already been authenticated, just judge the entry. */
+    else judgeEntry();
 });
