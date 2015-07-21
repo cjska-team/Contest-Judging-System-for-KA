@@ -388,12 +388,6 @@ window.Contest_Judging_System = (function() {
 
             /* Check that the judge is allowed */
             Contest_Judging_System.isJudgeAllowed(Contest_Judging_System.getCookie("uid"), function(judgeAllowed) {
-                /* If the judge isn't allowed, tell them and then don't do anything else. */
-                if (!judgeAllowed) {
-                    alert("You aren't in the allowed judges list!");
-                    return;
-                }
-
                 /* Load the Firebase data of this entry of this contest and then... */
                 Contest_Judging_System.loadEntry(contest, entry, function(entryData) {
                     /* Get all of the rubrics from Firebase */
