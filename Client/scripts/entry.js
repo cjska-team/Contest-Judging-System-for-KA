@@ -296,7 +296,6 @@ function judgeEntry(scoreData) {
 /* This bool is true if the user has been authenticated. */
 var authenticated = false;
 $("#submitBtn").on("click", function() {
-	console.log("Button clicked!");
 	var scoreData = { };
 	if (selectedLvlBtn != "n/a" && selectedOverallBtn != "n/a" && selectedCreativityBtn != "n/a" && selectedCleanCodeBtn != "n/a") {
 		scoreData.Level = parseInt(selectedLvlBtn.replace("lvlSelectButton", ""), 10);
