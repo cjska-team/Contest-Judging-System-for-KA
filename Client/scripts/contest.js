@@ -99,27 +99,28 @@ Contest_Judging_System.loadContest(contestId, function(contest) {
 								var currRubric = rubric;
 								var val = Math.floor(curr.scores.rubric[rubric].avg);
 								console.log(val);
+								if (currRubric !== "NumberOfJudges") {
+									Contest_Judging_System.getRubrics(function(rubrics) {
+										var max = rubrics[currRubric].max;
+										/* Credit to @NobleMushtak for the following idea. */
+										var selectedRubric = currRubric.replace(/_/gi, " ");
 
-								Contest_Judging_System.getRubrics(function(rubrics) {
-									var max = rubrics[currRubric].max;
-									/* Credit to @NobleMushtak for the following idea. */
-									var selectedRubric = currRubric.replace(/_/gi, " ");
+										if (rubrics[currRubric].hasOwnProperty("keys")) {
+											console.log(rubrics[currRubric].keys);
+											val = rubrics[currRubric].keys[val];
+											console.log("Value switched to a key!");
 
-									if (rubrics[currRubric].hasOwnProperty("keys")) {
-										console.log(rubrics[currRubric].keys);
-										val = rubrics[currRubric].keys[val];
-										console.log("Value switched to a key!");
+											var listItem = document.createElement("li");
+											listItem.textContent = selectedRubric + ": " + val;
 
-										var listItem = document.createElement("li");
-										listItem.textContent = selectedRubric + ": " + val;
-
-										scoreList.appendChild(listItem);
-									} else {
-										var listItem = document.createElement("li");
-										listItem.textContent = selectedRubric + ": " + val + " out of " + max;
-										scoreList.appendChild(listItem);
-									}
-								});
+											scoreList.appendChild(listItem);
+										} else {
+											var listItem = document.createElement("li");
+											listItem.textContent = selectedRubric + ": " + val + " out of " + max;
+											scoreList.appendChild(listItem);
+										}
+									});
+								}
 							})();
 						}
 
