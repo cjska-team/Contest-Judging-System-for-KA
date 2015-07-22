@@ -7,7 +7,7 @@ Currently, we don't have this published anywhere. The project contributors use P
 To run this...
  * ...clone this repository with `git clone https://github.com/Team-Delta-KA/KA-Contest-Judging-System.git`
  * ...navigate to the directory that you cloned the repo into.
- * ...launch a new Python HTTP Server with `python3 -m http.server`
+ * ...launch a new Python HTTP Server with `python -m http.server` if you use Python 3, otherwise `python -m SimpleHTTPServer`
  * ...navigate to `127.0.0.1:8000/Client` in your browser.
 
 ## Links
