@@ -228,7 +228,6 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 		currentScoreDiv.appendChild(cleanCodeRubric);
 		currentScoreDiv.appendChild(creativityRubric);
 		currentScoreDiv.appendChild(overallRubric);
-		currentScore.appendChild(currentScoreDiv);
 
 		/* Bind to click for Level Select */
 		for (var i = 0; i < 3; i++) {
