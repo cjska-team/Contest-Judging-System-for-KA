@@ -232,7 +232,7 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 
 	/* Bind to click for Level Select */
 	for (var i = 0; i < 3; i++) {
-		$("#lvlSelectButton" + (i+1).toString()).click(function(event) {
+		$("#lvlSelectButton" + (i + 1).toString()).click(function(event) {
 			var id = event.target.id;
 			if (selectedLvlBtn != "n/a" && selectedLvlBtn != id) {
 				$("#" + selectedLvlBtn).removeClass("btn-success").addClass("btn-default");
@@ -242,7 +242,7 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 		});
 	}
 	for (var i = 0; i < 5; i++) {
-		$("#cleanCodeSelectButton" + (i+1).toString()).click(function(event) {
+		$("#cleanCodeSelectButton" + (i + 1).toString()).click(function(event) {
 			var id = event.target.id;
 			if (selectedCleanCodeBtn != "n/a" && selectedCleanCodeBtn != id) {
 				$("#" + selectedCleanCodeBtn).removeClass("btn-success").addClass("btn-default");
@@ -252,7 +252,7 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 		});
 	}
 	for (var i = 0; i < 5; i++) {
-		$("#creativitySelectButton" + (i+1).toString()).click(function(event){
+		$("#creativitySelectButton" + (i + 1).toString()).click(function(event){
 			var id = event.target.id;
 			if (selectedCreativityBtn != "n/a" && selectedCreativityBtn != id) {
 				$("#" + selectedCreativityBtn).removeClass("btn-success").addClass("btn-default");
@@ -262,7 +262,7 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 		});
 	}
 	for (var i = 0; i < 5; i++) {
-		$("#overallSelectButton" + (i+1).toString()).click(function(event){
+		$("#overallSelectButton" + (i + 1).toString()).click(function(event){
 			var id = event.target.id;
 			if (selectedOverallBtn != "n/a" && selectedOverallBtn != id){
 				$("#" + selectedOverallBtn).removeClass("btn-success").addClass("btn-default");
