@@ -8,14 +8,22 @@ if (window.location.search.indexOf("?contest") === -1) {
 	window.history.back();
 }
 
+if (window.location.search.indexOf("&entries") === -1) {
+	alert("Please specify the number of entries you'd like to view!");
+
+	window.history.back();
+}
+
 /* Locate the contest ID in the URL, and store it for later use. */
-var contestId = window.location.href.split("?contest=")[1];
+var contestId = window.location.href.split("?contest=")[1].split("&entries")[0];
+var numberOfEntries = window.location.href.split("&entries=")[1] === "all" ? null : parseInt(window.location.href.split("&entries=")[1], 10);
 
 /* Go ahead and find the div that we'll store all the entries in. */
 var entriesList = document.querySelector(".media-list");
 
 console.log("Contest found!");
 console.log("Contest ID: " + contestId);
+console.log("We're going to load " + numberOfEntries + " entries!");
 
 /* Hide elements that we've marked with the class "hideWhileLoad". */
 $(".hideWhileLoad").css("display", "none");
@@ -24,7 +32,7 @@ $(".hideWhileLoad").css("display", "none");
 Contest_Judging_System.loadContest(contestId, function(contest) {
 
 	/* Randomly pick n entries, and then display them on the page. */
-	Contest_Judging_System.get_N_Entries(10, contest.id, function(entries) {
+	Contest_Judging_System.get_N_Entries(numberOfEntries === null ? 400000 : numberOfEntries, contest.id, function(entries) {
 
 		/* Setup the page */
 		$("title").text(contest.name);

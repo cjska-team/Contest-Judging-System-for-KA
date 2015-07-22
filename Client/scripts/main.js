@@ -59,10 +59,15 @@ function finishRequest(contests) {
                     mediaObject.src = "https://www.khanacademy.org" + curr.img;
 
                     var viewEntriesBtn = document.createElement("a");
-                    viewEntriesBtn.className = "btn btn-sm btn-primary center-bloc viewEntries";
-                    viewEntriesBtn.textContent = "View Entries";
-                    viewEntriesBtn.href = "contest.html?contest=" + curr.id;
+                    viewEntriesBtn.className = "btn btn-sm btn-primary center-block viewEntries";
+                    viewEntriesBtn.textContent = "View 30 Random Entries";
+                    viewEntriesBtn.href = "contest.html?contest=" + curr.id + "&entries=30";
                     
+                    var viewAllEntriesBtn = document.createElement("a");
+                    viewAllEntriesBtn.className = "btn btn-sm btn-primary center-block";
+                    viewAllEntriesBtn.textContent = "View all Entries";
+                    viewAllEntriesBtn.href = "contest.html?contest=" + curr.id + "&entries=all";
+
                     //Create the div containing the body of contest info
                     var mediaBody = document.createElement("div");
                     mediaBody.className = "media-body";
@@ -81,6 +86,7 @@ function finishRequest(contests) {
                     mediaLeftDiv.appendChild(imgLink);
                     /* Put button into mediaLeftDiv */
                     mediaLeftDiv.appendChild(viewEntriesBtn);
+                    mediaLeftDiv.appendChild(viewAllEntriesBtn);
 
                     //Put heading inside body
                     mediaBody.appendChild(mediaHeading);
