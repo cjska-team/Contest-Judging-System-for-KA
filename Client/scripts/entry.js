@@ -69,15 +69,15 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 
 		/* Create a paragraph element to display the clean code rubric */
 		var cleanCodeRubric = document.createElement("p");
-		cleanCodeRubric.textContent = "Clean Code: " + Math.round(entryData.scores.rubric.Clean_Code.avg);
+		cleanCodeRubric.textContent = "Clean Code: " + Math.round(entryData.scores.rubric.Clean_Code.avg) + " out of " + rubrics["Clean_Code"].max;
 
 		/* Create a paragraph element to display the creativity rubric */
 		var creativityRubric = document.createElement("p");
-		creativityRubric.textContent = "Creativity: " + Math.round(entryData.scores.rubric.Creativity.avg);
+		creativityRubric.textContent = "Creativity: " + Math.round(entryData.scores.rubric.Creativity.avg) + " out of " + rubrics["Creativity"].max;
 
 		/* Create a paragraph element to display the overall rubric */
 		var overallRubric = document.createElement("p");
-		overallRubric.textContent = "Overall: " + Math.round(entryData.scores.rubric.Overall.avg); 
+		overallRubric.textContent = "Overall: " + Math.round(entryData.scores.rubric.Overall.avg) + " out of " + rubrics["Overall"].max; 
 
 		/* Create all the elements we'll need for the "Level" rubric */
 		var levelGroup = document.createElement("div");
