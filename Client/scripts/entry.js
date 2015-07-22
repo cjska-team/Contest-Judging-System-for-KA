@@ -298,12 +298,12 @@ var authenticated = false;
 $("#submitBtn").on("click", function() {
 	console.log("Button clicked!");
 	var scoreData = { };
-	if(selectedLvlBtn != "n/a" && selectedOverallBtn != "n/a" && selectedCreativityBtn != "n/a" && selectedCleanCodeBtn != "n/a"){
+	if (selectedLvlBtn != "n/a" && selectedOverallBtn != "n/a" && selectedCreativityBtn != "n/a" && selectedCleanCodeBtn != "n/a") {
 		scoreData.Level = parseInt(selectedLvlBtn.replace("lvlSelectButton", ""), 10);
 		scoreData.Clean_Code = parseInt(selectedCleanCodeBtn.replace("cleanCodeSelectButton", ""), 10);
 		scoreData.Creativity = parseInt(selectedCreativityBtn.replace("creativitySelectButton", ""), 10);
 		scoreData.Overall = parseInt(selectedOverallBtn.replace("overallSelectButton", ""), 10);
-	}else{
+	} else {
 		alert("Please fill out all criteria.");
 		return;
 	}
