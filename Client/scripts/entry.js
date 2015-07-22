@@ -86,13 +86,6 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 	var levelLabel = document.createElement("label");
 	levelLabel.htmlFor = "level";
 	levelLabel.textContent = "Level: ";
-	/*
-	<div class="btn-toolbar" role="toolbar" aria-label="...">
-	  <div class="btn-group" role="group" aria-label="...">...</div>
-	  <div class="btn-group" role="group" aria-label="...">...</div>
-	  <div class="btn-group" role="group" aria-label="...">...</div>
-	</div>
-	*/
 
 	var levelSelect = document.createElement("div");
 	levelSelect.id = "level-btn-toolbar";
@@ -102,12 +95,12 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 	levelSelectBtnGroup.className = "btn-group";
 	levelSelectBtnGroup.role = "group";
 
-	var levelSelectBtns = [];
+	var levelSelectBtns = [ ];
 	var levels = ["Beginner", "Intermediate", "Advanced"];
-	for(var i = 0; i < 3; i++){
+	for (var i = 0; i < 3; i++){
 		var levelSelectButton = document.createElement("button");
 		levelSelectButton.type = "button";
-		levelSelectButton.id = "lvlSelectButton" + (i+1).toString();
+		levelSelectButton.id = ("lvlSelectButton" + (i + 1)).toString();
 		levelSelectButton.className = "btn btn-sm btn-default";
 		levelSelectButton.textContent = levels[i];
 		levelSelectBtns.push(levelSelectButton);
@@ -130,13 +123,13 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 	cleanCodeSelectBtnGroup.className = "btn-group";
 	cleanCodeSelectBtnGroup.role = "group";
 
-	var cleanCodeSelectBtns = [];
-	for(var i = 0; i < 5; i++){
+	var cleanCodeSelectBtns = [ ];
+	for (var i = 0; i < 5; i++) {
 		var cleanCodeSelectButton = document.createElement("button");
 		cleanCodeSelectButton.type = "button";
-		cleanCodeSelectButton.id = "cleanCodeSelectButton" + (i+1).toString();
+		cleanCodeSelectButton.id = ("cleanCodeSelectButton" + (i + 1)).toString();
 		cleanCodeSelectButton.className = "btn btn-sm btn-default";
-		cleanCodeSelectButton.textContent = (i+1).toString();
+		cleanCodeSelectButton.textContent = (i + 1).toString();
 		cleanCodeSelectBtns.push(cleanCodeSelectButton);
 	}
 
@@ -156,13 +149,13 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 	creativitySelectBtnGroup.className = "btn-group";
 	creativitySelectBtnGroup.role = "group";
 
-	var creativitySelectBtns = [];
-	for(var i = 0; i < 5; i++){
+	var creativitySelectBtns = [ ];
+	for (var i = 0; i < 5; i++) {
 		var creativitySelectButton = document.createElement("button");
 		creativitySelectButton.type = "button";
-		creativitySelectButton.id = "creativitySelectButton" + (i+1).toString();
+		creativitySelectButton.id = ("creativitySelectButton" + (i + 1)).toString();
 		creativitySelectButton.className = "btn btn-sm btn-default";
-		creativitySelectButton.textContent = (i+1).toString();
+		creativitySelectButton.textContent = (i + 1).toString();
 		creativitySelectBtns.push(creativitySelectButton);
 	}
 
@@ -181,19 +174,19 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 	overallSelectBtnGroup.className = "btn-group";
 	overallSelectBtnGroup.role = "group";
 
-	var overallSelectBtns = [];
-	for(var i = 0; i < 5; i++){
+	var overallSelectBtns = [ ];
+	for (var i = 0; i < 5; i++) {
 		var overallSelectButton = document.createElement("button");
 		overallSelectButton.type = "button";
-		overallSelectButton.id = "overallSelectButton" + (i+1).toString();
+		overallSelectButton.id = ("overallSelectButton" + (i + 1)).toString();
 		overallSelectButton.className = "btn btn-sm btn-default";
-		overallSelectButton.textContent = (i+1).toString();
+		overallSelectButton.textContent = (i + 1).toString();
 		overallSelectBtns.push(overallSelectButton);
 	}
 	
 
 	/* Append everything to whatever it needs to be appended to */
-	for(var i = 0; i < levelSelectBtns.length; i++){
+	for (var i = 0; i < levelSelectBtns.length; i++){
 		levelSelectBtnGroup.appendChild(levelSelectBtns[i]);
 	}
 	levelSelect.appendChild(levelSelectBtnGroup);
@@ -201,21 +194,21 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 	levelGroup.appendChild(levelSelect);
 
 	cleanCodeGroup.appendChild(cleanCodeLabel);
-	for(var i = 0; i < cleanCodeSelectBtns.length; i++){
+	for (var i = 0; i < cleanCodeSelectBtns.length; i++){
 		cleanCodeSelectBtnGroup.appendChild(cleanCodeSelectBtns[i]);
 	}
 	cleanCodeSelect.appendChild(cleanCodeSelectBtnGroup);
 	cleanCodeGroup.appendChild(cleanCodeSelect);
 
 	creativityGroup.appendChild(creativityLabel);
-	for(var i = 0; i < creativitySelectBtns.length; i++){
+	for (var i = 0; i < creativitySelectBtns.length; i++){
 		creativitySelectBtnGroup.appendChild(creativitySelectBtns[i]);
 	}
 	creativitySelect.appendChild(creativitySelectBtnGroup);
 	creativityGroup.appendChild(creativitySelect);
 
 	overallGroup.appendChild(overallLabel);
-	for(var i = 0; i < overallSelectBtns.length; i++){
+	for (var i = 0; i < overallSelectBtns.length; i++){
 		overallSelectBtnGroup.appendChild(overallSelectBtns[i]);
 	}
 	overallSelect.appendChild(overallSelectBtnGroup);
@@ -238,45 +231,45 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 	currentScore.appendChild(currentScoreDiv);
 
 	/* Bind to click for Level Select */
-	for(var i = 0; i < 3; i++){
-		$("#lvlSelectButton" + (i+1).toString()).click(function(event){
+	for (var i = 0; i < 3; i++) {
+		$("#lvlSelectButton" + (i+1).toString()).click(function(event) {
 			var id = event.target.id;
-			if(selectedLvlBtn != "n/a"&&selectedLvlBtn != id){
+			if (selectedLvlBtn != "n/a" && selectedLvlBtn != id) {
 				$("#" + selectedLvlBtn).removeClass("btn-success").addClass("btn-default");
 			}
 			selectedLvlBtn = id;
 			$("#" + id).removeClass("btn-default").addClass("btn-success");
-		})
+		});
 	}
-	for(var i = 0; i < 5; i++){
-		$("#cleanCodeSelectButton" + (i+1).toString()).click(function(event){
+	for (var i = 0; i < 5; i++) {
+		$("#cleanCodeSelectButton" + (i+1).toString()).click(function(event) {
 			var id = event.target.id;
-			if(selectedCleanCodeBtn != "n/a"&&selectedCleanCodeBtn != id){
+			if (selectedCleanCodeBtn != "n/a" && selectedCleanCodeBtn != id) {
 				$("#" + selectedCleanCodeBtn).removeClass("btn-success").addClass("btn-default");
 			}
 			selectedCleanCodeBtn = id;
 			$("#" + id).removeClass("btn-default").addClass("btn-success");
-		})
+		});
 	}
-	for(var i = 0; i < 5; i++){
+	for (var i = 0; i < 5; i++) {
 		$("#creativitySelectButton" + (i+1).toString()).click(function(event){
 			var id = event.target.id;
-			if(selectedCreativityBtn != "n/a"&&selectedCreativityBtn != id){
+			if (selectedCreativityBtn != "n/a" && selectedCreativityBtn != id) {
 				$("#" + selectedCreativityBtn).removeClass("btn-success").addClass("btn-default");
 			}
 			selectedCreativityBtn = id;
 			$("#" + id).removeClass("btn-default").addClass("btn-success");
-		})
+		});
 	}
-	for(var i = 0; i < 5; i++){
+	for (var i = 0; i < 5; i++) {
 		$("#overallSelectButton" + (i+1).toString()).click(function(event){
 			var id = event.target.id;
-			if(selectedOverallBtn != "n/a"&&selectedOverallBtn != id){
+			if (selectedOverallBtn != "n/a" && selectedOverallBtn != id){
 				$("#" + selectedOverallBtn).removeClass("btn-success").addClass("btn-default");
 			}
 			selectedOverallBtn = id;
 			$("#" + id).removeClass("btn-default").addClass("btn-success");
-		})
+		});
 	}
 	console.log("Exiting loadEntry callback!");
 
