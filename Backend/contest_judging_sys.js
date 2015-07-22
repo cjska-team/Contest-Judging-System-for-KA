@@ -387,7 +387,7 @@ window.Contest_Judging_System = (function() {
                 /* Get all of the rubrics from Firebase */
                 /* NOTE: What's the point of calling getRubrics() if we're not using allRubrics? */
                 /* TODO: Figure out what to do with allRubrics */
-                Contest_Judging_System.getRubrics(function(allRubrics) {
+                //Contest_Judging_System.getRubrics(function(allRubrics) {
                     /* Get the current rubric score */
                     var currentRubricScore = entryData.scores.rubric;
                     /* Get the new number of judges by adding the number of judges by 1 */
@@ -432,7 +432,7 @@ window.Contest_Judging_System = (function() {
                     else {
                         alert("You've already judged this entry!");
                     }
-                });
+                //});
             });
         }
     };
