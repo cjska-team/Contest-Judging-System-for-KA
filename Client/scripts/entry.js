@@ -241,6 +241,7 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 			$("#" + id).removeClass("btn-default").addClass("btn-success");
 		});
 	}
+	/* Bind to click for Clean_Code Select */
 	for (var i = 0; i < 5; i++) {
 		$("#cleanCodeSelectButton" + (i + 1).toString()).click(function(event) {
 			var id = event.target.id;
@@ -251,6 +252,7 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 			$("#" + id).removeClass("btn-default").addClass("btn-success");
 		});
 	}
+	/* Bind to click for Creativity Select */
 	for (var i = 0; i < 5; i++) {
 		$("#creativitySelectButton" + (i + 1).toString()).click(function(event){
 			var id = event.target.id;
@@ -261,6 +263,7 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 			$("#" + id).removeClass("btn-default").addClass("btn-success");
 		});
 	}
+	/* Bind to click for Overall Select */
 	for (var i = 0; i < 5; i++) {
 		$("#overallSelectButton" + (i + 1).toString()).click(function(event){
 			var id = event.target.id;
