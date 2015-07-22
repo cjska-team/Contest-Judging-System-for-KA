@@ -8,7 +8,7 @@
     border: 0;
 }
 /*Give form parts and <p>s a bigger font size*/
-button.toggleCode, label, select, input, p {
+button, label, select, input, p {
     font-size: 1.1em;
 }
 /*Give form parts some space around them*/
