@@ -52,20 +52,6 @@ window.Contest_Judging_System = (function() {
             /* This is an object to hold all of the data from Firebase. */
             var fromFirebase = {};
             
-            /* Template fromFirebase for testing: */
-            /*fromFirebase[4955067011694592] = {
-                id: 4955067011694592,
-                name: "Contest: Comic Strip",
-                img: "/computer-programming/contest-comic-strip/4955067011694592/5724160613416960.png"
-            };
-            fromFirebase[5829785948389376] = {
-                id: 5829785948389376,
-                name: "Contest: Emoji Maker",
-                img: "/computer-programming/contest-emoji-maker/5829785948389376/5668600916475904.png"
-            };
-            callback(fromFirebase);
-            return;*/
-            
             /* Insert all of the entries in our database in order by key */
             fbRef.orderByKey().on("child_added", function(item) {
                 fromFirebase[item.key()] = item.val();
