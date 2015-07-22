@@ -75,7 +75,7 @@ window.Contest_Judging_System = (function() {
             var firebaseRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
             /* Since we're only going to be dealing with contests in this function, go ahead and create a reference to the "contests" "child". */
             var contestsRef = firebaseRef.child("contests");
-            
+            /* Query all data, and order the data by the ID child, then pass the data we recieved, into our callback. */
             contestsRef.orderByChild("id").equalTo(contestId).on("child_added", function(contestData) {
                 callback(contestData.val());
             });
