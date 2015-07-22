@@ -385,8 +385,7 @@ window.Contest_Judging_System = (function() {
             /* Load the Firebase data of this entry of this contest and then... */
             Contest_Judging_System.loadEntry(contest, entry, function(entryData) {
                 /* Get all of the rubrics from Firebase */
-                /* NOTE: What's the point of calling getRubrics() if we're not using allRubrics? */
-                /* TODO: Figure out what to do with allRubrics */
+                /* TODO: Figure out if we need .getRubrics() here. */
                 //Contest_Judging_System.getRubrics(function(allRubrics) {
                     /* Get the current rubric score */
                     var currentRubricScore = entryData.scores.rubric;
