@@ -293,7 +293,7 @@ function judgeEntry(scoreData) {
 	});
 }
 
-/* This bool is true iff the user has been authenticated. */
+/* This bool is true if the user has been authenticated. */
 var authenticated = false;
 $("#submitBtn").on("click", function() {
 	console.log("Button clicked!");
