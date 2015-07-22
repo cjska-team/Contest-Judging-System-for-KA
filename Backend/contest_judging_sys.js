@@ -45,6 +45,19 @@ window.Contest_Judging_System = (function() {
                 callback(rubrics);
             });
         },
+        rubricValToKey: function(rubricName, rubricVal, callback) {
+            Contest_Judging_System.getRubrics(function(rubrics) {
+                var currRubric = rubrics[rubricName];
+
+                if (currRubric) {
+                    if (currRubric.hasOwnProperty("keys")) {
+                        callback(currRubric.keys[rubricVal]);
+                    }
+                }
+
+                callback(undefined);
+            });
+        },
         /* This function gets all the contests that we have stored on Firebase and passes them into a callback function. */
         getStoredContests: function(callback) {
             /* This is the object for the contests within our Firebase database. */

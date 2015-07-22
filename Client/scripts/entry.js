@@ -35,7 +35,6 @@ currentScore.addEventListener("click", function() {
 	} else {
 		currentScore.className += " hidden-data";
 	}
-	console.log(currentScore.className);
 });
 
 /* Print the contest ID that we found, to the console. */
@@ -59,221 +58,224 @@ Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
 	programIframe.scrolling = "no";
 	programIframe.frameborder = 0;
 
-	/* Create a div that will hold all of the elements required to show the current score for this entry */
-	var currentScoreDiv = document.createElement("div");
-	currentScoreDiv.className = "current-score";
+	/* Wrap all this code in a callback to our getRubrics function, that way we can get more data from the rubrics */
+	Contest_Judging_System.getRubrics(function(rubrics) {
+		/* Create a div that will hold all of the elements required to show the current score for this entry */
+		var currentScoreDiv = document.querySelector(".current-score");
 
-	/* Create a paragraph element to display the level rubric */
-	var levelRubric = document.createElement("p");
-	levelRubric.textContent = "Level: " + entryData.scores.rubric.Level.avg;
+		/* Create a paragraph element to display the level rubric */
+		var levelRubric = document.createElement("p");
+		levelRubric.textContent = "Level: " + rubrics["Level"].keys[entryData.scores.rubric.Level.avg];
 
-	/* Create a paragraph element to display the clean code rubric */
-	var cleanCodeRubric = document.createElement("p");
-	cleanCodeRubric.textContent = "Clean Code: " + Math.round(entryData.scores.rubric.Clean_Code.avg);
+		/* Create a paragraph element to display the clean code rubric */
+		var cleanCodeRubric = document.createElement("p");
+		cleanCodeRubric.textContent = "Clean Code: " + Math.round(entryData.scores.rubric.Clean_Code.avg);
 
-	/* Create a paragraph element to display the creativity rubric */
-	var creativityRubric = document.createElement("p");
-	creativityRubric.textContent = "Creativity: " + Math.round(entryData.scores.rubric.Creativity.avg);
+		/* Create a paragraph element to display the creativity rubric */
+		var creativityRubric = document.createElement("p");
+		creativityRubric.textContent = "Creativity: " + Math.round(entryData.scores.rubric.Creativity.avg);
 
-	/* Create a paragraph element to display the overall rubric */
-	var overallRubric = document.createElement("p");
-	overallRubric.textContent = "Overall: " + Math.round(entryData.scores.rubric.Overall.avg); 
+		/* Create a paragraph element to display the overall rubric */
+		var overallRubric = document.createElement("p");
+		overallRubric.textContent = "Overall: " + Math.round(entryData.scores.rubric.Overall.avg); 
 
-	/* Create all the elements we'll need for the "Level" rubric */
-	var levelGroup = document.createElement("div");
-	levelGroup.id = "level_group";
+		/* Create all the elements we'll need for the "Level" rubric */
+		var levelGroup = document.createElement("div");
+		levelGroup.id = "level_group";
 
-	var levelLabel = document.createElement("label");
-	levelLabel.htmlFor = "level";
-	levelLabel.textContent = "Level: ";
+		var levelLabel = document.createElement("label");
+		levelLabel.htmlFor = "level";
+		levelLabel.textContent = "Level: ";
 
-	var levelSelect = document.createElement("div");
-	levelSelect.id = "level-btn-toolbar";
-	levelSelect.className = "btn-toolbar";
-	
-	var levelSelectBtnGroup = document.createElement("div");
-	levelSelectBtnGroup.className = "btn-group";
-	levelSelectBtnGroup.role = "group";
+		var levelSelect = document.createElement("div");
+		levelSelect.id = "level-btn-toolbar";
+		levelSelect.className = "btn-toolbar";
+		
+		var levelSelectBtnGroup = document.createElement("div");
+		levelSelectBtnGroup.className = "btn-group";
+		levelSelectBtnGroup.role = "group";
 
-	var levelSelectBtns = [ ];
-	var levels = ["Beginner", "Intermediate", "Advanced"];
-	for (var i = 0; i < 3; i++){
-		var levelSelectButton = document.createElement("button");
-		levelSelectButton.type = "button";
-		levelSelectButton.id = ("lvlSelectButton" + (i + 1)).toString();
-		levelSelectButton.className = "btn btn-sm btn-default";
-		levelSelectButton.textContent = levels[i];
-		levelSelectBtns.push(levelSelectButton);
-	}
+		var levelSelectBtns = [ ];
+		var levels = ["Beginner", "Intermediate", "Advanced"];
+		for (var i = 0; i < 3; i++){
+			var levelSelectButton = document.createElement("button");
+			levelSelectButton.type = "button";
+			levelSelectButton.id = ("lvlSelectButton" + (i + 1)).toString();
+			levelSelectButton.className = "btn btn-sm btn-default";
+			levelSelectButton.textContent = levels[i];
+			levelSelectBtns.push(levelSelectButton);
+		}
 
 
-	/* Create all the elements we'll need for the "Clean_Code" rubric */
-	var cleanCodeGroup = document.createElement("div");
-	cleanCodeGroup.id = "clean_code_group";
+		/* Create all the elements we'll need for the "Clean_Code" rubric */
+		var cleanCodeGroup = document.createElement("div");
+		cleanCodeGroup.id = "clean_code_group";
 
-	var cleanCodeLabel = document.createElement("label");
-	cleanCodeLabel.htmlFor = "clean_code";
-	cleanCodeLabel.textContent = "Clean Code: ";
+		var cleanCodeLabel = document.createElement("label");
+		cleanCodeLabel.htmlFor = "clean_code";
+		cleanCodeLabel.textContent = "Clean Code: ";
 
-	var cleanCodeSelect = document.createElement("div");
-	cleanCodeSelect.id = "level-btn-toolbar";
-	cleanCodeSelect.className = "btn-toolbar";
-	
-	var cleanCodeSelectBtnGroup = document.createElement("div");
-	cleanCodeSelectBtnGroup.className = "btn-group";
-	cleanCodeSelectBtnGroup.role = "group";
+		var cleanCodeSelect = document.createElement("div");
+		cleanCodeSelect.id = "level-btn-toolbar";
+		cleanCodeSelect.className = "btn-toolbar";
+		
+		var cleanCodeSelectBtnGroup = document.createElement("div");
+		cleanCodeSelectBtnGroup.className = "btn-group";
+		cleanCodeSelectBtnGroup.role = "group";
 
-	var cleanCodeSelectBtns = [ ];
-	for (var i = 0; i < 5; i++) {
-		var cleanCodeSelectButton = document.createElement("button");
-		cleanCodeSelectButton.type = "button";
-		cleanCodeSelectButton.id = ("cleanCodeSelectButton" + (i + 1)).toString();
-		cleanCodeSelectButton.className = "btn btn-sm btn-default";
-		cleanCodeSelectButton.textContent = (i + 1).toString();
-		cleanCodeSelectBtns.push(cleanCodeSelectButton);
-	}
+		var cleanCodeSelectBtns = [ ];
+		for (var i = 0; i < 5; i++) {
+			var cleanCodeSelectButton = document.createElement("button");
+			cleanCodeSelectButton.type = "button";
+			cleanCodeSelectButton.id = ("cleanCodeSelectButton" + (i + 1)).toString();
+			cleanCodeSelectButton.className = "btn btn-sm btn-default";
+			cleanCodeSelectButton.textContent = (i + 1).toString();
+			cleanCodeSelectBtns.push(cleanCodeSelectButton);
+		}
 
-	/* Create all the elements we'll need for the "Creativity" rubric */
-	var creativityGroup = document.createElement("div");
-	creativityGroup.id = "creativity_group";
+		/* Create all the elements we'll need for the "Creativity" rubric */
+		var creativityGroup = document.createElement("div");
+		creativityGroup.id = "creativity_group";
 
-	var creativityLabel = document.createElement("label");
-	creativityLabel.htmlFor = "creativity";
-	creativityLabel.textContent = "Creativity: ";
+		var creativityLabel = document.createElement("label");
+		creativityLabel.htmlFor = "creativity";
+		creativityLabel.textContent = "Creativity: ";
 
-	var creativitySelect = document.createElement("div");
-	creativitySelect.id = "level-btn-toolbar";
-	creativitySelect.className = "btn-toolbar";
-	
-	var creativitySelectBtnGroup = document.createElement("div");
-	creativitySelectBtnGroup.className = "btn-group";
-	creativitySelectBtnGroup.role = "group";
+		var creativitySelect = document.createElement("div");
+		creativitySelect.id = "level-btn-toolbar";
+		creativitySelect.className = "btn-toolbar";
+		
+		var creativitySelectBtnGroup = document.createElement("div");
+		creativitySelectBtnGroup.className = "btn-group";
+		creativitySelectBtnGroup.role = "group";
 
-	var creativitySelectBtns = [ ];
-	for (var i = 0; i < 5; i++) {
-		var creativitySelectButton = document.createElement("button");
-		creativitySelectButton.type = "button";
-		creativitySelectButton.id = ("creativitySelectButton" + (i + 1)).toString();
-		creativitySelectButton.className = "btn btn-sm btn-default";
-		creativitySelectButton.textContent = (i + 1).toString();
-		creativitySelectBtns.push(creativitySelectButton);
-	}
+		var creativitySelectBtns = [ ];
+		for (var i = 0; i < 5; i++) {
+			var creativitySelectButton = document.createElement("button");
+			creativitySelectButton.type = "button";
+			creativitySelectButton.id = ("creativitySelectButton" + (i + 1)).toString();
+			creativitySelectButton.className = "btn btn-sm btn-default";
+			creativitySelectButton.textContent = (i + 1).toString();
+			creativitySelectBtns.push(creativitySelectButton);
+		}
 
-	var overallGroup = document.createElement("div");
-	overallGroup.id = "overall_group";
+		var overallGroup = document.createElement("div");
+		overallGroup.id = "overall_group";
 
-	var overallLabel = document.createElement("label");
-	overallLabel.htmlFor = "overall";
-	overallLabel.textContent = "Overall: ";
+		var overallLabel = document.createElement("label");
+		overallLabel.htmlFor = "overall";
+		overallLabel.textContent = "Overall: ";
 
-	var overallSelect = document.createElement("div");
-	overallSelect.id = "level-btn-toolbar";
-	overallSelect.className = "btn-toolbar";
-	
-	var overallSelectBtnGroup = document.createElement("div");
-	overallSelectBtnGroup.className = "btn-group";
-	overallSelectBtnGroup.role = "group";
+		var overallSelect = document.createElement("div");
+		overallSelect.id = "level-btn-toolbar";
+		overallSelect.className = "btn-toolbar";
+		
+		var overallSelectBtnGroup = document.createElement("div");
+		overallSelectBtnGroup.className = "btn-group";
+		overallSelectBtnGroup.role = "group";
 
-	var overallSelectBtns = [ ];
-	for (var i = 0; i < 5; i++) {
-		var overallSelectButton = document.createElement("button");
-		overallSelectButton.type = "button";
-		overallSelectButton.id = ("overallSelectButton" + (i + 1)).toString();
-		overallSelectButton.className = "btn btn-sm btn-default";
-		overallSelectButton.textContent = (i + 1).toString();
-		overallSelectBtns.push(overallSelectButton);
-	}
-	
+		var overallSelectBtns = [ ];
+		for (var i = 0; i < 5; i++) {
+			var overallSelectButton = document.createElement("button");
+			overallSelectButton.type = "button";
+			overallSelectButton.id = ("overallSelectButton" + (i + 1)).toString();
+			overallSelectButton.className = "btn btn-sm btn-default";
+			overallSelectButton.textContent = (i + 1).toString();
+			overallSelectBtns.push(overallSelectButton);
+		}
+		
 
-	/* Append everything to whatever it needs to be appended to */
-	for (var i = 0; i < levelSelectBtns.length; i++){
-		levelSelectBtnGroup.appendChild(levelSelectBtns[i]);
-	}
-	levelSelect.appendChild(levelSelectBtnGroup);
-	levelGroup.appendChild(levelLabel);
-	levelGroup.appendChild(levelSelect);
+		/* Append everything to whatever it needs to be appended to */
+		for (var i = 0; i < levelSelectBtns.length; i++){
+			levelSelectBtnGroup.appendChild(levelSelectBtns[i]);
+		}
+		levelSelect.appendChild(levelSelectBtnGroup);
+		levelGroup.appendChild(levelLabel);
+		levelGroup.appendChild(levelSelect);
 
-	cleanCodeGroup.appendChild(cleanCodeLabel);
-	for (var i = 0; i < cleanCodeSelectBtns.length; i++){
-		cleanCodeSelectBtnGroup.appendChild(cleanCodeSelectBtns[i]);
-	}
-	cleanCodeSelect.appendChild(cleanCodeSelectBtnGroup);
-	cleanCodeGroup.appendChild(cleanCodeSelect);
+		cleanCodeGroup.appendChild(cleanCodeLabel);
+		for (var i = 0; i < cleanCodeSelectBtns.length; i++){
+			cleanCodeSelectBtnGroup.appendChild(cleanCodeSelectBtns[i]);
+		}
+		cleanCodeSelect.appendChild(cleanCodeSelectBtnGroup);
+		cleanCodeGroup.appendChild(cleanCodeSelect);
 
-	creativityGroup.appendChild(creativityLabel);
-	for (var i = 0; i < creativitySelectBtns.length; i++){
-		creativitySelectBtnGroup.appendChild(creativitySelectBtns[i]);
-	}
-	creativitySelect.appendChild(creativitySelectBtnGroup);
-	creativityGroup.appendChild(creativitySelect);
+		creativityGroup.appendChild(creativityLabel);
+		for (var i = 0; i < creativitySelectBtns.length; i++){
+			creativitySelectBtnGroup.appendChild(creativitySelectBtns[i]);
+		}
+		creativitySelect.appendChild(creativitySelectBtnGroup);
+		creativityGroup.appendChild(creativitySelect);
 
-	overallGroup.appendChild(overallLabel);
-	for (var i = 0; i < overallSelectBtns.length; i++){
-		overallSelectBtnGroup.appendChild(overallSelectBtns[i]);
-	}
-	overallSelect.appendChild(overallSelectBtnGroup);
-	overallGroup.appendChild(overallSelect);
+		overallGroup.appendChild(overallLabel);
+		for (var i = 0; i < overallSelectBtns.length; i++){
+			overallSelectBtnGroup.appendChild(overallSelectBtns[i]);
+		}
+		overallSelect.appendChild(overallSelectBtnGroup);
+		overallGroup.appendChild(overallSelect);
 
-	/* Append all of our judging tools to the rubrics div */
-	rubricsDiv.appendChild(levelGroup);
-	rubricsDiv.appendChild(cleanCodeGroup);
-	rubricsDiv.appendChild(creativityGroup);
-	rubricsDiv.appendChild(overallGroup);
+		/* Append all of our judging tools to the rubrics div */
+		rubricsDiv.appendChild(levelGroup);
+		rubricsDiv.appendChild(cleanCodeGroup);
+		rubricsDiv.appendChild(creativityGroup);
+		rubricsDiv.appendChild(overallGroup);
 
-	/* Append our program iframe to the "program-preview" div. */
-	programPreview.appendChild(programIframe);
+		/* Append our program iframe to the "program-preview" div. */
+		programPreview.appendChild(programIframe);
 
-	/* Append all of the score information to the page. */
-	currentScoreDiv.appendChild(levelRubric);
-	currentScoreDiv.appendChild(cleanCodeRubric);
-	currentScoreDiv.appendChild(creativityRubric);
-	currentScoreDiv.appendChild(overallRubric);
-	currentScore.appendChild(currentScoreDiv);
+		/* Append all of the score information to the page. */
+		currentScoreDiv.appendChild(levelRubric);
+		currentScoreDiv.appendChild(cleanCodeRubric);
+		currentScoreDiv.appendChild(creativityRubric);
+		currentScoreDiv.appendChild(overallRubric);
+		currentScore.appendChild(currentScoreDiv);
 
-	/* Bind to click for Level Select */
-	for (var i = 0; i < 3; i++) {
-		$("#lvlSelectButton" + (i + 1).toString()).click(function(event) {
-			var id = event.target.id;
-			if (selectedLvlBtn != "n/a" && selectedLvlBtn != id) {
-				$("#" + selectedLvlBtn).removeClass("btn-success").addClass("btn-default");
-			}
-			selectedLvlBtn = id;
-			$("#" + id).removeClass("btn-default").addClass("btn-success");
-		});
-	}
-	/* Bind to click for Clean_Code Select */
-	for (var i = 0; i < 5; i++) {
-		$("#cleanCodeSelectButton" + (i + 1).toString()).click(function(event) {
-			var id = event.target.id;
-			if (selectedCleanCodeBtn != "n/a" && selectedCleanCodeBtn != id) {
-				$("#" + selectedCleanCodeBtn).removeClass("btn-success").addClass("btn-default");
-			}
-			selectedCleanCodeBtn = id;
-			$("#" + id).removeClass("btn-default").addClass("btn-success");
-		});
-	}
-	/* Bind to click for Creativity Select */
-	for (var i = 0; i < 5; i++) {
-		$("#creativitySelectButton" + (i + 1).toString()).click(function(event){
-			var id = event.target.id;
-			if (selectedCreativityBtn != "n/a" && selectedCreativityBtn != id) {
-				$("#" + selectedCreativityBtn).removeClass("btn-success").addClass("btn-default");
-			}
-			selectedCreativityBtn = id;
-			$("#" + id).removeClass("btn-default").addClass("btn-success");
-		});
-	}
-	/* Bind to click for Overall Select */
-	for (var i = 0; i < 5; i++) {
-		$("#overallSelectButton" + (i + 1).toString()).click(function(event){
-			var id = event.target.id;
-			if (selectedOverallBtn != "n/a" && selectedOverallBtn != id){
-				$("#" + selectedOverallBtn).removeClass("btn-success").addClass("btn-default");
-			}
-			selectedOverallBtn = id;
-			$("#" + id).removeClass("btn-default").addClass("btn-success");
-		});
-	}
+		/* Bind to click for Level Select */
+		for (var i = 0; i < 3; i++) {
+			$("#lvlSelectButton" + (i + 1).toString()).click(function(event) {
+				var id = event.target.id;
+				if (selectedLvlBtn != "n/a" && selectedLvlBtn != id) {
+					$("#" + selectedLvlBtn).removeClass("btn-success").addClass("btn-default");
+				}
+				selectedLvlBtn = id;
+				$("#" + id).removeClass("btn-default").addClass("btn-success");
+			});
+		}
+		/* Bind to click for Clean_Code Select */
+		for (var i = 0; i < 5; i++) {
+			$("#cleanCodeSelectButton" + (i + 1).toString()).click(function(event) {
+				var id = event.target.id;
+				if (selectedCleanCodeBtn != "n/a" && selectedCleanCodeBtn != id) {
+					$("#" + selectedCleanCodeBtn).removeClass("btn-success").addClass("btn-default");
+				}
+				selectedCleanCodeBtn = id;
+				$("#" + id).removeClass("btn-default").addClass("btn-success");
+			});
+		}
+		/* Bind to click for Creativity Select */
+		for (var i = 0; i < 5; i++) {
+			$("#creativitySelectButton" + (i + 1).toString()).click(function(event){
+				var id = event.target.id;
+				if (selectedCreativityBtn != "n/a" && selectedCreativityBtn != id) {
+					$("#" + selectedCreativityBtn).removeClass("btn-success").addClass("btn-default");
+				}
+				selectedCreativityBtn = id;
+				$("#" + id).removeClass("btn-default").addClass("btn-success");
+			});
+		}
+		/* Bind to click for Overall Select */
+		for (var i = 0; i < 5; i++) {
+			$("#overallSelectButton" + (i + 1).toString()).click(function(event){
+				var id = event.target.id;
+				if (selectedOverallBtn != "n/a" && selectedOverallBtn != id){
+					$("#" + selectedOverallBtn).removeClass("btn-success").addClass("btn-default");
+				}
+				selectedOverallBtn = id;
+				$("#" + id).removeClass("btn-default").addClass("btn-success");
+			});
+		}
+	});
+
 	console.log("Exiting loadEntry callback!");
 
 });
