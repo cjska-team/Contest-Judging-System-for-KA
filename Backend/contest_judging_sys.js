@@ -131,7 +131,7 @@ window.Contest_Judging_System = (function() {
         sync: function(callback) {
             /*
              * sync() just fetches the latest data from Khan Academy and Firebase, and compares it.
-             * We have two arrays of data; kaData and fbData. We get the data using the KA_API and the above getStoredContests() method.
+             * We have two objects; kaData and fbData. We get the data using the KA_API and the above getStoredContests() method.
              * Once both requests have finished, we set fbData to kaData using the Firebase set() method.
              * Originally authored by Gigabyte Giant
              */
@@ -141,7 +141,7 @@ window.Contest_Judging_System = (function() {
                 khanacademy: false
             };
             
-            /* Our two arrays of data */
+            /* Our two objects of data */
             var kaData;
             var fbData;
 
