@@ -45,103 +45,97 @@ Contest_Judging_System.loadContest(contestId, function(contest) {
 		console.log(contest.desc);
 		/* Add all entries to the page */
 		for (var i in entries) {
-			(function() {
-				/* Instead of having to write entries[i] all the time, let's declare a variable that's a bit shorter. */
-				var curr = entries[i];
+            console.log(entries[i]);
+            /* The JSON object corresponding to this entry. */
+            var curr = entries[i];
+            
+            /* Create a list item element, and give it Bootstrap's "media" class. */
+            var mediaListItem = document.createElement("li");
+            mediaListItem.className = "media entry";
 
-				$.ajax({
-					type: 'GET',
-					url: "https://www.khanacademy.org/api/labs/scratchpads/" + curr.id,
-					async: true,
-					complete: function(response) {
-						/* Create a list item element, and give it Bootstrap's "media" class. */
-						var mediaListItem = document.createElement("li");
-						mediaListItem.className = "media entry";
+            /* Create a div element, and give it Bootstrap's "media-left" class. */
+            var mediaLeftDiv = document.createElement("div");
+            mediaLeftDiv.className = "media-left";
 
-						/* Create a div element, and give it Bootstrap's "media-left" class. */
-						var mediaLeftDiv = document.createElement("div");
-						mediaLeftDiv.className = "media-left";
+            /* Create a link element, and set it's href to the URL of this entry... */
+            var aElem = document.createElement("a");
+            // aElem.href = "https://www.khanacademy.org/computer-programming/entry/" + curr.id;
+            aElem.href = "entry.html?contest=" + contestId + "&entry=" + curr.id;
 
-						/* Create a link element, and set it's href to the URL of this entry... */
-						var aElem = document.createElement("a");
-						// aElem.href = "https://www.khanacademy.org/computer-programming/entry/" + curr.id;
-						aElem.href = "entry.html?contest=" + contestId + "&entry=" + curr.id;
+            /* Create an image element and set it's src to this entry's thumbnail */
+            var mediaObj = document.createElement("img");
+            mediaObj.src = "https://www.khanacademy.org/"+curr.img;
+            mediaObj.alt = "Entry thumbnail";
 
-						/* Create an image element and set it's src to this entry's thumbnail */
-						var mediaObj = document.createElement("img");
-						mediaObj.src = response.responseJSON.imageUrl;
-						mediaObj.alt = "Entry thumbnail";
+            /* Create a div element, and give it Bootstrap's "media-body" class. */
+            var mediaBody = document.createElement("div");
+            mediaBody.className = "media-body";
 
-						/* Create a div element, and give it Bootstrap's "media-body" class. */
-						var mediaBody = document.createElement("div");
-						mediaBody.className = "media-body";
+            /* Create a heading element (tier 4), and set it's text to this entry's name. */
+            var mediaHeading = document.createElement("h4");
+            mediaHeading.textContent = curr.name;
 
-						/* Create a heading element (tier 4), and set it's text to this entry's name. */
-						var mediaHeading = document.createElement("h4");
-						mediaHeading.textContent = curr.name;
+            /* Create a div that will hold more information about this entry */
+            var infoDiv = document.createElement("div");
+            infoDiv.className = "info";
 
-						/* Create a div that will hold more information about this entry */
-						var infoDiv = document.createElement("div");
-						infoDiv.className = "info";
+            /* Create a heading element (tier 5), to mark the "Score" heading */
+            var scoreHeading = document.createElement("h5");
+            scoreHeading.textContent = "Score:";
+            
+            /* Create an unordered list element that will be used to display score information for this entry. */
+            var scoreList = document.createElement("ul");
 
-						/* Create a heading element (tier 5), to mark the "Score" heading */
-						var scoreHeading = document.createElement("h5");
-						scoreHeading.textContent = "Score:";
+            /* Go through all the score information for this entry, and create a list item for it. */
+            for (var rubric in curr.scores.rubric) {
+                (function() {
+                    /* This is in a function wrapper so rubric and scoreList will not be lost. */
+                    var currRubric = rubric;
+                    var currScoreList = scoreList;
 
-						/* Create an unordered list element that will be used to display score information for this entry. */
-						var scoreList = document.createElement("ul");
+                    /* We don't need to look for a max for the "NumberOfJudges" rubric, so if we're currently at it, return. */
+                    if (currRubric === "NumberOfJudges") {
+                        return;
+                    }
 
-						/* Go through all the score information for this entry, and create a list item for it. */
-						for (var rubric in curr.scores.rubric) {
-                            /* NOTE: An error occurs when trying to process NumberOfJudges because it has no max. Perhaps the following could be useful? */
-                            //if (rubric == "NumberOfJudges") continue;
-							(function() {
-								var currRubric = rubric;
+                    var val = Math.floor(curr.scores.rubric[rubric].avg);
 
-								/* We don't need to look for a max for the "NumberOfJudges" rubric, so if we're currently at it, return. */
-								if (currRubric === "NumberOfJudges") {
-									return;
-								}
+                    Contest_Judging_System.getRubrics(function(rubrics) {
+                        var max = rubrics[currRubric].max;
+                        /* Credit to @NobleMushtak for the following idea. */
+                        var selectedRubric = currRubric.replace(/_/gi, " ");
 
-								var val = Math.floor(curr.scores.rubric[rubric].avg);
+                        if (rubrics[currRubric].hasOwnProperty("keys")) {
+                            console.log(rubrics[currRubric].keys);
+                            val = rubrics[currRubric].keys[val];
+                            console.log("Value switched to a key!");
 
-								Contest_Judging_System.getRubrics(function(rubrics) {
-									var max = rubrics[currRubric].max;
-									/* Credit to @NobleMushtak for the following idea. */
-									var selectedRubric = currRubric.replace(/_/gi, " ");
+                            var listItem = document.createElement("li");
+                            listItem.textContent = selectedRubric + ": " + val;
 
-									if (rubrics[currRubric].hasOwnProperty("keys")) {
-										console.log(rubrics[currRubric].keys);
-										val = rubrics[currRubric].keys[val];
-										console.log("Value switched to a key!");
+                            currScoreList.appendChild(listItem);
+                            console.log(listItem);
+                        } else {
+                            var listItem = document.createElement("li");
+                            listItem.textContent = selectedRubric + ": " + val + " out of " + max;
+                            currScoreList.appendChild(listItem);
+                            console.log(listItem);
+                        }
+                    });
+                })();
+            }
 
-										var listItem = document.createElement("li");
-										listItem.textContent = selectedRubric + ": " + val;
-
-										scoreList.appendChild(listItem);
-									} else {
-										var listItem = document.createElement("li");
-										listItem.textContent = selectedRubric + ": " + val + " out of " + max;
-										scoreList.appendChild(listItem);
-									}
-								});
-							})();
-						}
-
-						/* Append everything */
-						infoDiv.appendChild(scoreHeading);
-						infoDiv.appendChild(scoreList);
-						aElem.appendChild(mediaObj);
-						mediaLeftDiv.appendChild(aElem);
-						mediaBody.appendChild(mediaHeading);
-						mediaListItem.appendChild(mediaLeftDiv);
-						mediaBody.appendChild(infoDiv);
-						mediaListItem.appendChild(mediaBody);
-						entriesList.appendChild(mediaListItem);
-					}
-				});
-			})();
-		}
+            /* Append everything */
+            infoDiv.appendChild(scoreHeading);
+            infoDiv.appendChild(scoreList);
+            aElem.appendChild(mediaObj);
+            mediaLeftDiv.appendChild(aElem);
+            mediaBody.appendChild(mediaHeading);
+            mediaListItem.appendChild(mediaLeftDiv);
+            mediaBody.appendChild(infoDiv);
+            mediaListItem.appendChild(mediaBody);
+            entriesList.appendChild(mediaListItem);
+        }
 
 		/* Hide the loading div and show items that were hidden during loading. */
 		$("#loading").css("display", "none");
