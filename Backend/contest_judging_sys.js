@@ -130,7 +130,7 @@ window.Contest_Judging_System = (function() {
         },
         sync: function(callback) {
             /*
-             * sync() just fetches the latest data from Khan Academy and Firebase, and compares it.
+             * sync() just fetches the latest data from Khan Academy and Firebase, and compares it. It is not run in the client, but in a secret bot on http://gigabytegiant.com, but not in this Git repo.
              * We have two objects; kaData and fbData. We get the data using the KA_API and the above getStoredContests() method.
              * Once both requests have finished, we set fbData to kaData using the Firebase set() method.
              * Originally authored by Gigabyte Giant
