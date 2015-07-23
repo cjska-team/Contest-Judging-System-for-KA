@@ -3,127 +3,88 @@ var loadingDiv = document.querySelector("#loading");
 //This is the contests element that shows info on all of the contests.
 var contestsDiv = document.querySelector("#contests");
 
-//The "Sync Data" button (this click event will not work until sync is enabled by finishRequest())
-var sync = $("#sync");
-sync.on("click", function() {
-    /* Sync all the data */
-
-    /* Empty contestsDiv and show loadingDiv */
-    contestsDiv.textContent = "";
-    loadingDiv.style.display = "block";
-    /* Make sure the user doesn't try to sync while it's already syncing. */
-    sync.prop("disabled", true);
-    sync.text("Please wait...");
-    /* Call finishRequest when done */
-    Contest_Judging_System.sync(finishRequest);
-});
-
 function finishRequest(contests) {
     /* When the request is finished... */
 
     //Loop through contests
     for (var i in contests) {
-        (function() {
-            /* This is in a function wrapper so we don't lose the value of curr in the below function. */
-            //The JSON object corresponding to this contest.
-            var curr = contests[i];
+        //The JSON object corresponding to this contest.
+        var curr = contests[i];
+        
+        /* When done with AJAX request */
+        //http://getbootstrap.com/components/#media-default
 
-            //Send an AJAX request to the URL containing data for this program.
-            $.ajax({
-                type: 'GET',
-                url: 'http://www.khanacademy.org/api/labs/scratchpads/' + curr.id,
-                async: true,
-                complete: function(data) {
-                    /* When done with AJAX request */
-                    //http://getbootstrap.com/components/#media-default
+        //Create row for this contest
+        var rowDiv = document.createElement("div");
+        rowDiv.className = "row";
+        //Create div inside rowDiv for this contest
+        var contestDiv = document.createElement("div");
+        contestDiv.className = "contest";
+        //Create div inside contestDiv
+        var mediaDiv = document.createElement("div");
+        mediaDiv.className = "media";
 
-                    //Create row for this contest
-                    var rowDiv = document.createElement("div");
-                    rowDiv.className = "row";
-                    //Create div inside rowDiv for this contest
-                    var contestDiv = document.createElement("div");
-                    contestDiv.className = "contest";
-                    //Create div inside contestDiv
-                    var mediaDiv = document.createElement("div");
-                    mediaDiv.className = "media";
-                    
-                    //Create div containing link and image
-                    var mediaLeftDiv = document.createElement("div");
-                    mediaLeftDiv.className = "media-left";
-                    //Create the link to the contest
-                    var imgLink = document.createElement("a");
-                    imgLink.href = "https://www.khanacademy.org/computer-programming/contest/" + curr.id;
-                    //Create the image that will go in our link
-                    var mediaObject = document.createElement("img");
-                    mediaObject.className = "media-object";
-                    mediaObject.src = "https://www.khanacademy.org" + curr.img;
+        //Create div containing link and image
+        var mediaLeftDiv = document.createElement("div");
+        mediaLeftDiv.className = "media-left";
+        //Create the link to the contest
+        var imgLink = document.createElement("a");
+        imgLink.href = "https://www.khanacademy.org/computer-programming/contest/" + curr.id;
+        //Create the image that will go in our link
+        var mediaObject = document.createElement("img");
+        mediaObject.className = "media-object";
+        mediaObject.src = "https://www.khanacademy.org" + curr.img;
 
-                    var viewEntriesBtn = document.createElement("a");
-                    viewEntriesBtn.className = "btn btn-sm btn-primary center-block viewEntries";
-                    viewEntriesBtn.textContent = "View 30 Random Entries";
-                    viewEntriesBtn.href = "contest.html?contest=" + curr.id + "&entries=30";
-                    
-                    var viewAllEntriesBtn = document.createElement("a");
-                    viewAllEntriesBtn.className = "btn btn-sm btn-primary center-block";
-                    viewAllEntriesBtn.textContent = "View all Entries";
-                    viewAllEntriesBtn.href = "contest.html?contest=" + curr.id + "&entries=all";
+        var viewEntriesBtn = document.createElement("a");
+        viewEntriesBtn.className = "btn btn-sm btn-primary center-block viewEntries";
+        viewEntriesBtn.textContent = "View 30 Random Entries";
+        viewEntriesBtn.href = "contest.html?contest=" + curr.id + "&entries=30";
 
-                    //Create the div containing the body of contest info
-                    var mediaBody = document.createElement("div");
-                    mediaBody.className = "media-body";
-                    //Create the div containing the contest heading
-                    var mediaHeading = document.createElement("h4");
-                    mediaHeading.className = "media-heading";
-                    mediaHeading.textContent = curr.name;
-                    //Create the div containing the contest details
-                    var detailsDiv = document.createElement("div");
-                    detailsDiv.className = "details";
-                    detailsDiv.innerHTML = data.responseJSON.description || "No description provided!";
+        var viewAllEntriesBtn = document.createElement("a");
+        viewAllEntriesBtn.className = "btn btn-sm btn-primary center-block";
+        viewAllEntriesBtn.textContent = "View all Entries";
+        viewAllEntriesBtn.href = "contest.html?contest=" + curr.id + "&entries=all";
 
-                    //Put image inside link
-                    imgLink.appendChild(mediaObject);
-                    //Put link inside mediaLeftDiv
-                    mediaLeftDiv.appendChild(imgLink);
-                    /* Put button into mediaLeftDiv */
-                    mediaLeftDiv.appendChild(viewEntriesBtn);
-                    mediaLeftDiv.appendChild(viewAllEntriesBtn);
+        //Create the div containing the body of contest info
+        var mediaBody = document.createElement("div");
+        mediaBody.className = "media-body";
+        //Create the div containing the contest heading
+        var mediaHeading = document.createElement("h4");
+        mediaHeading.className = "media-heading";
+        mediaHeading.textContent = curr.name;
+        //Create the div containing the contest details
+        var detailsDiv = document.createElement("div");
+        detailsDiv.className = "details";
+        detailsDiv.innerHTML = curr.desc || "No description provided!";
 
-                    //Put heading inside body
-                    mediaBody.appendChild(mediaHeading);
-                    //Put body inside detailsDiv
-                    mediaBody.appendChild(detailsDiv);
+        //Put image inside link
+        imgLink.appendChild(mediaObject);
+        //Put link inside mediaLeftDiv
+        mediaLeftDiv.appendChild(imgLink);
+        /* Put button into mediaLeftDiv */
+        mediaLeftDiv.appendChild(viewEntriesBtn);
+        mediaLeftDiv.appendChild(viewAllEntriesBtn);
 
-                    //Put mediaLeftDiv and mediaBody inside mediaDiv
-                    mediaDiv.appendChild(mediaLeftDiv);
-                    mediaDiv.appendChild(mediaBody);
+        //Put heading inside body
+        mediaBody.appendChild(mediaHeading);
+        //Put body inside detailsDiv
+        mediaBody.appendChild(detailsDiv);
 
-                    //Put mediaDiv inside contestDiv
-                    contestDiv.appendChild(mediaDiv);
-                    //Put contestDiv inside rowDiv
-                    rowDiv.appendChild(contestDiv);
-                    //Put rowDiv inside the #contests div
-                    contestsDiv.appendChild(rowDiv);
-                    
-                    //Now that we're done, add the done propery to curr so that the below setTimeout() function will know.
-                    curr.done = true;
-                }
-            });
-        })();
+        //Put mediaLeftDiv and mediaBody inside mediaDiv
+        mediaDiv.appendChild(mediaLeftDiv);
+        mediaDiv.appendChild(mediaBody);
+
+        //Put mediaDiv inside contestDiv
+        contestDiv.appendChild(mediaDiv);
+        //Put contestDiv inside rowDiv
+        rowDiv.appendChild(contestDiv);
+        //Put rowDiv inside the #contests div
+        contestsDiv.appendChild(rowDiv);
     }
 
-    //We check if we're done with the above AJAX requests every second.
-    var finishedTimeout = setTimeout(function() {
-        //Make sure data has been retreived for all contests. If not, return
-        for (i in contests) if (contests[i].hasOwnProperty("done")) return;
 
-        //If we're done, get rid of the loading screen and stop checking if we're done.
-        clearTimeout(finishedTimeout);
-        loadingDiv.style.display = "none";//The "Sync Data" button"
-
-        //When done, enable the "Sync Data" button again.
-        sync.removeAttr("disabled");
-        sync.text("Sync Data");
-    });
+    //Now we're done, so get rid of the loading screen.
+    loadingDiv.style.display = "none";
 }
 
 //Get all of the stored contests from the Firebase database and call finishRequest when done
