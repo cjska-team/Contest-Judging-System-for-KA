@@ -15,11 +15,3 @@ button, label, select, input, p {
 label, select, input {
      margin: 5px;
 }
-
-.current-score.hidden-data .current-score > p {
-	display: none;
-}
-
-.current-score > p {
-	display: default;
-}
