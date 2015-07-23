@@ -22,7 +22,7 @@ var contestId = window.location.href.split("?contest=")[1].split("&")[0];
 var entryId = window.location.href.split("&entry=")[1];
 
 /* The base URL for the program preview Iframe. */
-var baseURL = "https://www.khanacademy.org/computer-programming/entry/{ENTRYID}/embedded?buttons=no&editor=no&author=no&embed=yes";
+var baseURL = "https://www.khanacademy.org/computer-programming/entry/{ENTRYID}/embedded?buttons=no&editor=yes&author=no&embed=yes";
 
 /* A couple elements that we'll be using later on */
 var programPreview = document.querySelector(".program-preview");
