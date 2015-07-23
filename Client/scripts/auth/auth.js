@@ -25,7 +25,7 @@ var Authentication_Logic = (function() {
 					callback(true);
 				} else {
 					/* ...pass false into our callback. */
-					callback(true);
+					callback(false);
 				}
 			});
 		},
@@ -88,6 +88,23 @@ var Authentication_Logic = (function() {
 			thisUserRef.once("value", function() {
 				callback(permLevel);
 			});
+		},
+		isUserLoggedIn: function() {
+			if (Contest_Judging_System.getCookie("loggedInUID") !== "") {
+				return true;
+			}
+
+			return false;
 		}
 	};
 })();
+
+if (Authentication_Logic.isUserLoggedIn()) {
+	$(".login").css("display", "none");
+}
+
+$(".login").on("click", function() {
+	Authentication_Logic.logUserIn(function() {
+		console.log("Logged user in!");
+	});
+});
