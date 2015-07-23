@@ -128,6 +128,15 @@ window.Contest_Judging_System = (function() {
                 }
             }, 1000);
         },
+        /* Get 'n' of the top entries for the specified contest, and pass them into a callback function. */
+        getTopEntries: function(howMany, contestId, callback) {
+            var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
+            var contestsRef = fbRef.child("contests");
+            var chosenContest = contestsRef.child(contestId);
+            var entriesRef = chosenContest.child(entries);
+
+            /* TODO (@GigabyteGiant): Finish this function */
+        },
         sync: function(callback) {
             /*
              * sync() just fetches the latest data from Khan Academy and Firebase, and compares it. It is not run in the client, but in a secret bot on http://gigabytegiant.com, but not in this Git repo.
