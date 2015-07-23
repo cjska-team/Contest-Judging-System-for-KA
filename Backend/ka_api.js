@@ -51,7 +51,7 @@ window.KA_API = (function() {
                             /* Program Title */
                             name: allPrograms[i].translatedTitle,
                             /* Program Image */
-                            img: allPrograms[i].thumb,
+                            thumb: allPrograms[i].thumb,
                             /* Program Scores */
                             scores: {
                                 rubric: {
