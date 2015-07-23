@@ -2,7 +2,7 @@
  * This file contains all the authentication logic for the Khan Academy Contest Judging System
  */
 var Authentication_Logic = (function() {
-	if (!Firebase || !jQuery || !Contest_Judging_System) {
+	if (!window.Firebase || !window.jQuery || !window.Contest_Judging_System) {
 		console.log("[Authentication_Logic] Firebase and jQuery are both required!");
 		return;
 	}
