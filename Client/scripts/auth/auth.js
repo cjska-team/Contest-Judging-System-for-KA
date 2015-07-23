@@ -2,7 +2,7 @@
  * This file contains all the authentication logic for the Khan Academy Contest Judging System
  */
 window.Authentication_Logic = (function() {
-	if (!Firebase || !jQuery) {
+	if (!Firebase || !jQuery || !Contest_Judging_System) {
 		console.log("[Authentication_Logic] Firebase and jQuery are both required!");
 		return;
 	}
@@ -29,6 +29,36 @@ window.Authentication_Logic = (function() {
 				}
 			});
 		},
+		createUser: function(userData) {
+			var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
+			var usersRef = fbRef.child("users");
+
+			usersRef.child(userData.uid).set({
+				name: userData.google.displayName,
+				permLevel: 1
+			});
+		},
+		logUserIn: function(callback) {
+			var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
+
+			fbRef.authWithOAuthPopup("google", function(error, authData) {
+				/* If an error occurred, log the error to the console, and pass false to our callback. */
+				if (error) {
+					console.log(error);
+					callback(false);
+				}
+
+				Authentication_Logic.doesUserExist(authData, function(doTheyExist) {
+					if (doTheyExist) {
+						Contest_Judging_System.setCookie("loggedInUID", authData.uid);
+					} else {
+						/* The user doesn't exist. Sign them up? */
+						Authentication_Logic.createUser(authData);
+						Contest_Judging_System.setCookie("loggedInUID", authData.uid);
+					}
+				});
+			});
+		},
 		userHasCorrectPermissions: function(uid, requiredPerms, callback) {
 			var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
 			var usersRef = fbRef.child("users");
@@ -42,6 +72,21 @@ window.Authentication_Logic = (function() {
 			usersRef.once("value", function() {
 				/* Pass a boolean value to our callback. The boolean is determined based on whether or not the user has the permission level that is required for a certain task. */
 				callback(thisUser.permLevel === requiredPerms);
+			});
+		},
+		getPermLevel: function(uid, callback) {
+			var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
+			var usersRef = fbRef.child("users");
+			var thisUserRef = usersRef.child(uid);
+
+			var permLevel = -1;
+
+			thisUserRef.orderByKey().equalTo("permLevel").on("child_added", function(data) {
+				permLevel = data.val().permLevel;
+			});
+
+			thisUserRef.once("value", function() {
+				callback(permLevel);
 			});
 		}
 	};
