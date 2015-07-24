@@ -8,6 +8,7 @@ if (window.location.search.indexOf("?contest") === -1) {
 	window.history.back();
 }
 
+/* If it doesn't look like there's an entry count in the URL, shown an alert, and go back one page. */
 if (window.location.search.indexOf("&entries") === -1) {
 	alert("Please specify the number of entries you'd like to view!");
 
