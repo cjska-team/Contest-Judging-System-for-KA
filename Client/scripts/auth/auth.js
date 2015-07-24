@@ -10,6 +10,7 @@ var Authentication_Logic = (function() {
 
 	/* Return an object containing all of the data relating to this wrapper. */
 	return {
+		/* Checks Firebase to see if the selected user exists in our list of known users */
 		doesUserExist: function(authData, callback) {
 			var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
 			var usersRef = fbRef.child("users");
@@ -31,6 +32,7 @@ var Authentication_Logic = (function() {
 				}
 			});
 		},
+		/* Adds a new user to our list of known users in Firebase */
 		createUser: function(userData) {
 			var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
 			var usersRef = fbRef.child("users");
@@ -40,6 +42,7 @@ var Authentication_Logic = (function() {
 				permLevel: 1
 			});
 		},
+		/* Does all the major authentication logic */
 		logUserIn: function(callback) {
 			var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
 
@@ -61,6 +64,7 @@ var Authentication_Logic = (function() {
 				});
 			});
 		},
+		/* Checks to see if the selected user has the correct permLevel in Firebase */
 		userHasCorrectPermissions: function(uid, requiredPerms, callback) {
 			var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
 			var usersRef = fbRef.child("users");
@@ -76,6 +80,7 @@ var Authentication_Logic = (function() {
 				callback(thisUser.permLevel === requiredPerms);
 			});
 		},
+		/* Gets the permissions level for the specified user */
 		getPermLevel: function(uid, callback) {
 			var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
 			var usersRef = fbRef.child("users");
@@ -91,6 +96,7 @@ var Authentication_Logic = (function() {
 				callback(permLevel);
 			});
 		},
+		/* Checks to see if the user is currently logged in */
 		isUserLoggedIn: function() {
 			if (Contest_Judging_System.getCookie("loggedInUID") !== "") {
 				return true;
@@ -101,10 +107,12 @@ var Authentication_Logic = (function() {
 	};
 })();
 
+/* If the user is already logged in, hide the login button. */
 if (Authentication_Logic.isUserLoggedIn()) {
 	$(".login").css("display", "none");
 }
 
+/* When the login button is clicked, attempt to log the user in. If the login succeeds, move to the next step (TODO). */
 $(".login").on("click", function() {
 	Authentication_Logic.logUserIn(function() {
 		console.log("Logged user in!");
