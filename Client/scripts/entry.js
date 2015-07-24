@@ -17,9 +17,9 @@ var selectedLvlBtn = "n/a";
 /* The score for this entry */
 var scoreData = {
     Level: null,
-    Clean_Code: 3,
-    Creativity: 3,
-    Overall: 3
+    Clean_Code: 1,
+    Creativity: 1,
+    Overall: 1
 };
 
 /* Locate the contest ID in the URL, and store it for later use. */
