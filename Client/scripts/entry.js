@@ -62,6 +62,7 @@ $.ajax({
 
 function loadEntry() {
     /* Fetch the data for this contest entry, and then use the data to build up the current page. */
+    /* TODO: Fetch all rubrics to automate the min/max/key fetching. */
     Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
         console.log("Entered loadEntry callback!");
 
