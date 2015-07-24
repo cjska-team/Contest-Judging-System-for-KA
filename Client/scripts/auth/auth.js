@@ -63,6 +63,7 @@ var Authentication_Logic = (function() {
 					}
 				});
 				console.log("Authenticated!");
+				callback();
 			});
 		},
 		/* Checks to see if the selected user has the correct permLevel in Firebase */
@@ -116,6 +117,7 @@ if (Authentication_Logic.isUserLoggedIn()) {
 /* When the login button is clicked, attempt to log the user in. If the login succeeds, move to the next step (TODO). */
 $(".login").on("click", function() {
 	Authentication_Logic.logUserIn(function() {
+		$(".login").css("display", "none");
 		console.log("Logged user in!");
 	});
 });

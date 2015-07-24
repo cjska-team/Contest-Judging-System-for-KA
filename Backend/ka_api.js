@@ -82,6 +82,18 @@ window.KA_API = (function() {
                 }
             });
         },
+        numberOfEntriesInContest: function(contest, callback) {
+            var numOfEntries = 0;
+
+            $.ajax({
+                type: 'GET',
+                url: this.urls.spinoffs(contest),
+                async: true,
+                complete: function(apiResponse) {
+                    callback(apiResponse.responseJSON.scratchpads.length);
+                }
+            });
+        },
         /* This function gets all of Pamela's contest programs from Khan Academy and passes them into the callback function. */
         getContests: function(callback) {
             /* This Bool is true iff the first AJAX request has finished. */
