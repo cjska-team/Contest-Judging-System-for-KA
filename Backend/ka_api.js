@@ -141,6 +141,10 @@ window.KA_API = (function() {
                                         KA_API.getContestEntries(contests[programID].id, function(entries) {
                                             contests[programID].entries = entries;
                                         });
+
+                                        KA_API.numberOfEntriesInContest(contests[programID].id, function(count) {
+                                            contests[programID].entryCount = count;
+                                        });
                                     }
                                 });
                             })(programID, allPrograms[i], allContests);
@@ -157,7 +161,7 @@ window.KA_API = (function() {
                 if (apiQueryDone) {
                     /* If the first AJAX request has finished, make sure all of the other AJAX requests have finished. If we find a contest without the entries property, we know their AJAX request has not finished, so we return. */
                     for (var i in allContests) {
-                        if (!allContests[i].hasOwnProperty("entries")) return;
+                        if (!allContests[i].hasOwnProperty("entries") || !allContests[i].hasOwnProperty("entryCount")) return;
                     }
 
                     /* At this point, we have made sure the request has finished, so we make a log in the console, stop looping this asynchronous function, and finally pass contests into callback. */
