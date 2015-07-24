@@ -162,8 +162,8 @@ function loadEntry() {
                     var curSlider = document.createElement("div");
                     curSlider.className = "judgingSlider";
                     curSlider.role = "slider";
-                    /* This is put in a function wrapper to save the value of curLabel, scoreData, and k for the function inside the JSON object. */
-                    (function(curLabel, scoreData, k) {
+                    /* This is put in a function wrapper to save the value of curLabel, scoreData, rubricName, and k for the function inside the JSON object. */
+                    (function(curLabel, scoreData, rubricName, k) {
                         /* Use jQuery UI to create slider */
                         $(curSlider).slider({
                             range: "max",
@@ -177,7 +177,7 @@ function loadEntry() {
                                 scoreData[k] = ui.value;
                             }
                         });
-                    })(curLabel, scoreData, k);
+                    })(curLabel, scoreData, rubricName, k);
 
                     /* Append everything to whatever it needs to be appended to */
                     curGroup.appendChild(curLabel);
