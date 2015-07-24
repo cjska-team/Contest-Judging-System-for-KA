@@ -39,7 +39,9 @@ Contest_Judging_System.loadContest(contestId, function(contest) {
 		$("#contestName").text(contest.name);
 		$("#contestDescription").html("Description coming soon!");
 
+        /* Get the "contestDescription" div, and store it in a variable for later use. */
 		var detailsDiv = document.getElementById("contestDescription");
+        /* Set the innerHTML of the contestDescription div, to the description stored in Firebase, or "No description found", if we don't have a description stored in Firebase. */
 		detailsDiv.innerHTML = contest.desc || "No description found!";
 
 		/* Add all entries to the page */
