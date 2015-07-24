@@ -288,9 +288,9 @@ function judgeEntry(scoreData) {
 
 $(".viewOnKA").on("click", function() {
 	/* Prompt the user with a message warning them about information that could potentially bias them. */
-	var promptMsg = prompt("By visiting the following page, you're exposing yourself to information that could bias your judging. If you agree to not let information you see on Khan Academy bias your judging, please type \"I agree\", otherwise, close this prompt.");
+	var promptMsg = prompt("By visiting the following page, you're exposing yourself to information that could bias your judging. If you agree to not let information you see on Khan Academy bias your judging, please type \"I agree\" in the box below to show that you read this message. Otherwise, close this prompt.");
 	/* If the user types 'I agree' in the prompt, open the entry on Khan Academy. */
-	if (promptMsg == "I agree") {
+	if (promptMsg != null && promptMsg.toLowerCase().indexOf("i agree") > -1) {
 		window.open("https://www.khanacademy.org/computer-programming/entry/" + entryId);
 	}
 });
