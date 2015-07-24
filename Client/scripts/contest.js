@@ -88,7 +88,9 @@ Contest_Judging_System.loadContest(contestId, function(contest) {
             for (var rubric in curr.scores.rubric) {
                 /* This is in a function wrapper so rubric and scoreList will not be lost. */
                 (function() {
+                    /* Store the current rubric in a new variable, so we don't lose the old one. */
                     var currRubric = rubric;
+                    /* Store the score list for the currenty entry, in a new variable so we don't lose the old one. */
                     var currScoreList = scoreList;
 
                     /* We don't need to look for a max for the "NumberOfJudges" rubric, so if we're currently at it, return. */
