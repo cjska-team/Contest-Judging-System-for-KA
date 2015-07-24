@@ -12,15 +12,10 @@ if (window.location.search.indexOf("&entry=") === -1) {
 	window.history.back();
 }
 
-/* The id of the button selected for "Level" */
-var selectedLvlBtn = "n/a";
+/* The ids of the buttons selected on judging tools */
+var selectedBtn = {};
 /* The score for this entry */
-var scoreData = {
-    Level: null,
-    Clean_Code: 1,
-    Creativity: 1,
-    Overall: 1
-};
+var scoreData = {};
 
 /* Locate the contest ID in the URL, and store it for later use. */
 var contestId = window.location.href.split("?contest=")[1].split("&")[0];
@@ -60,6 +55,22 @@ $.ajax({
     }
 });
 
+function judgingButtonClick(k, kLower) {
+    /* Click event handler for judging tool buttons */
+    return function(event) {
+        var id = event.target.id;
+        /* Unselect previously selected button */
+        if (selectedBtn[k] != null && selectedBtn[k] != id) {
+            $("#"+selectedBtn[k]).removeClass("btn-success").addClass("btn-default");
+        }
+        /* Set selectedBtn[k] and scoreData[k] */
+        selectedBtn[k] = id;
+        scoreData[k] = parseInt(selectedBtn[k].replace(kLower+"SelectButton", ""), 10);
+        /* Select the selected button */
+        $("#"+id).removeClass("btn-default").addClass("btn-success");
+    }
+}
+
 function loadEntry() {
     /* Fetch the data for this contest entry, and then use the data to build up the current page. */
     /* TODO: Fetch all rubrics to automate the min/max/key fetching. */
@@ -81,187 +92,109 @@ function loadEntry() {
         Contest_Judging_System.getRubrics(function(rubrics) {
             /* Create a div that will hold all of the elements required to show the current score for this entry */
             var currentScoreDiv = document.querySelector(".current-score");
+            console.log(JSON.stringify(rubrics));
 
-            /* Create a paragraph element to display the level rubric */
-            var levelRubric = document.createElement("p");
-            levelRubric.textContent = "Level: " + rubrics["Level"].keys[entryData.scores.rubric.Level.avg];
+            /* For all rubrics... */
+            for (var k in rubrics) {
+                /* Name of Rubric */
+                var rubricName = k.replace(/_/gi, " ");
+                /* Lowercase Property */
+                var kLower = k.toLowerCase();
+                /* The current score in this rubric */
+                var curRubric = document.createElement("p");
+                /* The container for all elems of this rubric */
+                var curGroup = document.createElement("div");
+                curGroup.id = kLower+"_group";
+                /* Create label for this rubric */
+                var curLabel = document.createElement("label");
+                curLabel.htmlFor = kLower;
+                curLabel.textContent = rubricName+": ";
+                
+                /* If there are discrete options to this rubric: */
+                if (rubrics[k].hasOwnProperty("keys")) {
+                    /* Set the current score using keys */
+                    curRubric.textContent = rubricName+": " +rubrics[k].keys[Math.round(entryData.scores.rubric[k].avg)];
 
-            /* Create a paragraph element to display the clean code rubric */
-            var cleanCodeRubric = document.createElement("p");
-            cleanCodeRubric.textContent = "Clean Code: " + Math.round(entryData.scores.rubric.Clean_Code.avg) + " out of " + rubrics["Clean_Code"].max;
+                    /* Container for curSelectBtnGroup */
+                    var curSelect = document.createElement("div");
+                    curSelect.id = kLower+"-btn-toolbar";
+                    curSelect.className = "btn-toolbar";
 
-            /* Create a paragraph element to display the creativity rubric */
-            var creativityRubric = document.createElement("p");
-            creativityRubric.textContent = "Creativity: " + Math.round(entryData.scores.rubric.Creativity.avg) + " out of " + rubrics["Creativity"].max;
+                    /* Container for curSelectBtns */
+                    var curSelectBtnGroup = document.createElement("div");
+                    curSelectBtnGroup.className = "btn-group";
+                    curSelectBtnGroup.role = "group";
 
-            /* Create a paragraph element to display the overall rubric */
-            var overallRubric = document.createElement("p");
-            overallRubric.textContent = "Overall: " + Math.round(entryData.scores.rubric.Overall.avg) + " out of " + rubrics["Overall"].max; 
+                    /* All buttons */
+                    var curSelectBtns = [ ];
+                    /* Initialize selectedBtn[k] and scoreData[k] to null */
+                    selectedBtn[k] = scoreData[k] = null;
+                    /* Create all buttons and push into curSelectBtns */
+                    for (var i = rubrics[k].min; i <= rubrics[k].max; i++){
+                        var curSelectButton = document.createElement("button");
+                        curSelectButton.type = "button";
+                        curSelectButton.id = (kLower+"SelectButton"+(i+1).toString());
+                        curSelectButton.className = "btn btn-sm btn-default";
+                        /* Remember to set the text using rubrics[k].keys and to add a click event using judgingButtonClick() above. */
+                        curSelectButton.textContent = rubrics[k].keys[i];
+                        $(curSelectButton).click(judgingButtonClick(k, kLower));
+                        curSelectBtns.push(curSelectButton);
+                    }
 
-            /* Create all the elements we'll need for the "Level" rubric */
-            var levelGroup = document.createElement("div");
-            levelGroup.id = "level_group";
+                    /* Append everything to whatever it needs to be appended to */
+                    for (var i = 0; i < curSelectBtns.length; i++){
+                        curSelectBtnGroup.appendChild(curSelectBtns[i]);
+                    }
+                    curSelect.appendChild(curSelectBtnGroup);
+                    curGroup.appendChild(curLabel);
+                    curGroup.appendChild(curSelect);
+                }
+                /* Otherwise, the rubric is numerical. */
+                else {
+                    /* Set the current score using numbers */
+                    curRubric.textContent = k+": "+Math.round(entryData.scores.rubric[k].avg)+" out of "+rubrics[k].max;
+                    /* Edit label textContent */
+                    curLabel.textContent += rubrics[k].min;
 
-            /* Label for "Level" */
-            var levelLabel = document.createElement("label");
-            levelLabel.htmlFor = "level";
-            levelLabel.textContent = "Level: ";
+                    /* Initialize scoreData[k] to the minimum */
+                    scoreData[k] = rubrics[k].min;
+                    /* Slider */
+                    var curSlider = document.createElement("div");
+                    curSlider.className = "judgingSlider";
+                    curSlider.role = "slider";
+                    /* This is put in a function wrapper to save the value of curLabel, scoreData, and k for the function inside the JSON object. */
+                    (function(curLabel, scoreData, k) {
+                        /* Use jQuery UI to create slider */
+                        $(curSlider).slider({
+                            range: "max",
+                            min: rubrics[k].min,
+                            max: rubrics[k].max,
+                            value: rubrics[k].min,
+                            slide: function(event, ui) {
+                                /* Tell the score in curLabel when the slider changes. */
+                                curLabel.textContent = rubricName+": "+ui.value;
+                                /* Set scoreData */
+                                scoreData[k] = ui.value;
+                            }
+                        });
+                    })(curLabel, scoreData, k);
 
-            /* Container for levelSelectBtnGroup */
-            var levelSelect = document.createElement("div");
-            levelSelect.id = "level-btn-toolbar";
-            levelSelect.className = "btn-toolbar";
+                    /* Append everything to whatever it needs to be appended to */
+                    curGroup.appendChild(curLabel);
+                    curGroup.appendChild(curSlider);
+                }
 
-            /* Container for levelSelectBtns */
-            var levelSelectBtnGroup = document.createElement("div");
-            levelSelectBtnGroup.className = "btn-group";
-            levelSelectBtnGroup.role = "group";
-
-            /* All buttons for "Level" */
-            var levelSelectBtns = [ ];
-            /* All levels */
-            var levels = ["Unknown", "Beginner", "Intermediate", "Advanced"];
-            /* Create all buttons and push into levelSelectBtns */
-            for (var i = 0; i < levels.length; i++){
-                var levelSelectButton = document.createElement("button");
-                levelSelectButton.type = "button";
-                levelSelectButton.id = ("lvlSelectButton" + (i + 1)).toString();
-                levelSelectButton.className = "btn btn-sm btn-default";
-                levelSelectButton.textContent = levels[i];
-                levelSelectBtns.push(levelSelectButton);
+                /* Add the current rubric to the current score. */
+                currentScoreDiv.appendChild(curRubric);
+                /* Add this judging tools to the rubrics div */
+                rubricsDiv.appendChild(curGroup);
             }
-
-
-            /* Create all the elements we'll need for the "Clean_Code" rubric */
-            var cleanCodeGroup = document.createElement("div");
-            cleanCodeGroup.id = "clean_code_group";
-
-            /* Label for "Clean_Code" */
-            var cleanCodeLabel = document.createElement("label");
-            cleanCodeLabel.htmlFor = "clean_code";
-            cleanCodeLabel.textContent = "Clean Code: 1";
-
-            /* Slider */
-            var cleanCodeSlider = document.createElement("div");
-            cleanCodeSlider.className = "slider1to5";
-            cleanCodeSlider.role = "slider";
-            /* Use jQuery UI to create slider */
-            $(cleanCodeSlider).slider({
-                range: "max",
-                min: 1,
-                max: 5,
-                value: 1,
-                slide: function(event, ui) {
-                    /* Tell the score in cleanCodeLabel when the slider changes. */
-                    cleanCodeLabel.textContent = "Clean Code: "+ui.value;
-                    /* Set scoreData */
-                    scoreData.Clean_Code = ui.value;
-                }
-            });
-
-            /* Create all the elements we'll need for the "Creativity" rubric */
-            var creativityGroup = document.createElement("div");
-            creativityGroup.id = "creativity_group";
-
-            /* Label for "Creativity" */
-            var creativityLabel = document.createElement("label");
-            creativityLabel.htmlFor = "creativity";
-            creativityLabel.textContent = "Creativity: 1";
-
-            /* Slider */
-            var creativitySlider = document.createElement("div");
-            creativitySlider.className = "slider1to5";
-            creativitySlider.role = "slider";
-            /* Use jQuery UI to create slider */
-            $(creativitySlider).slider({
-                range: "max",
-                min: 1,
-                max: 5,
-                value: 1,
-                slide: function(event, ui) {
-                    /* Tell the score in creativityLabel when the slider changes. */
-                    creativityLabel.textContent = "Creativity: "+ui.value;
-                    /* Set scoreData */
-                    scoreData.Creativity = ui.value;
-                }
-            });
-
-            /* Create all the elements we'll need for the "Overall" rubric */
-            var overallGroup = document.createElement("div");
-            overallGroup.id = "overall_group";
-
-            /* Label for "Overall" */
-            var overallLabel = document.createElement("label");
-            overallLabel.htmlFor = "overall";
-            overallLabel.textContent = "Overall: 1";
-
-            /* Slider */
-            var overallSlider = document.createElement("div");
-            overallSlider.className = "slider1to5";
-            overallSlider.role = "slider";
-            $(overallSlider).slider({
-                range: "max",
-                min: 1,
-                max: 5,
-                value: 1,
-                slide: function(event, ui) {
-                    /* Tell the score in overallLabel when the slider changes. */
-                    overallLabel.textContent = "Overall: "+ui.value;
-                    /* Set scoreData */
-                    scoreData.Overall = ui.value;
-                }
-            });
-
-            /* Append everything to whatever it needs to be appended to */
-            for (var i = 0; i < levelSelectBtns.length; i++){
-                levelSelectBtnGroup.appendChild(levelSelectBtns[i]);
-            }
-            levelSelect.appendChild(levelSelectBtnGroup);
-            levelGroup.appendChild(levelLabel);
-            levelGroup.appendChild(levelSelect);
-
-            cleanCodeGroup.appendChild(cleanCodeLabel);
-            cleanCodeGroup.appendChild(cleanCodeSlider);
-
-            creativityGroup.appendChild(creativityLabel);
-            creativityGroup.appendChild(creativitySlider);
-
-            overallGroup.appendChild(overallLabel);
-            overallGroup.appendChild(overallSlider);
-
-            /* Append all of our judging tools to the rubrics div */
-            rubricsDiv.appendChild(levelGroup);
-            rubricsDiv.appendChild(cleanCodeGroup);
-            rubricsDiv.appendChild(creativityGroup);
-            rubricsDiv.appendChild(overallGroup);
 
             /* Append our program iframe to the "program-preview" div. */
             programPreview.appendChild(programIframe);
 
-            /* Append all of the score information to the page. */
-            currentScoreDiv.appendChild(levelRubric);
-            currentScoreDiv.appendChild(cleanCodeRubric);
-            currentScoreDiv.appendChild(creativityRubric);
-            currentScoreDiv.appendChild(overallRubric);
-
             /* Set the widths of our sliders to 30% */
-            $(".slider1to5").width("30%");
-
-            /* Bind to click for Level Select */
-            for (var i = 0; i < levels.length; i++) {
-                $("#lvlSelectButton" + (i + 1).toString()).click(function(event) {
-                    var id = event.target.id;
-                    /* Unselect previously selected button */
-                    if (selectedLvlBtn != "n/a" && selectedLvlBtn != id) {
-                        $("#" + selectedLvlBtn).removeClass("btn-success").addClass("btn-default");
-                    }
-                    /* Set selectedLvlBtn and scoreData.Level */
-                    selectedLvlBtn = id;
-                    scoreData.Level = parseInt(selectedLvlBtn.replace("lvlSelectButton", ""), 10);
-                    /* Select the selected button */
-                    $("#" + id).removeClass("btn-default").addClass("btn-success");
-                });
-            }
+            $(".judgingSlider").width("30%");
         });
 
         console.log("Exiting loadEntry callback!");
@@ -298,8 +231,8 @@ $(".viewOnKA").on("click", function() {
 /* This bool is true if the user has been authenticated. */
 var authenticated = false;
 $("#submitBtn").on("click", function() {
-    /* Tell the user to fill out all criteria if they haven't filled out the Level. */
-    if (!scoreData.Level) {
+    /* Tell the user to fill out all criteria if they haven't filled out everything. */
+    for (var k in scoreData) if (scoreData[k] == null) {
 		alert("Please fill out all criteria.");
 		return;
 	}
