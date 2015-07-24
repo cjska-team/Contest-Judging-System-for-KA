@@ -32,7 +32,7 @@ $(".hideWhileLoad").css("display", "none");
 Contest_Judging_System.loadContest(contestId, function(contest) {
 
 	/* Randomly pick n entries, and then display them on the page. */
-	Contest_Judging_System.get_N_Entries(numberOfEntries === null ? 400000 : numberOfEntries, contest.id, function(entries) {
+	Contest_Judging_System.get_N_Entries((numberOfEntries === null ? KA_API.misc.allData : numberOfEntries), contest.id, function(entries) {
 
 		/* Setup the page */
 		$("title").text(contest.name);
@@ -96,6 +96,7 @@ Contest_Judging_System.loadContest(contestId, function(contest) {
                         return;
                     }
 
+                    /* Round the average score for the current rubric, down. */
                     var val = Math.floor(curr.scores.rubric[rubric].avg);
 
                     Contest_Judging_System.getRubrics(function(rubrics) {
@@ -103,6 +104,7 @@ Contest_Judging_System.loadContest(contestId, function(contest) {
                         /* Credit to @NobleMushtak for the following idea. */
                         var selectedRubric = currRubric.replace(/_/gi, " ");
 
+                        /* If the current rubric has the [optional] keys property, let's convert the IDs to human-readable keys */
                         if (rubrics[currRubric].hasOwnProperty("keys")) {
                             val = rubrics[currRubric].keys[val];
 

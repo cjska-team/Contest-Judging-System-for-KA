@@ -13,6 +13,9 @@ window.KA_API = (function() {
     /* Everything from this namespace will be placed in the object that is returned. */
     return {
         /* Khan Academy API Urls */
+        misc: {
+            allData: 400000
+        },
         urls: {
             /* For getting contests: */
             spotlight: "https://www.khanacademy.org/api/internal/scratchpads/top?casing=camel&topic_id=xffde7c31&sort=4&limit=40000&page=0&lang=en&_=1436581332879",
