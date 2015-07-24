@@ -86,8 +86,8 @@ Contest_Judging_System.loadContest(contestId, function(contest) {
 
             /* Go through all the score information for this entry, and create a list item for it. */
             for (var rubric in curr.scores.rubric) {
+                /* This is in a function wrapper so rubric and scoreList will not be lost. */
                 (function() {
-                    /* This is in a function wrapper so rubric and scoreList will not be lost. */
                     var currRubric = rubric;
                     var currScoreList = scoreList;
 
