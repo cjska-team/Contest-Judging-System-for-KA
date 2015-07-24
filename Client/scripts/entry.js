@@ -120,7 +120,7 @@ function loadEntry() {
             /* All buttons for "Level" */
             var levelSelectBtns = [ ];
             /* All levels */
-            var levels = ["Beginner", "Intermediate", "Advanced"];
+            var levels = ["Unknown", "Beginner", "Intermediate", "Advanced"];
             /* Create all buttons and push into levelSelectBtns */
             for (var i = 0; i < levels.length; i++){
                 var levelSelectButton = document.createElement("button");
@@ -248,7 +248,7 @@ function loadEntry() {
             $(".slider1to5").width("30%");
 
             /* Bind to click for Level Select */
-            for (var i = 0; i < 3; i++) {
+            for (var i = 0; i < levels.length; i++) {
                 $("#lvlSelectButton" + (i + 1).toString()).click(function(event) {
                     var id = event.target.id;
                     /* Unselect previously selected button */
