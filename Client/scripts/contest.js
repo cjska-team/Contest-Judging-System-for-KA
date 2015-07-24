@@ -8,6 +8,7 @@ if (window.location.search.indexOf("?contest") === -1) {
 	window.history.back();
 }
 
+/* If it doesn't look like there's an entry count in the URL, shown an alert, and go back one page. */
 if (window.location.search.indexOf("&entries") === -1) {
 	alert("Please specify the number of entries you'd like to view!");
 
@@ -21,9 +22,10 @@ var numberOfEntries = window.location.href.split("&entries=")[1] === "all" ? nul
 /* Go ahead and find the div that we'll store all the entries in. */
 var entriesList = document.querySelector(".media-list");
 
+/* Log some messages to the console if we find a contest. This is used mainly for debugging purposes. */
 console.log("Contest found!");
 console.log("Contest ID: " + contestId);
-console.log("We're going to load " + numberOfEntries + " entries!");
+console.log("We're going to load " + (numberOfEntries === null ? "all" : numberOfEntries) + " entries!");
 
 /* Hide elements that we've marked with the class "hideWhileLoad". */
 $(".hideWhileLoad").css("display", "none");
@@ -32,20 +34,20 @@ $(".hideWhileLoad").css("display", "none");
 Contest_Judging_System.loadContest(contestId, function(contest) {
 
 	/* Randomly pick n entries, and then display them on the page. */
-	Contest_Judging_System.get_N_Entries(numberOfEntries === null ? 400000 : numberOfEntries, contest.id, function(entries) {
+	Contest_Judging_System.get_N_Entries((numberOfEntries === null ? KA_API.misc.allData : numberOfEntries), contest.id, function(entries) {
 
 		/* Setup the page */
 		$("title").text(contest.name);
 		$("#contestName").text(contest.name);
 		$("#contestDescription").html("Description coming soon!");
 
+        /* Get the "contestDescription" div, and store it in a variable for later use. */
 		var detailsDiv = document.getElementById("contestDescription");
+        /* Set the innerHTML of the contestDescription div, to the description stored in Firebase, or "No description found", if we don't have a description stored in Firebase. */
 		detailsDiv.innerHTML = contest.desc || "No description found!";
 
-		console.log(contest.desc);
 		/* Add all entries to the page */
 		for (var i in entries) {
-            console.log(entries[i]);
             /* The JSON object corresponding to this entry. */
             var curr = entries[i];
             
@@ -88,9 +90,11 @@ Contest_Judging_System.loadContest(contestId, function(contest) {
 
             /* Go through all the score information for this entry, and create a list item for it. */
             for (var rubric in curr.scores.rubric) {
+                /* This is in a function wrapper so rubric and scoreList will not be lost. */
                 (function() {
-                    /* This is in a function wrapper so rubric and scoreList will not be lost. */
+                    /* Store the current rubric in a new variable, so we don't lose the old one. */
                     var currRubric = rubric;
+                    /* Store the score list for the currenty entry, in a new variable so we don't lose the old one. */
                     var currScoreList = scoreList;
 
                     /* We don't need to look for a max for the "NumberOfJudges" rubric, so if we're currently at it, return. */
@@ -98,6 +102,7 @@ Contest_Judging_System.loadContest(contestId, function(contest) {
                         return;
                     }
 
+                    /* Round the average score for the current rubric, down. */
                     var val = Math.floor(curr.scores.rubric[rubric].avg);
 
                     Contest_Judging_System.getRubrics(function(rubrics) {
@@ -105,21 +110,18 @@ Contest_Judging_System.loadContest(contestId, function(contest) {
                         /* Credit to @NobleMushtak for the following idea. */
                         var selectedRubric = currRubric.replace(/_/gi, " ");
 
+                        /* If the current rubric has the [optional] keys property, let's convert the IDs to human-readable keys */
                         if (rubrics[currRubric].hasOwnProperty("keys")) {
-                            console.log(rubrics[currRubric].keys);
                             val = rubrics[currRubric].keys[val];
-                            console.log("Value switched to a key!");
 
                             var listItem = document.createElement("li");
                             listItem.textContent = selectedRubric + ": " + val;
 
                             currScoreList.appendChild(listItem);
-                            console.log(listItem);
                         } else {
                             var listItem = document.createElement("li");
                             listItem.textContent = selectedRubric + ": " + val + " out of " + max;
                             currScoreList.appendChild(listItem);
-                            console.log(listItem);
                         }
                     });
                 })();

@@ -13,6 +13,9 @@ window.KA_API = (function() {
     /* Everything from this namespace will be placed in the object that is returned. */
     return {
         /* Khan Academy API Urls */
+        misc: {
+            allData: 400000
+        },
         urls: {
             /* For getting contests: */
             spotlight: "https://www.khanacademy.org/api/internal/scratchpads/top?casing=camel&topic_id=xffde7c31&sort=4&limit=40000&page=0&lang=en&_=1436581332879",
@@ -82,6 +85,18 @@ window.KA_API = (function() {
                 }
             });
         },
+        numberOfEntriesInContest: function(contest, callback) {
+            var numOfEntries = 0;
+
+            $.ajax({
+                type: 'GET',
+                url: this.urls.spinoffs(contest),
+                async: true,
+                complete: function(apiResponse) {
+                    callback(apiResponse.responseJSON.scratchpads.length);
+                }
+            });
+        },
         /* This function gets all of Pamela's contest programs from Khan Academy and passes them into the callback function. */
         getContests: function(callback) {
             /* This Bool is true iff the first AJAX request has finished. */
@@ -129,6 +144,10 @@ window.KA_API = (function() {
                                         KA_API.getContestEntries(contests[programID].id, function(entries) {
                                             contests[programID].entries = entries;
                                         });
+
+                                        KA_API.numberOfEntriesInContest(contests[programID].id, function(count) {
+                                            contests[programID].entryCount = count;
+                                        });
                                     }
                                 });
                             })(programID, allPrograms[i], allContests);
@@ -145,7 +164,7 @@ window.KA_API = (function() {
                 if (apiQueryDone) {
                     /* If the first AJAX request has finished, make sure all of the other AJAX requests have finished. If we find a contest without the entries property, we know their AJAX request has not finished, so we return. */
                     for (var i in allContests) {
-                        if (!allContests[i].hasOwnProperty("entries")) return;
+                        if (!allContests[i].hasOwnProperty("entries") || !allContests[i].hasOwnProperty("entryCount")) return;
                     }
 
                     /* At this point, we have made sure the request has finished, so we make a log in the console, stop looping this asynchronous function, and finally pass contests into callback. */

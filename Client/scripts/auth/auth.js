@@ -37,6 +37,7 @@ var Authentication_Logic = (function() {
 			var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
 			var usersRef = fbRef.child("users");
 
+			/* Add a new user to Firebase, and set their name to their Google Display Name. Also give them a default permLevel of 1. */
 			usersRef.child(userData.uid).set({
 				name: userData.google.displayName,
 				permLevel: 1
@@ -46,6 +47,7 @@ var Authentication_Logic = (function() {
 		logUserIn: function(callback) {
 			var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
 
+			/* Show a Google OAuth popup */
 			fbRef.authWithOAuthPopup("google", function(error, authData) {
 				/* If an error occurred, log the error to the console, and pass false to our callback. */
 				if (error) {
@@ -53,16 +55,21 @@ var Authentication_Logic = (function() {
 					callback(false);
 				}
 
+				/* Make a call to our function that checks to see if this user exists in our Firebase data. */
 				Authentication_Logic.doesUserExist(authData, function(doTheyExist) {
+					/* If they do exist... */
 					if (doTheyExist) {
+						/* ...update their loggedInUID cookie, and set it to their Google UID. */
 						Contest_Judging_System.setCookie("loggedInUID", authData.uid);
 					} else {
-						/* The user doesn't exist. Sign them up? */
+						/* ...sign them up? (And update their loggedInUID cookie) */
 						Authentication_Logic.createUser(authData);
 						Contest_Judging_System.setCookie("loggedInUID", authData.uid);
 					}
 				});
+				/* Log a message to the console, and invoke our callback */
 				console.log("Authenticated!");
+				callback();
 			});
 		},
 		/* Checks to see if the selected user has the correct permLevel in Firebase */
@@ -116,6 +123,7 @@ if (Authentication_Logic.isUserLoggedIn()) {
 /* When the login button is clicked, attempt to log the user in. If the login succeeds, move to the next step (TODO). */
 $(".login").on("click", function() {
 	Authentication_Logic.logUserIn(function() {
+		$(".login").css("display", "none");
 		console.log("Logged user in!");
 	});
 });

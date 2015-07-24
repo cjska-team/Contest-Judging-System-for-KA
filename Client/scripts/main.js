@@ -42,7 +42,7 @@ function finishRequest(contests) {
 
         var viewAllEntriesBtn = document.createElement("a");
         viewAllEntriesBtn.className = "btn btn-sm btn-primary center-block";
-        viewAllEntriesBtn.textContent = "View all Entries";
+        viewAllEntriesBtn.textContent = "View all " + curr.entryCount + " Entries";
         viewAllEntriesBtn.href = "contest.html?contest=" + curr.id + "&entries=all";
 
         //Create the div containing the body of contest info
@@ -52,6 +52,8 @@ function finishRequest(contests) {
         var mediaHeading = document.createElement("h4");
         mediaHeading.className = "media-heading";
         mediaHeading.textContent = curr.name;
+        var mediaSmall = document.createElement("small");
+        mediaSmall.textContent = " (" + curr.entryCount + " entries)";
         //Create the div containing the contest details
         var detailsDiv = document.createElement("div");
         detailsDiv.className = "details";
@@ -66,6 +68,7 @@ function finishRequest(contests) {
         mediaLeftDiv.appendChild(viewAllEntriesBtn);
 
         //Put heading inside body
+        mediaHeading.appendChild(mediaSmall);
         mediaBody.appendChild(mediaHeading);
         //Put body inside detailsDiv
         mediaBody.appendChild(detailsDiv);
