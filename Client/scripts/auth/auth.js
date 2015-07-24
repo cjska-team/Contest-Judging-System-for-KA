@@ -57,6 +57,7 @@ var Authentication_Logic = (function() {
 						Contest_Judging_System.setCookie("loggedInUID", authData.uid);
 					}
 				});
+				console.log("Authenticated!");
 			});
 		},
 		userHasCorrectPermissions: function(uid, requiredPerms, callback) {
