@@ -23,7 +23,7 @@ var entriesList = document.querySelector(".media-list");
 
 console.log("Contest found!");
 console.log("Contest ID: " + contestId);
-console.log("We're going to load " + numberOfEntries + " entries!");
+console.log("We're going to load " + (numberOfEntries === null ? "all" : numberOfEntries) + " entries!");
 
 /* Hide elements that we've marked with the class "hideWhileLoad". */
 $(".hideWhileLoad").css("display", "none");
@@ -42,10 +42,8 @@ Contest_Judging_System.loadContest(contestId, function(contest) {
 		var detailsDiv = document.getElementById("contestDescription");
 		detailsDiv.innerHTML = contest.desc || "No description found!";
 
-		console.log(contest.desc);
 		/* Add all entries to the page */
 		for (var i in entries) {
-            console.log(entries[i]);
             /* The JSON object corresponding to this entry. */
             var curr = entries[i];
             
@@ -106,20 +104,16 @@ Contest_Judging_System.loadContest(contestId, function(contest) {
                         var selectedRubric = currRubric.replace(/_/gi, " ");
 
                         if (rubrics[currRubric].hasOwnProperty("keys")) {
-                            console.log(rubrics[currRubric].keys);
                             val = rubrics[currRubric].keys[val];
-                            console.log("Value switched to a key!");
 
                             var listItem = document.createElement("li");
                             listItem.textContent = selectedRubric + ": " + val;
 
                             currScoreList.appendChild(listItem);
-                            console.log(listItem);
                         } else {
                             var listItem = document.createElement("li");
                             listItem.textContent = selectedRubric + ": " + val + " out of " + max;
                             currScoreList.appendChild(listItem);
-                            console.log(listItem);
                         }
                     });
                 })();
