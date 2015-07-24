@@ -138,7 +138,7 @@ function loadEntry() {
             /* Label for "Clean_Code" */
             var cleanCodeLabel = document.createElement("label");
             cleanCodeLabel.htmlFor = "clean_code";
-            cleanCodeLabel.textContent = "Clean Code: 3";
+            cleanCodeLabel.textContent = "Clean Code: 1";
 
             /* Slider */
             var cleanCodeSlider = document.createElement("div");
@@ -149,7 +149,7 @@ function loadEntry() {
                 range: "max",
                 min: 1,
                 max: 5,
-                value: 3,
+                value: 1,
                 slide: function(event, ui) {
                     /* Tell the score in cleanCodeLabel when the slider changes. */
                     cleanCodeLabel.textContent = "Clean Code: "+ui.value;
@@ -165,7 +165,7 @@ function loadEntry() {
             /* Label for "Creativity" */
             var creativityLabel = document.createElement("label");
             creativityLabel.htmlFor = "creativity";
-            creativityLabel.textContent = "Creativity: 3";
+            creativityLabel.textContent = "Creativity: 1";
 
             /* Slider */
             var creativitySlider = document.createElement("div");
@@ -176,7 +176,7 @@ function loadEntry() {
                 range: "max",
                 min: 1,
                 max: 5,
-                value: 3,
+                value: 1,
                 slide: function(event, ui) {
                     /* Tell the score in creativityLabel when the slider changes. */
                     creativityLabel.textContent = "Creativity: "+ui.value;
@@ -192,7 +192,7 @@ function loadEntry() {
             /* Label for "Overall" */
             var overallLabel = document.createElement("label");
             overallLabel.htmlFor = "overall";
-            overallLabel.textContent = "Overall: 3";
+            overallLabel.textContent = "Overall: 1";
 
             /* Slider */
             var overallSlider = document.createElement("div");
@@ -202,7 +202,7 @@ function loadEntry() {
                 range: "max",
                 min: 1,
                 max: 5,
-                value: 3,
+                value: 1,
                 slide: function(event, ui) {
                     /* Tell the score in overallLabel when the slider changes. */
                     overallLabel.textContent = "Overall: "+ui.value;
