@@ -2,11 +2,13 @@
  * This file contains all the authentication logic for the Khan Academy Contest Judging System
  */
 var Authentication_Logic = (function() {
+	/* Firebase, jQuery, and Contest_Judging_System are all required objects, so if we don't have them; exit immediately! */
 	if (!window.Firebase || !window.jQuery || !window.Contest_Judging_System) {
 		console.log("[Authentication_Logic] Firebase and jQuery are both required!");
 		return;
 	}
 
+	/* Return an object containing all of the data relating to this wrapper. */
 	return {
 		doesUserExist: function(authData, callback) {
 			var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
