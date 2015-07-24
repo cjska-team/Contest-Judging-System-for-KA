@@ -64,7 +64,7 @@ function finishRequest(contests) {
         //Put link inside mediaLeftDiv
         mediaLeftDiv.appendChild(imgLink);
         /* Put button into mediaLeftDiv */
-        if (curr.entryCount < 30) {
+        if (curr.entryCount > 30) {
             mediaLeftDiv.appendChild(viewEntriesBtn);
         }
         mediaLeftDiv.appendChild(viewAllEntriesBtn);
