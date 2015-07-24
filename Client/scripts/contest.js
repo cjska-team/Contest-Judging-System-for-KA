@@ -21,6 +21,7 @@ var numberOfEntries = window.location.href.split("&entries=")[1] === "all" ? nul
 /* Go ahead and find the div that we'll store all the entries in. */
 var entriesList = document.querySelector(".media-list");
 
+/* Log some messages to the console if we find a contest. This is used mainly for debugging purposes. */
 console.log("Contest found!");
 console.log("Contest ID: " + contestId);
 console.log("We're going to load " + (numberOfEntries === null ? "all" : numberOfEntries) + " entries!");
