@@ -1,0 +1,4 @@
+*.css
+*.js
+!jquery-ui.min.css
+!jquery-ui.min.js
