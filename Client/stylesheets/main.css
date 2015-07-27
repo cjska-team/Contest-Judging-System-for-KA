@@ -40,3 +40,7 @@ summary * {
     margin: 5px auto 5px auto;
     width: 100%;
 }
+
+.login {
+    display: none;
+}
