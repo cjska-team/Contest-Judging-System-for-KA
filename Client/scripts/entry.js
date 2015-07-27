@@ -164,18 +164,21 @@ function loadEntry() {
                     curSlider.role = "slider";
                     /* This is put in a function wrapper to save the value of curLabel, scoreData, rubricName, and k for the function inside the JSON object. */
                     (function(curLabel, scoreData, rubricName, k) {
-                        /* Use jQuery UI to create slider */
-                        $(curSlider).slider({
-                            range: "max",
-                            min: rubrics[k].min,
-                            max: rubrics[k].max,
-                            value: rubrics[k].min,
-                            slide: function(event, ui) {
-                                /* Tell the score in curLabel when the slider changes. */
-                                curLabel.textContent = rubricName+": "+ui.value;
-                                /* Set scoreData */
-                                scoreData[k] = ui.value;
+                        /* Use noUiSlider to create slider */
+                        noUiSlider.create(curSlider, {
+                            connect: "lower",
+                            start: rubrics[k].min,
+                            step: 1,
+                            range: {
+                                min: rubrics[k].min,
+                                max: rubrics[k].max
                             }
+                        });
+                        curSlider.noUiSlider.on("update", function(values, handle) {
+                            /* Tell the score in curLabel when the slider changes. */
+                            curLabel.textContent = rubricName+": "+parseInt(values[handle]).toString();
+                            /* Set scoreData */
+                            scoreData[k] = parseInt(values[handle]);
                         });
                     })(curLabel, scoreData, rubricName, k);
 
