@@ -66,10 +66,10 @@ var Authentication_Logic = (function() {
 						Authentication_Logic.createUser(authData);
 						Contest_Judging_System.setCookie("loggedInUID", authData.uid);
 					}
+                    /* Log a message to the console, and invoke our callback */
+                    console.log("Authenticated!");
+                    callback(true);
 				});
-				/* Log a message to the console, and invoke our callback */
-				console.log("Authenticated!");
-				callback();
 			});
 		},
 		/* Checks to see if the selected user has the correct permLevel in Firebase */
@@ -106,11 +106,7 @@ var Authentication_Logic = (function() {
 		},
 		/* Checks to see if the user is currently logged in */
 		isUserLoggedIn: function() {
-			if (Contest_Judging_System.getCookie("loggedInUID") !== "") {
-				return true;
-			}
-
-			return false;
+			return (Contest_Judging_System.getCookie("loggedInUID") !== "");
 		}
 	};
 })();
