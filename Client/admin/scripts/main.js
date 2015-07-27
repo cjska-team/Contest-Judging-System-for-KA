@@ -5,6 +5,8 @@
  * Step 4: [ ... ]
  */
 
+var authChecksDone = false;
+
 /* Check if user is logged in. We'll be using cookies to store whether or not the user is logged in (unfortunately). */
 if (Contest_Judging_System.getCookie("loggedInUser") === "") {
 	alert("You don't appear to be logged in! Leaving page.");
@@ -32,7 +34,15 @@ if (Contest_Judging_System.getCookie("loggedInUser") === "") {
 				window.location.assign("../index.html");
 			}
 		}
+		authChecksDone = true;
 	});
 }
 
 /* Do stuff here! */
+
+var authChecks = setInterval(function() {
+	if (authChecksDone) {
+		clearInterval(authChecks);
+		console.log("Authenticated!");
+	}
+}, 1000);
