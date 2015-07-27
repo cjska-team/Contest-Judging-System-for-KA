@@ -34,5 +34,5 @@ if (Contest_Judging_System.getCookie("loggedInUser") !== "") {
 	});
 } else {
 	/* User must not be logged in... ;( */
-	/* TODO */
+	console.log("User doesn't appear to be logged in!");
 }
