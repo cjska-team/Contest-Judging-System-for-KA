@@ -69,28 +69,28 @@ function finishRequest(contests) {
         }
         mediaLeftDiv.appendChild(viewAllEntriesBtn);
 
-        //Put heading inside body
+        /* Put heading inside body */
         mediaHeading.appendChild(mediaSmall);
         mediaBody.appendChild(mediaHeading);
-        //Put body inside detailsDiv
+        /* Put body inside detailsDiv */
         mediaBody.appendChild(detailsDiv);
 
-        //Put mediaLeftDiv and mediaBody inside mediaDiv
+        /* Put mediaLeftDiv and mediaBody inside mediaDiv */
         mediaDiv.appendChild(mediaLeftDiv);
         mediaDiv.appendChild(mediaBody);
 
-        //Put mediaDiv inside contestDiv
+        /* Put mediaDiv inside contestDiv */
         contestDiv.appendChild(mediaDiv);
-        //Put contestDiv inside rowDiv
+        /* Put contestDiv inside rowDiv */
         rowDiv.appendChild(contestDiv);
-        //Put rowDiv inside the #contests div
+        /* Put rowDiv inside the #contests div */
         contestsDiv.appendChild(rowDiv);
     }
 
 
-    //Now we're done, so get rid of the loading screen.
+    /* Now we're done, so get rid of the loading screen. */
     loadingDiv.style.display = "none";
 }
 
-//Get all of the stored contests from the Firebase database and call finishRequest when done
+/* Get all of the stored contests from the Firebase database and call finishRequest when done */
 Contest_Judging_System.getStoredContests(finishRequest);
