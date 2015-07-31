@@ -23,8 +23,16 @@ var contestId = window.location.href.split("?contest=")[1].split("&")[0];
 /* Locate the entry ID in the URL, and store it for later use. */
 var entryId = window.location.href.split("&entry=")[1];
 
+/* The dimensions of the program */
+var dimens = {
+    width: 400,
+    height: 400
+};
+/* Set the <input> elements in <form>[name=dimensions] to dimens */
+document.forms.dimensions.width.value = dimens.width;
+document.forms.dimensions.height.value = dimens.height;
 /* The base URL for the program preview Iframe. */
-var baseURL = "https://www.khanacademy.org/computer-programming/entry/{ENTRYID}/embedded?buttons=no&editor=yes&author=no&embed=yes";
+var baseURL = "https://www.khanacademy.org/computer-programming/entry/{ENTRYID}/embedded?buttons=no&editor=yes&author=no&embed=yes&width="+dimens.width+"&height="+dimens.height;
 
 /* A couple elements that we'll be using later on */
 var programPreview = document.querySelector(".program-preview");
@@ -71,6 +79,8 @@ function judgingButtonClick(k, kLower) {
     }
 }
 
+/* The <iframe> for this program */
+var programIframe;
 function loadEntry() {
     /* Fetch the data for this contest entry, and then use the data to build up the current page. */
     /* TODO: Fetch all rubrics to automate the min/max/key fetching. */
@@ -81,10 +91,10 @@ function loadEntry() {
         document.querySelector("#program-name").textContent = entryData.name;
 
         /* The following stuff is broken in Firefox. Issue reported on Khan Academy live-editor repo. */
-        var programIframe = document.createElement("iframe");
+        programIframe = document.createElement("iframe");
         programIframe.src = baseURL.replace("{ENTRYID}", entryData.id);
-        programIframe.width = 940;
-        programIframe.height = 400;
+        programIframe.width = "100%";
+        programIframe.height = dimens.height
         programIframe.scrolling = "no";
         programIframe.frameborder = 0;
 
@@ -164,18 +174,21 @@ function loadEntry() {
                     curSlider.role = "slider";
                     /* This is put in a function wrapper to save the value of curLabel, scoreData, rubricName, and k for the function inside the JSON object. */
                     (function(curLabel, scoreData, rubricName, k) {
-                        /* Use jQuery UI to create slider */
-                        $(curSlider).slider({
-                            range: "max",
-                            min: rubrics[k].min,
-                            max: rubrics[k].max,
-                            value: rubrics[k].min,
-                            slide: function(event, ui) {
-                                /* Tell the score in curLabel when the slider changes. */
-                                curLabel.textContent = rubricName+": "+ui.value;
-                                /* Set scoreData */
-                                scoreData[k] = ui.value;
+                        /* Use noUiSlider to create slider */
+                        noUiSlider.create(curSlider, {
+                            connect: "lower",
+                            start: rubrics[k].min,
+                            step: 1,
+                            range: {
+                                min: rubrics[k].min,
+                                max: rubrics[k].max
                             }
+                        });
+                        curSlider.noUiSlider.on("update", function(values, handle) {
+                            /* Tell the score in curLabel when the slider changes. */
+                            curLabel.textContent = rubricName+": "+parseInt(values[handle]).toString();
+                            /* Set scoreData */
+                            scoreData[k] = parseInt(values[handle]);
                         });
                     })(curLabel, scoreData, rubricName, k);
 
@@ -203,12 +216,12 @@ function loadEntry() {
 
 /* Whenever we click the toggleCode button; toggle the code. */
 $(".toggleCode").on("click", function() {
-	var currentSrc = $("iframe").attr("src");
+	var currentSrc = programIframe.src;
 
 	if (currentSrc.indexOf("editor=yes") !== -1) {
-		$("iframe").attr("src", currentSrc.replace("editor=yes", "editor=no"));
+	    programIframe.src = currentSrc.replace("editor=yes", "editor=no");
 	} else {
-		$("iframe").attr("src", currentSrc.replace("editor=no", "editor=yes"));
+		programIframe.src = currentSrc.replace("editor=no", "editor=yes");
 	}
 });
 
@@ -247,4 +260,26 @@ $("#submitBtn").on("click", function() {
     });
     /* Otherwise, if they've already been authenticated, just judge the entry. */
     else judgeEntry(scoreData);
+});
+
+/* When we click the "Set Dimensions" button, set the dimensions of the program. */
+$("#setdimensions").on("click", function(event) {
+    /* Prevent the form from redirecting */
+    event.preventDefault();
+    var width = parseInt(document.forms.dimensions.width.value), height = parseInt(document.forms.dimensions.height.value);
+    if (isNaN(width) || isNaN(height)) alert("Please enter in valid integers for the dimensions. Thanks!");
+
+    /* Edit the src attribute to set the width and height attributes */
+    console.log(programIframe.src.replace("width="+dimens.width, "width="+width).replace("height="+dimens.height, "height="+height));
+    programIframe.src = programIframe.src.replace("width="+dimens.width, "width="+width).replace("height="+dimens.height, "height="+height);
+    
+    /* Set dimens */
+    dimens = {
+        width: width,
+        height: height
+    };
+    /* Adjust height */
+    programIframe.height = dimens.height;
+    programPreview.style.height = "auto";
+    console.log(dimens.height, programIframe.style.height);
 });
