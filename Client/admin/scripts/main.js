@@ -4,8 +4,10 @@
  * Step 3: Load all tools onto the page.
  * Step 4: [ ... ]
  */
-
+var userData;
 var authChecksDone = false;
+
+document.querySelector(".hideWhileAuthCheck").style.display = "none";
 
 /* Check if user is logged in. We'll be using cookies to store whether or not the user is logged in (unfortunately). */
 if (Contest_Judging_System.getCookie("loggedInUser") === "") {
@@ -37,6 +39,8 @@ if (Contest_Judging_System.getCookie("loggedInUser") === "") {
 				window.location.assign("../index.html");
 			}
 		}
+
+		userData = data.val()[userID];
 		/* Once everything is done, set authChecksDone to true, that way we can move to the next step. */
 		authChecksDone = true;
 	});
@@ -44,9 +48,12 @@ if (Contest_Judging_System.getCookie("loggedInUser") === "") {
 
 var authChecks = setInterval(function() {
 	if (authChecksDone) {
+		document.querySelector("#loading").style.display = "none";
+		document.querySelector(".hideWhileAuthCheck").style.display = "block";
 		clearInterval(authChecks);
 		console.log("Authenticated!");
 
 		/* Do stuff here! */
+		document.getElementById("welcomeMessage").innerHTML = document.getElementById("welcomeMessage").innerHTML.replace("{{name}}", userData.name);
 	}
 }, 1000);

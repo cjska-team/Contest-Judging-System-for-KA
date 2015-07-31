@@ -7,8 +7,16 @@
         <link rel="stylesheet" href="../stylesheets/main.css">
 	</head>
 	<body>
-		<div class="container-fluid">
-			<h1>TODO</h1>
+		<div id="loading">
+            <h1 class="huge">
+                Performing authentication checks. Please wait...
+            </h1>
+            <h1><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span></h1>
+        </div>
+		<div class="container">
+			<div class="jumbotron hideWhileAuthCheck">
+				<h3 id="welcomeMessage">Hello, {{name}}</h3>
+			</div>
 		</div>
 		<script src="../../Resources/firebase.js"></script>
         <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>

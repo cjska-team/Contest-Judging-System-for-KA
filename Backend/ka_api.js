@@ -58,7 +58,7 @@ window.KA_API = (function() {
                             /* Program Scores */
                             scores: {
                                 rubric: {
-                                    "Clean_Code": {
+                                    "Level": {
                                         "rough": 1,
                                         "avg": 1
                                     },
@@ -66,7 +66,7 @@ window.KA_API = (function() {
                                         "rough": 1,
                                         "avg": 1
                                     },
-                                    "Level": {
+                                    "Clean_Code": {
                                         "rough": 1,
                                         "avg": 1
                                     },
