@@ -53,7 +53,20 @@ var authChecks = setInterval(function() {
 		clearInterval(authChecks);
 		console.log("Authenticated!");
 
-		/* Do stuff here! */
+		/* Welcome the user to the admin dashboard. */
 		document.getElementById("welcomeMessage").innerHTML = document.getElementById("welcomeMessage").innerHTML.replace("{{name}}", userData.name);
 	}
 }, 1000);
+
+$("#createContestBtn").on("click", function() {
+	$("#createContestModal").modal();
+});
+
+$("#createContestModal #cancel").on("click", function() {
+	$("#createContestModal").modal("hide");
+});
+
+$("#createContestModal #new-rubric #rubric-max").on("change", function() {
+	var numberOfKeysNeeded = $(this).val();
+	console.log(numberOfKeysNeeded);
+});

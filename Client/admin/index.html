@@ -13,11 +13,67 @@
             </h1>
             <h1><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span></h1>
         </div>
-		<div class="container">
-			<div class="jumbotron hideWhileAuthCheck">
-				<h3 id="welcomeMessage">Hello, {{name}}</h3>
+		<div class="container hideWhileAuthCheck">
+			<div class="jumbotron">
+				<h3 id="welcomeMessage">Welcome to the admin dashboard, {{name}}.</h3>
+			</div>
+			<div class="controls">
+				<button id="createContestBtn" class="btn btn-default">New contest</button>
 			</div>
 		</div>
+		<div id="createContestModal" class="modal fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">Create new contest</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="contest-title">Contest Name:</label>
+							<input type="text" id="contest-title" class="form-control"></input>
+						</div>
+						<div class="form-group">
+							<label for="program-id">Program ID:</label>
+							<input type="text" id="program-id" class="form-control"></input>
+						</div>
+						<div class="form-group">
+							<label for="rubric-info">Custom Rubrics:</label>
+							<div id="custom-rubrics">
+								<h4>Blah</h4>
+								<p><strong>Minimum value</strong>: 1</p>
+								<p><strong>Maximum value</strong>: 5</p>
+								<p><strong>Keys</strong>: N/A</p>
+							</div>
+						</div>
+						<hr>
+						<div class="form-group">
+							<label for="new-rubric">Create a new rubric:</label>
+							<div id="new-rubric">
+								<!-- RUBRIC NAME -->
+								<label for="rubric-name">Name:</label>
+								<input type="text" id="rubric-name" class="form-control"></input>
+
+								<!-- RUBRIC MIN -->
+								<label for="rubric-min">Minimum Value:</label>
+								<input type="number" id="rubric-min" min="0" value="0" class="form-control"></input>
+
+								<!-- RUBRIC MAX -->
+								<label for="rubric-max">Maximum Value:</label>
+								<input type="number" id="rubric-max" min="1" value="3" class="form-control"></input>
+
+								<!-- OPTIONAL KEYS -->
+								<div id="optional-keys-list">
+									<!-- TODO: Automagically generate these -->
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button id="cancel" class="btn btn-danger">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</div>	
 		<script src="../../Resources/firebase.js"></script>
         <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
