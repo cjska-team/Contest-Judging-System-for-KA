@@ -28,7 +28,7 @@ if (Contest_Judging_System.getCookie("loggedInUser") === "") {
 		if (!data.val().hasOwnProperty(userID)) {
 			/* User doesn't exist in Firebase, which means they cannot be an admin. */
 			/* Let the user know that we're leaving the page. */
-			alert("User ID \"" + userID + "\" doesn't exist in Firebase. Leaving page.");
+			alert("You're logged into Google, but we don't know who you are! Leaving page.");
 			window.location.assign("../index.html");
 		} else {
 			/* ...make sure they're an admin. */
