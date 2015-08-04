@@ -16,6 +16,7 @@ $(".login").on("click", function() {
 			console.log(error);
 		} else {
 			Contest_Judging_System.setCookie("loggedInUser", authData.uid);
+			Contest_Judging_System.setCookie("loggedInUsername", authData.google.displayName);
 			$(this).css("display", "none");
 		}
 	}, { remember: "sessionOnly" });
