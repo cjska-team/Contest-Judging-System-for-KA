@@ -4,7 +4,7 @@
         <meta charset="utf-8">
 		<title>Viewing entry</title>
 		<link rel="icon" href="../Resources/favicon.ico">
-        <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+        <link rel="stylesheet" href="../Resources/nouislider.min.css">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
         <link rel="stylesheet" href="stylesheets/main.css">
         <link rel="stylesheet" href="stylesheets/entry.css">
@@ -23,6 +23,13 @@
                     <h4>Program Controls:</h4>
                     <button class="btn btn-xs btn-primary toggleCode">Toggle Code</button>
                     <a class="btn btn-xs btn-success viewOnKA">View entry on KA</a>
+                    <form name="dimensions">
+                        <label for="width">Width: </label>
+                        <input type="number" name="width"/>
+                        <label for="height">Height: </label>
+                        <input type="number" name="height"/>
+                        <input type="submit" class="btn btn-xs btn-primary" value="Set Dimensions" id="setdimensions"/>
+                    </form>
                 </div>
                 <hr>
 				<div class="judging-pane">
@@ -40,7 +47,7 @@
 		</div>
 		<script src="../Resources/firebase.js"></script>
         <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-        <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+        <script src="../Resources/nouislider.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
         <script src="../Backend/ka_api.js"></script>
         <script src="../Backend/contest_judging_sys.js"></script>
