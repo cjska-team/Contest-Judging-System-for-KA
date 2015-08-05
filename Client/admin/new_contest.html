@@ -21,30 +21,44 @@
 			</div>
             <div class="controls">
                 <form name="new_contest">
-                    <label for="program_id"><h3>Khan Academy Program ID:</h3></label>
-                    <input type="number" name="program_id"></input><br/>
-                    <label><h3>New Rubric</h3></label><br/>
-                    <label for="rubric_name">Rubric Name: </label><input type="text" name="rubric_name"/><br/>
-                    <label for="rubric_type">Rubric Type</label><br/>
-                    <input type="radio" name="rubric_type" value="minmax" checked/>Minimum/Maximum<br/>
-                    <input type="radio" name="rubric_type" value="keys"/>Multiple Options
-                    <div id="minmax">
-                        <label for="min">Minimum:</label>
-                        <input type="number" name="minimum"/><br/>
-                        <label for="max">Maximum:</label>
-                        <input type="number" name="maximum"/><br/>
+                    <div class"form-group">
+                        <label for="program_id"><h3>Khan Academy Program ID:</h3></label>
+                        <input type="text" name="program_id" class="form-control"></input>
                     </div>
-                    <div id="keys">
-                        <label for="option">Enter Option Here: </label>
-                        <input type="text" name="option"/>
-                        <input type="submit" class="btn btn-success" value="Add Option" id="addoption"/>
-                        <label for="option" id="deleteOptionLabel" class="delete">Click an option below to delete it:</label>
-                        <div id="options"></div>
+                    <div class="form-group">
+                        <label><h3>New Rubric</h3></label><br/>
+                        <label for="rubric_name">Rubric Name: </label><input type="text" name="rubric_name" class="form-control"/><br/>
+                        <label for="rubric_type">Rubric Type</label><br/>
+                        <input type="radio" name="rubric_type" value="minmax" checked/>Minimum/Maximum<br/>
+                        <input type="radio" name="rubric_type" value="keys"/>Multiple Options
+                        <div id="minmax">
+                            <label for="min">Minimum:</label>
+                            <input type="number" name="minimum" min="0" class="form-control"/><br/>
+                            <label for="max">Maximum:</label>
+                            <input type="number" name="maximum" class="form-control"/><br/>
+                        </div>
+                        <div id="keys">
+                            <div class="form-group">
+                                <label for="option">Enter Option Here: </label>
+                                <input type="text" name="option" class="form-control"/>
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" class="btn btn-xs btn-default" value="Add Option" id="addoption" class="form-control"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="option" id="deleteOptionLabel" class="delete">Click an option below to delete it:</label>
+                                <div id="options"></div>
+                            </div>
+                        </div>
                     </div>
-                    <input type="submit" class="btn btn-success" value="Add Rubric" id="addrubric"/><br/><br/>
-                    <label for="option" id="deleteRubricLabel" class="delete">Click a rubric below to delete it:</label>
-                    <div id="rubrics"></div>
-                    <input type="submit" class="btn btn-success" value="Submit Contest" id="submitcontest"/>
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-sm btn-warning" value="Add Rubric" id="addrubric" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="option" id="deleteRubricLabel" class="delete">Click a rubric below to delete it:</label>
+                        <div id="rubrics"></div>
+                        <input type="submit" class="btn btn-success" value="Submit Contest" id="submitcontest" class="form-control"/>
+                    </div>
                 </form>
             </div>
 		</main>

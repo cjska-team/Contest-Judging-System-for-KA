@@ -57,6 +57,8 @@ document.querySelector("#addoption").addEventListener("click", function(event) {
     currentOptions.push(document.forms.new_contest.option.value);
     /* Show deleteOptionLabel. */
     deleteOptionLabel.style.display = "block";
+    /* Clear the option textbox */
+    document.forms.new_contest.option.value = "";
 });
 
 function deleteRubric(event) {
