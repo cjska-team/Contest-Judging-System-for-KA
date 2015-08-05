@@ -7,8 +7,6 @@
 var userData;
 var authChecksDone = false;
 
-document.querySelector(".hideWhileAuthCheck").style.display = "none";
-
 /* Check if user is logged in. We'll be using cookies to store whether or not the user is logged in (unfortunately). */
 if (Contest_Judging_System.getCookie("loggedInUser") === "") {
 	/* Let the user know that we're leaving the page. */
