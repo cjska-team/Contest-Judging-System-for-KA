@@ -24,6 +24,13 @@ window.Contest_Judging_System = (function() {
     return {
         /* Puts the script injection function inside of this namespace. */
         include: includeFunc,
+        /* This function gets the authentication object. */
+        getFirebaseAuth: function() {
+            /* Connect to our Firebase app. */
+            var firebaseRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
+            /* Return the authentication object: */
+            return firebaseRef.getAuth();
+        },
         /* This function gets all the "Rubrics" that we've defined in Firebase. */
         getRubrics: function(callback) {
             /* Connect to our Firebase app. */
@@ -294,9 +301,6 @@ window.Contest_Judging_System = (function() {
                     /* Log errors in dev console */
                     console.log("[tryAuthentication] " + error);
                 } else {
-                    /* Set authId and uid cookies */
-                    Contest_Judging_System.setCookie("authId", authData.google.accessToken);
-                    Contest_Judging_System.setCookie("uid", authData.uid);
                     /* Set authData in database using uid */
                     judges.child(authData.uid).set(authData);
 
@@ -308,9 +312,11 @@ window.Contest_Judging_System = (function() {
 
                     /* Once all of the allowedJudges have been added... */
                     allowed.once("value", function(data) {
+                        /* Get the Firebase auth data: */
+                        var fbAuth = Contest_Judging_System.getFirebaseAuth();
                         /* Loop through allowedJudges and if any of them are allowed, log "Access granted!", pass true to callback and exit the function. */
                         for (var i in allowedJudges) {
-                            if (allowedJudges[i].uid === Contest_Judging_System.getCookie("uid")) {
+                            if (allowedJudges[i].uid === fbAuth.uid) {
                                 console.log("[tryAuthentication] Access granted!");
                                 callback(true);
                                 return;

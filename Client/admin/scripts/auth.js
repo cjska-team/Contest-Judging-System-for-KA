@@ -2,39 +2,46 @@
  * Step 1: Check to make sure user is logged in (if not, leave page)
  * Step 2: Check to make sure logged in user, is an administrator (if not, leave page)
  * Step 3: Load all tools onto the page.
- * Step 4: [ ... ]
  */
+/* The data we have on the current user. */
 var userData;
+/* True iff we're done with the auth checks. */
 var authChecksDone = false;
 
-/* Check if user is logged in. We'll be using cookies to store whether or not the user is logged in (unfortunately). */
-if (Contest_Judging_System.getCookie("loggedInUser") === "") {
+/* Check if user is logged in using Firebase. */
+var fbAuth = Contest_Judging_System.getFirebaseAuth();
+if (fbAuth === null) {
 	/* Let the user know that we're leaving the page. */
 	alert("You don't appear to be logged in! Leaving page.");
 	window.location.assign("../index.html");
 } else {
+    /* Connect to Firebase */
 	var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/users/");
-
-	var userID = Contest_Judging_System.getCookie("loggedInUser");
+    /* Get the User ID */
+	var userID = fbAuth.uid;
 
 	/* Query Firebase */
 	fbRef.orderByKey().on("child_added", function(data) { /* Do nothing here. */ });
 
 	/* Once the query is done... */
 	fbRef.once("value", function(data) {
-		/* ...make sure the user exists in Firebase. If they do... */
-		if (!data.val().hasOwnProperty(userID)) {
-			/* User doesn't exist in Firebase, which means they cannot be an admin. */
-			/* Let the user know that we're leaving the page. */
+		/* ...make sure the user exists in Firebase. If they don't: */
+		if (!data.hasChild(userID)) {
+			/* User doesn't exist in Firebase, which means they cannot be an admin. Therefore, set them in Firebase with lowest possible permissions. */
 			fbRef.child(userID).set({
-				name: Contest_Judging_System.getCookie("loggedInUsername"),
+				name: fbAuth.google.displayName,
 				permLevel: 1
 			});
-			alert("User ID \"" + userID + "\" doesn't exist in Firebase. Leaving page.");
+			/* Let the user know that we're leaving the page. */
+			alert("You're logged in, but we don't know who you are! Leaving page.");
 			window.location.assign("../index.html");
-		} else {
+		}
+        /* Otherwise, if they do exist in Firebase: */
+        else {
+            /* Set userData: */
+            userData = data.val()[userID];
 			/* ...make sure they're an admin. */
-			if (data.val()[userID].permLevel !== 5) {
+			if (userData.permLevel !== 5) {
 				/* User doesn't appear to be an admin. */
 				/* Let the user know that we're leaving the page. */
 				alert("You do not have admin permissions! Leaving page.");
@@ -42,7 +49,6 @@ if (Contest_Judging_System.getCookie("loggedInUser") === "") {
 			}
 		}
 
-		userData = data.val()[userID];
 		/* Once everything is done, set authChecksDone to true, that way we can move to the next step. */
 		authChecksDone = true;
 	});
