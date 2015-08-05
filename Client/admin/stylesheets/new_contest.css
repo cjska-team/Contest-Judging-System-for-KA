@@ -18,4 +18,7 @@ input[value=minmax]:checked ~ #minmax {
 input[value=keys]:checked ~ #keys {
     display: block;
 }
-
+/* Make the #deleteOptionLabel invisible by default: */
+#deleteOptionLabel {
+    display: none;
+}

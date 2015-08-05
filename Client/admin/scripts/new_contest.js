@@ -1,7 +1,26 @@
 /* The rubrics for this contest: */
 var rubrics = {};
+
+/* A div containing all of the options: */
+var allOptions = document.querySelector("#options");
 /* The current set of options: */
 var currentOptions = [];
+/* A default <div> representing an option: */
+var defaultOption = document.createElement("button");
+defaultOption.className = "btn btn-default";
+/* The label for deleting options: */
+var deleteOptionLabel = document.querySelector("#deleteOptionLabel");
+
+function deleteOption(event) {
+    /* This click event handler deletes an option when clicked. */
+    /* Make sure the form doesn't redirect: */
+    event.preventDefault();
+    /* Remove the option from currentOptions and allOptions: */
+    currentOptions.splice(parseInt(event.target.getAttribute("data-index")), 1);
+    allOptions.removeChild(event.target);
+    /* Hide deleteOptionLabel if there are no more options: */
+    if (!currentOptions.length) deleteOptionLabel.style.display = "none";
+}
 
 /* When the user tries to add an option: */
 document.querySelector("#addoption").addEventListener("click", function(event) {
@@ -17,8 +36,17 @@ document.querySelector("#addoption").addEventListener("click", function(event) {
         alert("You already entered this option into this rubric!");
         return;
     }
+    /* Append a representation of the option into #options: */
+    var curOption = defaultOption.cloneNode();
+    curOption.textContent = document.forms.new_contest.option.value;
+    /* Keep the index of where it is in currentOptions in a data- attribute: */
+    curOption.setAttribute("data-index", currentOptions.length);
+    allOptions.appendChild(curOption);
+    curOption.addEventListener("click", deleteOption);
     /* Push the option into currentOptions. */
     currentOptions.push(document.forms.new_contest.option.value);
+    /* Show deleteOptionLabel. */
+    deleteOptionLabel.style.display = "block";
 });
 
 /* When the user tries to add a rubric: */
@@ -74,8 +102,11 @@ document.querySelector("#addrubric").addEventListener("click", function(event) {
             };
             break;
     }
-    /* Clear currentOptions so the user can start over: */
+    /* Clear currentOptions and allOptions so the user can start over: */
     currentOptions = [];
+    while (allOptions.childNodes.length) allOptions.removeChild(allOptions.childNodes[0]);
+    /* Hide deleteOptionLabel: */
+    deleteOptionLabel.style.display = "none";
 });
 
 /* When the user tries to submit a contest: */
