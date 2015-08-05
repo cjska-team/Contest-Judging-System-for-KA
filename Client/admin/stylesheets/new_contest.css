@@ -2,9 +2,9 @@
 main {
     font-size: 1.2em;
 }
-/* Give <input>s some space to the right */
-input {
-    margin: 0 0.5em 0 0 !important
+/* Give <input>s (not buttons) some horizontal space */
+input:not([type=submit]) {
+    margin: 0 0.5em !important
 }
 /* Make the main content of the form invisible by default and give them some vertical space */
 #minmax, #keys {

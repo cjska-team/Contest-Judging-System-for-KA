@@ -24,6 +24,7 @@
                     <label for="program_id"><h3>Khan Academy Program ID:</h3></label>
                     <input type="number" name="program_id"></input><br/>
                     <label><h3>New Rubric</h3></label><br/>
+                    <label for="rubric_name">Rubric Name: </label><input type="text" name="rubric_name"/><br/>
                     <label for="rubric_type">Rubric Type</label><br/>
                     <input type="radio" name="rubric_type" value="minmax" checked/>Minimum/Maximum<br/>
                     <input type="radio" name="rubric_type" value="keys"/>Multiple Options
@@ -34,8 +35,9 @@
                         <input type="number" name="maximum"/><br/>
                     </div>
                     <div id="keys">
-                        <label for="keys">Add Option: </label>
-                        <input type="text" name="keys"/>
+                        <label for="option">Enter Option Here: </label>
+                        <input type="text" name="option"/>
+                        <input type="submit" class="btn btn-success" value="Add Option" id="addoption"/>
                     </div>
                     <input type="submit" class="btn btn-success" value="Add Rubric" id="addrubric"/><br/><br/>
                     <div id="rubrics"></div>
@@ -48,7 +50,9 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
         <script src="../../Backend/ka_api.js"></script>
         <script src="../../Backend/contest_judging_sys.js"></script>
-        <script src="scripts/auth.js"></script>
+        <!--Testing frontend-->
+        <!--<script src="scripts/auth.js"></script>-->
+        <script>document.querySelector("#loading").style.display = "none", document.querySelector(".hideWhileAuthCheck").style.display = "block";</script>
         <script src="scripts/new_contest.js"></script>
 	</body>
 </html>
