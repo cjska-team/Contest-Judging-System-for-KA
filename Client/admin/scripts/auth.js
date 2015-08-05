@@ -61,6 +61,6 @@ var authChecks = setInterval(function() {
 		console.log("Authenticated!");
 
 		/* Welcome the user to the admin dashboard. */
-		document.getElementById("welcomeMessage").innerHTML = document.getElementById("welcomeMessage").innerHTML.replace("{{name}}", userData.name);
+		document.getElementById("welcomeMessage").textContent = document.getElementById("welcomeMessage").textContent.replace("{{name}}", userData.name);
 	}
 }, 1000);
