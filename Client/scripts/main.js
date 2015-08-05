@@ -12,7 +12,7 @@ var numContestsDisplayed = 0;
 function displayContests() {
     /* Displays 20 more contests */
     /* This is the number of contests we'll have displayed when we're done. */
-    var shouldBeDisplayed = numContestsDisplayed+20;
+    var shouldBeDisplayed = numContestsDisplayed + 10;
     /* Make sure we don't display more contests then there are! */
     if (shouldBeDisplayed > indContestDivs.length) shouldBeDisplayed = indContestDivs.length;
     /* Append more contests into contestsDiv and increment numContestsDisplayed each time. */
