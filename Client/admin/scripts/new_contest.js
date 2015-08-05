@@ -31,6 +31,30 @@ function deleteOption(event) {
     if (!currentOptions.length) deleteOptionLabel.style.display = "none";
 }
 
+function addOption(option) {
+    /* This adds option as an option to the current rubric. */
+    /* Get rid of leading and trailing whitespace: */
+    while (/\s/.test(option[0])) option = option.substring(1, option.length);
+    while (/\s/.test(option[option.length-1])) option = option.substring(0, option.length-1);
+    /* Make sure the array does not already have this option: */
+    if (currentOptions.indexOf(option) != -1) {
+        alert("You already entered the "+option+" option into this rubric!");
+        return;
+    }
+    /* Append a representation of the option into #options: */
+    var curOption = defaultOption.cloneNode();
+    curOption.textContent = option;
+    /* Keep the index of where it is in currentOptions in a data- attribute: */
+    curOption.setAttribute("data-index", currentOptions.length);
+    allOptions.appendChild(curOption);
+    /* Bind deleteOption to the click of curOption: */
+    curOption.addEventListener("click", deleteOption);
+    /* Push the option into currentOptions. */
+    currentOptions.push(option);
+    /* Show deleteOptionLabel. */
+    deleteOptionLabel.style.display = "block";
+}
+
 /* When the user tries to add an option: */
 document.querySelector("#addoption").addEventListener("click", function(event) {
     /* Make sure the form doesn't redirect. */
@@ -40,23 +64,10 @@ document.querySelector("#addoption").addEventListener("click", function(event) {
         alert("Please enter a option name. Thanks!");
         return;
     }
-    /* Make sure the array does not already have this option: */
-    if (currentOptions.indexOf(document.forms.new_contest.option.value) != -1) {
-        alert("You already entered this option into this rubric!");
-        return;
-    }
-    /* Append a representation of the option into #options: */
-    var curOption = defaultOption.cloneNode();
-    curOption.textContent = document.forms.new_contest.option.value;
-    /* Keep the index of where it is in currentOptions in a data- attribute: */
-    curOption.setAttribute("data-index", currentOptions.length);
-    allOptions.appendChild(curOption);
-    /* Bind deleteOption to the click of curOption: */
-    curOption.addEventListener("click", deleteOption);
-    /* Push the option into currentOptions. */
-    currentOptions.push(document.forms.new_contest.option.value);
-    /* Show deleteOptionLabel. */
-    deleteOptionLabel.style.display = "block";
+    /* Get multiple options by splitting on commas: */
+    var newOptions = document.forms.new_contest.option.value.split(",");
+    /* Add each option: */
+    for (var i = 0; i < newOptions.length; i++) addOption(newOptions[i]);
     /* Clear the option textbox */
     document.forms.new_contest.option.value = "";
 });
@@ -164,9 +175,10 @@ document.querySelector("#addrubric").addEventListener("click", function(event) {
     allRubrics.appendChild(curRubric);
     /* Bind deleteRubric to click of curRubric: */
     curRubric.addEventListener("click", deleteRubric);
-    /* Clear currentOptions and allOptions so the user can start over: */
+    /* Clear currentOptions, allOptions, and document.forms.new_contest.rubric_name so the user can start over: */
     currentOptions = [];
     while (allOptions.childNodes.length) allOptions.removeChild(allOptions.childNodes[0]);
+    document.forms.new_contest.rubric_name.value = "";
     /* Hide deleteOptionLabel: */
     deleteOptionLabel.style.display = "none";
 });
@@ -189,5 +201,5 @@ document.querySelector("#submitcontest").addEventListener("click", function(even
     }
     
     /* If everything is OK, then alert to the user that they can't submit contests yet. */
-    alert("You can't submit contests yet. Sorry!");
+    alert("We can't submit contests yet because we haven't coded that in yet. Sorry!");
 });
