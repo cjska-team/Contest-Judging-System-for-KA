@@ -1,7 +1,16 @@
 /* The rubrics for this contest: */
 var rubrics = {};
+/* A <div> containing all of the rubrics: */
+var allRubrics = document.querySelector("#rubrics");
+/* A default <div> representing a rubric: */
+var defaultRubric = document.createElement("div");
+defaultRubric.className = "rubric";
+/* The label for deleting rubrics: */
+var deleteRubricLabel = document.querySelector("#deleteRubricLabel");
+/* The number of rubrics we have now: */
+var numRubrics = 0;
 
-/* A div containing all of the options: */
+/* A <div> containing all of the options: */
 var allOptions = document.querySelector("#options");
 /* The current set of options: */
 var currentOptions = [];
@@ -16,8 +25,8 @@ function deleteOption(event) {
     /* Make sure the form doesn't redirect: */
     event.preventDefault();
     /* Remove the option from currentOptions and allOptions: */
-    currentOptions.splice(parseInt(event.target.getAttribute("data-index")), 1);
-    allOptions.removeChild(event.target);
+    currentOptions.splice(parseInt(event.currentTarget.getAttribute("data-index")), 1);
+    allOptions.removeChild(event.currentTarget);
     /* Hide deleteOptionLabel if there are no more options: */
     if (!currentOptions.length) deleteOptionLabel.style.display = "none";
 }
@@ -42,12 +51,23 @@ document.querySelector("#addoption").addEventListener("click", function(event) {
     /* Keep the index of where it is in currentOptions in a data- attribute: */
     curOption.setAttribute("data-index", currentOptions.length);
     allOptions.appendChild(curOption);
+    /* Bind deleteOption to the click of curOption: */
     curOption.addEventListener("click", deleteOption);
     /* Push the option into currentOptions. */
     currentOptions.push(document.forms.new_contest.option.value);
     /* Show deleteOptionLabel. */
     deleteOptionLabel.style.display = "block";
 });
+
+function deleteRubric(event) {
+    /* This click event handler deletes a rubric when clicked. */
+    /* Remove the option from rubrics and allRubrics: */
+    delete rubrics[event.currentTarget.id];
+    allRubrics.removeChild(event.currentTarget);
+    /* Decrement numRubrics and hide deleteRubricLabel if there are no more options: */
+    numRubrics--;
+    if (!numRubrics) deleteRubricLabel.style.display = "none";
+}
 
 /* When the user tries to add a rubric: */
 document.querySelector("#addrubric").addEventListener("click", function(event) {
@@ -66,7 +86,11 @@ document.querySelector("#addrubric").addEventListener("click", function(event) {
         alert("Please don't reuse rubric names. You already used this rubric name, so why don't you make another one? Thanks!");
         return;
     }
-    
+
+    /* This will represent the rubric in the DOM: */
+    var curRubric = defaultRubric.cloneNode();
+    /* Add a heading for the rubric: */
+    curRubric.appendChild(document.createTextNode(document.forms.new_contest.rubric_name.value+": "));
     /* Do different things for different types of rubrics: */
     switch (document.forms.new_contest.rubric_type.value) {
         case "minmax":
@@ -87,6 +111,19 @@ document.querySelector("#addrubric").addEventListener("click", function(event) {
                 delete rubrics[jsonProp];
                 return;
             }
+            
+            /* A <ul> element for minimum and maximum: */
+            var minmaxList = document.createElement("ul");
+            /* Add the minimum: */
+            var minLi = document.createElement("li");
+            minLi.textContent = "Minimum: "+rubrics[jsonProp].min;
+            minmaxList.appendChild(minLi);
+            /* Add the maximum: */
+            var maxLi = document.createElement("li");
+            maxLi.textContent = "Maximum: "+rubrics[jsonProp].max;
+            minmaxList.appendChild(maxLi);
+            /* Add the list to curRubric */
+            curRubric.appendChild(minmaxList);
             break;
         case "keys":
             /* If there are no keys or only one, tell the user to add more. */
@@ -96,12 +133,35 @@ document.querySelector("#addrubric").addEventListener("click", function(event) {
             }
             /* If everything's OK, make a new rubric in rubrics: */
             rubrics[jsonProp] = {
-                keys: Object.create(currentOptions),
+                keys: currentOptions.slice(0, currentOptions.length),
                 min: 0,
                 max: currentOptions.length-1
             };
+            
+            /* A <ul> element for all of the options: */
+            var optionsList = document.createElement("ul");
+            /* Append all options of this rubric into optionsList: */
+            for (var i = 0; i < allOptions.childNodes.length; i++) {
+                /* A <li> to represent this option: */
+                var curOptionLi = document.createElement("li");
+                curOptionLi.textContent = allOptions.childNodes[i].textContent;
+                /* Add the current option into optionsList: */
+                optionsList.appendChild(curOptionLi);
+            }
+            /* Add the list to curRubric */
+            curRubric.appendChild(optionsList);
             break;
     }
+    
+    /* Increment numRubrics and show deleteRubricLabel: */
+    numRubrics++;
+    deleteRubricLabel.style.display = "block";
+    /* Set the ID of curRubric so we can find it in rubrics later: */
+    curRubric.id = jsonProp;
+    /* Add the current rubric into allRubrics: */
+    allRubrics.appendChild(curRubric);
+    /* Bind deleteRubric to click of curRubric: */
+    curRubric.addEventListener("click", deleteRubric);
     /* Clear currentOptions and allOptions so the user can start over: */
     currentOptions = [];
     while (allOptions.childNodes.length) allOptions.removeChild(allOptions.childNodes[0]);
@@ -113,20 +173,18 @@ document.querySelector("#addrubric").addEventListener("click", function(event) {
 document.querySelector("#submitcontest").addEventListener("click", function(event) {
     /* Make sure the form doesn't redirect. */
     event.preventDefault();
-    /* From the front-end, we simply check if the contest ID is a number. From the back end, we'll check if it's an actual contest by Pamela. */
-    if (isNaN(parseInt(document.forms.new_contest.program_id.value))) {
+    /* Get the program ID: */
+    var programID = parseInt(document.forms.new_contest.program_id.value)
+    /* From the front-end, we simply check if the program ID is a number. From the back end, we'll check if it's an actual contest by Pamela. */
+    if (isNaN(programID)) {
         alert("Please enter a valid program ID. Only numbers are valid program IDs. A program ID can be found by visiting the link of a contest and looking for a number within that link before the contest title. Thanks!");
         return;
     }
-    
     /* Make sure that the user has added some rubrics: */
-    var rubricsPresent = false;
-    for (var k in rubrics) {
-        rubricsPresent = true;
-        break;
+    if (!numRubrics) {
+        alert("Please add some rubrics for your contest. Thanks!");
+        return;
     }
-    /* If there aren't rubrics, tell the user: */
-    if (!rubricsPresent) alert("Please add some rubrics for your contest. Thanks!");
     
     /* If everything is OK, then alert to the user that they can't submit contests yet. */
     alert("You can't submit contests yet. Sorry!");

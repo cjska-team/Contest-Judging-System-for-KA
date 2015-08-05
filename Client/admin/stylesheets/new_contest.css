@@ -18,7 +18,11 @@ input[value=minmax]:checked ~ #minmax {
 input[value=keys]:checked ~ #keys {
     display: block;
 }
-/* Make the #deleteOptionLabel invisible by default: */
-#deleteOptionLabel {
+/* Make <label>.delete invisible by default: */
+label.delete {
     display: none;
+}
+/* Make <div>.rubric have a tinted background when hovered over: */
+div.rubric:hover {
+    background-color: rgba(0, 0, 0, 0.1);
 }
