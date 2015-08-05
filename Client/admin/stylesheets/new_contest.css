@@ -1,0 +1,28 @@
+/* Make the default font bigger */
+main {
+    font-size: 1.2em;
+}
+/* Give <input>s (not buttons) some horizontal space */
+input:not([type=submit]) {
+    margin: 0 0.5em !important
+}
+/* Make the main content of the form invisible by default and give them some vertical space */
+#minmax, #keys {
+    display: none;
+    margin: 1em 0;
+}
+/* Display them only if they're respective radio buttons are checked */
+input[value=minmax]:checked ~ #minmax {
+    display: block;
+}
+input[value=keys]:checked ~ #keys {
+    display: block;
+}
+/* Make <label>.delete invisible by default: */
+label.delete {
+    display: none;
+}
+/* Make <div>.rubric have a tinted background when hovered over: */
+div.rubric:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
