@@ -50,10 +50,15 @@ if (Contest_Judging_System.getCookie("loggedInUser") === "") {
 	});
 }
 
+/* Check if we're done with our authentication checks every second. */
 var authChecks = setInterval(function() {
+    /* If we're done with our authentication checks: */
 	if (authChecksDone) {
+        /* Stop loading and show the content. */
 		document.querySelector("#loading").style.display = "none";
 		document.querySelector(".hideWhileAuthCheck").style.display = "block";
+        
+        /* Stop checking if we're done with our authentication checks. */
 		clearInterval(authChecks);
 		console.log("Authenticated!");
 
