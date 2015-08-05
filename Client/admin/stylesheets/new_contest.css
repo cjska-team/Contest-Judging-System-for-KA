@@ -1,0 +1,21 @@
+/* Make the default font bigger */
+main {
+    font-size: 1.2em;
+}
+/* Give <input>s some space to the right */
+input {
+    margin: 0 0.5em 0 0 !important
+}
+/* Make the main content of the form invisible by default and give them some vertical space */
+#minmax, #keys {
+    display: none;
+    margin: 1em 0;
+}
+/* Display them only if they're respective radio buttons are checked */
+input[value=minmax]:checked ~ #minmax {
+    display: block;
+}
+input[value=keys]:checked ~ #keys {
+    display: block;
+}
+

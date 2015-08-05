@@ -4,6 +4,8 @@
 * `new_contest.html` is used for making a new contest.
 * `stylesheets` holds all of the CSS files for the application.
 * * `stylesheets/main.css` is the main CSS file for all HTML files.
+* * `stylesheets/new_contest.css` is the CSS file for `new_contest.html`.
 * `scripts` holds all of the JavaScript files for the application.
-* * `scripts/main.js` is the JavaScript file for `index.html`. It doesn't do anything right now, but will eventually.
 * * `scripts/auth.js` is the authentication API for all HTML files.
+* * `scripts/main.js` is the JavaScript file for `index.html`. It doesn't do anything right now, but will eventually.
+* * `scripts/new_contest.js` is the JavaScript file for `new_contest.js`.

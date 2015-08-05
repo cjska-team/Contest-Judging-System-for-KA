@@ -6,6 +6,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
         <link rel="stylesheet" href="../stylesheets/main.css">
         <link rel="stylesheet" href="stylesheets/main.css">
+        <link rel="stylesheet" href="stylesheets/new_contest.css">
 	</head>
 	<body>
 		<div id="loading">
@@ -14,16 +15,40 @@
             </h1>
             <h1><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span></h1>
         </div>
-		<div class="container hideWhileAuthCheck">
+		<main class="container hideWhileAuthCheck">
 			<div class="jumbotron">
 				<h3 id="welcomeMessage">Welcome to the admin dashboard, {{name}}.</h3>
 			</div>
-		</div>
+            <div class="controls">
+                <form name="new_contest">
+                    <label for="program_id"><h3>Khan Academy Program ID:</h3></label>
+                    <input type="number" name="program_id"></input><br/>
+                    <label><h3>New Rubric</h3></label><br/>
+                    <label for="rubric_type">Rubric Type</label><br/>
+                    <input type="radio" name="rubric_type" value="minmax" checked/>Minimum/Maximum<br/>
+                    <input type="radio" name="rubric_type" value="keys"/>Multiple Options
+                    <div id="minmax">
+                        <label for="min">Minimum:</label>
+                        <input type="number" name="minimum"/><br/>
+                        <label for="max">Maximum:</label>
+                        <input type="number" name="maximum"/><br/>
+                    </div>
+                    <div id="keys">
+                        <label for="keys">Add Option: </label>
+                        <input type="text" name="keys"/>
+                    </div>
+                    <input type="submit" class="btn btn-success" value="Add Rubric" id="addrubric"/><br/><br/>
+                    <div id="rubrics"></div>
+                    <input type="submit" class="btn btn-success" value="Submit Contest" id="submitcontest"/>
+                </form>
+            </div>
+		</main>
 		<script src="../../Resources/firebase.js"></script>
         <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
         <script src="../../Backend/ka_api.js"></script>
         <script src="../../Backend/contest_judging_sys.js"></script>
         <script src="scripts/auth.js"></script>
+        <script src="scripts/new_contest.js"></script>
 	</body>
 </html>
