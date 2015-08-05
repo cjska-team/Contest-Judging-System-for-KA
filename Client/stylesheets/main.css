@@ -40,7 +40,12 @@ summary * {
     margin: 5px auto 5px auto;
     width: 100%;
 }
-
-.login {
+/* Make the login button and more contests button invisible by default. */
+.login, #more-contests {
     display: none;
+}
+/* Make the #more-contests take up the same width as its parent and give it some vertical space. */
+#more-contests {
+    width: 100%;
+    margin: 1em 0;
 }

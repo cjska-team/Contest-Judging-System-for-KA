@@ -3,6 +3,26 @@ var loadingDiv = document.querySelector("#loading");
 /* This is the contests element that shows info on all of the contests. */
 var contestsDiv = document.querySelector("#contests");
 
+/* This is all of the <div>s representing an individual contest. */
+var indContestDivs = [];
+/* This is the button that displays more contests. */
+var moreContestsBtn = document.querySelector("#more-contests");
+/* This is the number of contests we've displayed. */
+var numContestsDisplayed = 0;
+function displayContests() {
+    /* Displays 20 more contests */
+    /* This is the number of contests we'll have displayed when we're done. */
+    var shouldBeDisplayed = numContestsDisplayed+20;
+    /* Make sure we don't display more contests then there are! */
+    if (shouldBeDisplayed > indContestDivs.length) shouldBeDisplayed = indContestDivs.length;
+    /* Append more contests into contestsDiv and increment numContestsDisplayed each time. */
+    for (; numContestsDisplayed < shouldBeDisplayed; numContestsDisplayed++) contestsDiv.appendChild(indContestDivs[numContestsDisplayed]);
+    /* Hide moreContestsBtn when there are no more contests. */
+    if (numContestsDisplayed == indContestDivs.length) moreContestsBtn.style.display = "none";
+    /* Otherwise, show it. */
+    else moreContestsBtn.style.display = "block";
+}
+
 function finishRequest(contests) {
     /* When the request is finished... */
 
@@ -83,13 +103,15 @@ function finishRequest(contests) {
         contestDiv.appendChild(mediaDiv);
         /* Put contestDiv inside rowDiv */
         rowDiv.appendChild(contestDiv);
-        /* Put rowDiv inside the #contests div */
-        contestsDiv.appendChild(rowDiv);
+        /* Put rowDiv inside contestDivs */
+        indContestDivs.push(rowDiv);
     }
-
 
     /* Now we're done, so get rid of the loading screen. */
     loadingDiv.style.display = "none";
+    /* Display more contests and make sure more contests are displayed each time moreContestsBtn is clicked. */
+    displayContests();
+    moreContestsBtn.addEventListener("click", displayContests);
 }
 
 /* Get all of the stored contests from the Firebase database and call finishRequest when done */
