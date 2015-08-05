@@ -7,8 +7,6 @@
 var userData;
 var authChecksDone = false;
 
-document.querySelector(".hideWhileAuthCheck").style.display = "none";
-
 /* Check if user is logged in. We'll be using cookies to store whether or not the user is logged in (unfortunately). */
 if (Contest_Judging_System.getCookie("loggedInUser") === "") {
 	/* Let the user know that we're leaving the page. */
@@ -50,14 +48,19 @@ if (Contest_Judging_System.getCookie("loggedInUser") === "") {
 	});
 }
 
+/* Check if we're done with our authentication checks every second. */
 var authChecks = setInterval(function() {
+    /* If we're done with our authentication checks: */
 	if (authChecksDone) {
+        /* Stop loading and show the content. */
 		document.querySelector("#loading").style.display = "none";
 		document.querySelector(".hideWhileAuthCheck").style.display = "block";
+        
+        /* Stop checking if we're done with our authentication checks. */
 		clearInterval(authChecks);
 		console.log("Authenticated!");
 
 		/* Welcome the user to the admin dashboard. */
-		document.getElementById("welcomeMessage").innerHTML = document.getElementById("welcomeMessage").innerHTML.replace("{{name}}", userData.name);
+		document.getElementById("welcomeMessage").textContent = document.getElementById("welcomeMessage").textContent.replace("{{name}}", userData.name);
 	}
 }, 1000);

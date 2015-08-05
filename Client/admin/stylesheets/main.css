@@ -1,0 +1,4 @@
+/* Hide the content of the Web site by default. */
+.hideWhileAuthCheck {
+    display: none;
+}
