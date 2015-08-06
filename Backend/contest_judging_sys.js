@@ -272,6 +272,38 @@ window.Contest_Judging_System = (function() {
                 }
             }, 1000);
         },
+        /* This function logs the user in and then calls the callback with the Firebase auth data: */
+        logUserIn: function(callback) {
+            /* Connect to Firebase: */
+            var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
+
+            /* Try to log the user in: */
+            fbRef.authWithOAuthPopup("google", function(error, authData) {
+                /* Error Handling: */
+                if (error) {
+                    alert("An error occured. Please try again later.");
+                    console.log(error);
+                } else {
+                    /* Access the users child */
+                    var usersRef = fbRef.child("users");
+                    usersRef.once("value", function(snapshot) {
+                        /* Add this user into Firebase if they're not already there. */
+                        if (!snapshot.hasChild(authData.uid)) {
+                            usersRef.child(authData.uid).set({
+                                name: authData.google.displayName,
+                                permLevel: 1
+                            });
+                            console.log("Added new user in Firebase!");
+                        }
+                        console.log("Logged user in!");
+                        /* When we're done, call the callback. */
+                        callback(authData)
+                    /* This logs errors to the console so no errors pass silently. */
+                    }, Contest_Judging_System.logError);
+                }
+                /* This makes Firebase remember the login for 30 days (which has been set as the default in Firebase). */
+            }, {remember: "default"});
+        },
         /* Cookie functions provided by w3schools */
         getCookie: function(cookie) {
             /* Get the cookie with name cookie (return "" if non-existent) */
@@ -293,50 +325,6 @@ window.Contest_Judging_System = (function() {
             d.setTime(d.getTime() + (30*24*60*60*1000));
             var expires = "expires="+d.toUTCString();
             document.cookie = cookie + "=" + value + "; " + expires;
-        },
-        tryAuthentication: function(callback) {
-            /* Attempts authentication and passes a Bool (true iff authentication worked) to callback */
-            
-            console.log("[tryAuthentication] Function entered");
-            /* Get Firebase data */
-            var firebaseRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
-            var judges = firebaseRef.child("loggedInJudges");
-            var allowed = firebaseRef.child("allowedJudges");
-
-            /* Access the Firebase ref with Google Auth validation as a popup. */
-            firebaseRef.authWithOAuthPopup("google", function(error, authData) {
-                if (error) {
-                    /* Log errors in dev console */
-                    console.log("[tryAuthentication] " + error);
-                } else {
-                    /* Set authData in database using uid */
-                    judges.child(authData.uid).set(authData);
-
-                    /* Use allowed to set allowedJudges */
-                    var allowedJudges = {};
-                    allowed.orderByKey().on("child_added", function(snapshot) {
-                        allowedJudges[snapshot.key()] = snapshot.val();
-                        /* Log errors: */
-                    }, Contest_Judging_System.logError);
-
-                    /* Once all of the allowedJudges have been added... */
-                    allowed.once("value", function(data) {
-                        /* Get the Firebase auth data: */
-                        var fbAuth = Contest_Judging_System.getFirebaseAuth();
-                        /* Loop through allowedJudges and if any of them are allowed, log "Access granted!", pass true to callback and exit the function. */
-                        for (var i in allowedJudges) {
-                            if (allowedJudges[i].uid === fbAuth.uid) {
-                                console.log("[tryAuthentication] Access granted!");
-                                callback(true);
-                                return;
-                            }
-                        }
-                        /* If we haven't exited, then this judge is not authenticated, so we pass false to callback. */
-                        callback(false);
-                        /* Log errors: */
-                    }, Contest_Judging_System.logError);
-                }
-            });
         },
         isJudgeAllowed: function(uid, callback) {
             /* Check if the judge with id of uid is allowed and then call callback with the Bool that is true iff such is true. */
