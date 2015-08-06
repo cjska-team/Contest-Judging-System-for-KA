@@ -12,7 +12,7 @@ window.includeFunc = function(path) {
 
 window.Contest_Judging_System = (function() {
     /* Function wrapper to create Contest_Judging_System */
-    
+
     /* jQuery and Firebase are both dependencies for this project. If we don't have them, exit the function immediately. */
     /* TODO: If a project dependency doesn't exist, go ahead an inject it. */
     if (!window.jQuery || !window.Firebase || !window.KA_API) {
@@ -62,7 +62,7 @@ window.Contest_Judging_System = (function() {
             var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/contests/");
             /* This is an object to hold all of the data from Firebase. */
             var fromFirebase = {};
-            
+
             /* Insert all of the entries in our database in order by key */
             fbRef.orderByKey().on("child_added", function(item) {
                 fromFirebase[item.key()] = item.val();
@@ -130,7 +130,7 @@ window.Contest_Judging_System = (function() {
                         pickedKeys.push(pickedKey);
                     }
                 }
-                    
+
                 /* Tell the below setInterval() that we're done when we're done. */
                 done = true;
             });
@@ -164,7 +164,7 @@ window.Contest_Judging_System = (function() {
                 firebase: false,
                 khanacademy: false
             };
-            
+
             /* Our two objects of data */
             var kaData;
             var fbData;
@@ -377,7 +377,7 @@ window.Contest_Judging_System = (function() {
                         /* Push the uid of this judge into judgesWhoVoted */
                         judgesWhoVoted.push(fbAuth.uid);
                         var numJudges = judgesWhoVoted.length
-                        
+
                         /* Create a new object for storing scores */
                         var newScoreObj = {
                             "Level": {
