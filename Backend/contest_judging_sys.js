@@ -66,26 +66,48 @@ window.Contest_Judging_System = (function() {
             var fbRefData = [];
             /* This is the data we need to give to callback: */
             var callbackData = {};
+            /* These are the property names that callbackData[CONTEST-ID] needs to have: */
+            var props = ["desc", "id", "img", "name", "entryCount"];
             
             /* Get all of the contest data: */
             fbRef.orderByKey().on("child_added", function(item) {
                 /* Push the data to fbRefData: */
-                var key = item.val();
+                var key = item.key();
                 fbRefData.push(key);
                 /* Get the current contest: */
                 var curContest = contests.child(key);
-                curContest.on("value", function(snapshot) {
-                    /* Get the data for this contest: */
-                    
-                    /* Log errors: */
-                }, Contest_Judging_System.logError);
+                /* The data for this contest: */
+                var curContestData = {};
+                /* Get data for all props: */
+                for (var i = 0; i < props.length; i++) {
+                    /* Save the value of i with a function wrapper. */
+                    (function(i) {
+                        curContest.child(props[i]).once("value", function(snapshot) {
+                            curContestData[props[i]] = snapshot.val();
+                            for (j = 0; j < props.length; j++) if (!curContestData.hasOwnProperty(props[j])) break;
+                            /* If we've got all the props, update callbackData. */
+                            if (j == props.length) callbackData[key] = curContestData;
+                        });
+                    })(i);
+                }
                 /* Log errors: */
             }, Contest_Judging_System.logError);
             
             /* Once we're done querying fbRef: */
             fbRef.once("value", function(data) {
                 /* Don't call callback until we're done checking all curContests! */
-                
+                /* Check if we have all of the data for all curContests every second: */
+                var checkDone = setTimeout(function() {
+                    for (var i = 0; i < fbRefData.length; i++) if (!callbackData.hasOwnProperty(fbRefData[i])) break;
+                    /* If we do: */
+                    if (i == fbRefData.length) {
+                        /* Stop checking if we're done: */
+                        clearInterval(checkDone);
+                        /* Call the callback with callbackData: */
+                        console.log(callbackData);
+                        callback(callbackData);
+                    }
+                }, 1000);
                 /* Log errors: */
             }, Contest_Judging_System.logError);
         },
