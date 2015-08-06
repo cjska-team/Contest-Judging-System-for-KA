@@ -12,4 +12,5 @@
 * * `scripts/contest.js` is the JavaScript file for `contest.html`.
 * * `scripts/entry.js` is the JavaScript file for `entry.html`.
 * * `scripts/leaderboard.js` is the JavaScript file for `leaderboard.html`.
+* * `scripts/auth/auth.js` is the JavaScript file for all HTML files used to log users into Google.
 * `admin` holds everything necessary for the admin interface (visit the folder for more info).
