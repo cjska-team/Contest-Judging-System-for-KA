@@ -40,7 +40,7 @@ loginButton.on("click", function() {
                 /* When we're done, hide the login button. */
                 loginButton.css("display", "none");
             /* This logs errors to the console so no errors pass silently. */
-            }, function(error) { console.error(error); });
+            }, Contest_Judging_System.logError);
 		}
         /* This makes Firebase remember the login for 30 days (which has been set as the default in Firebase). */
 	}, {remember: "default"});

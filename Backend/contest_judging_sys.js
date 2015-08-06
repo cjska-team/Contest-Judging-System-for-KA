@@ -24,6 +24,8 @@ window.Contest_Judging_System = (function() {
     return {
         /* Puts the script injection function inside of this namespace. */
         include: includeFunc,
+        /* This function takes an error and logs it into the console. We pass this into Firebase calls so that no errors are silenced. */
+        logError: function(error) { console.error(error); },
         /* This function gets the authentication object. */
         getFirebaseAuth: function() {
             /* Connect to our Firebase app. */
@@ -45,12 +47,14 @@ window.Contest_Judging_System = (function() {
             /* Query all the data from Firebase, and push the JSON keys into our array. */
             fbRubrics.orderByKey().on("child_added", function(responseData) {
                 rubrics[responseData.key()] = responseData.val();
-            });
+                /* Log errors: */
+            }, Contest_Judging_System.logError);
 
             /* Once all our data has been loaded from Firebase, invoke our callback. */
             fbRubrics.once("value", function() {
                 callback(rubrics);
-            });
+                /* Log errors: */
+            }, Contest_Judging_System.logError);
         },
         /* This function gets all the contests that we have stored on Firebase and passes them into a callback function. */
         getStoredContests: function(callback) {
@@ -62,11 +66,13 @@ window.Contest_Judging_System = (function() {
             /* Insert all of the entries in our database in order by key */
             fbRef.orderByKey().on("child_added", function(item) {
                 fromFirebase[item.key()] = item.val();
-            });
+                /* Log errors: */
+            }, Contest_Judging_System.logError);
             /* Finally, pass fromFirebase into callback. */
             fbRef.once("value", function(data) {
                 callback(fromFirebase);
-            });
+                /* Log errors: */
+            }, Contest_Judging_System.logError);
         },
         /* Load a specific contest entry, based on ID */
         loadEntry: function(contestId, entryId, callback) {
@@ -74,7 +80,8 @@ window.Contest_Judging_System = (function() {
 
             firebaseRef.orderByKey().equalTo(entryId).on("child_added", function(entryData) {
                 callback(entryData.val());
-            });
+                /* Log errors: */
+            }, Contest_Judging_System.logError);
         },
         /* Loads a specific contest from Firebase. */
         loadContest: function(contestId, callback) {
@@ -85,7 +92,8 @@ window.Contest_Judging_System = (function() {
             /* Query all data, and order the data by the ID child, then pass the data we recieved, into our callback. */
             contestsRef.orderByChild("id").equalTo(contestId).on("child_added", function(contestData) {
                 callback(contestData.val());
-            });
+                /* Log errors: */
+            }, Contest_Judging_System.logError);
         },
         /* Gets N random entries (where N is the number of contests to get) and passes them into a callback. */
         get_N_Entries: function(n, contestId, callback) {
@@ -308,7 +316,8 @@ window.Contest_Judging_System = (function() {
                     var allowedJudges = {};
                     allowed.orderByKey().on("child_added", function(snapshot) {
                         allowedJudges[snapshot.key()] = snapshot.val();
-                    });
+                        /* Log errors: */
+                    }, Contest_Judging_System.logError);
 
                     /* Once all of the allowedJudges have been added... */
                     allowed.once("value", function(data) {
@@ -324,7 +333,8 @@ window.Contest_Judging_System = (function() {
                         }
                         /* If we haven't exited, then this judge is not authenticated, so we pass false to callback. */
                         callback(false);
-                    });
+                        /* Log errors: */
+                    }, Contest_Judging_System.logError);
                 }
             });
         },
@@ -344,7 +354,8 @@ window.Contest_Judging_System = (function() {
             /* Add in allowedJudges using Firebase */
             allowedJudges.orderByKey().on("child_added", function(data) {
                 allAllowedJudges[data.key()] = data.val();
-            });
+                /* Log errors: */
+            }, Contest_Judging_System.logError);
 
             /* Once all of the allAllowedJudges have been added... */
             allowedJudges.once("value", function() {
@@ -357,7 +368,8 @@ window.Contest_Judging_System = (function() {
                 }
                 /* At this point, valid has been set correctly, so we keep valid as it is (false or true) and simply set done to true. */
                 done = true;
-            });
+                /* Log errors: */
+            }, Contest_Judging_System.logError);
 
             /* Check if we're done every second and if we are, stop checking if we're true and pass callback into valid. */
             var returnWait = setInterval(function() {
@@ -366,12 +378,6 @@ window.Contest_Judging_System = (function() {
                     callback(valid);
                 }
             }, 1000);
-        },
-        addAllowedJudge: function(uid) {
-            /* This adds a judge with id of uid into the allowedJudges. */
-            var firebaseRef = new Firebase("https://contest-judging-sys.firebaseio.com");
-            var allowedJudges = firebaseRef.child("allowedJudges");
-            allowedJudges.push().set({uid: uid, allowed: true});
         },
         judgeEntry: function(contest, entry, scoreData, authToken, callback) {
             /* This judges an entry entry of contest with scoreData from a judge with id as set in cookies. */

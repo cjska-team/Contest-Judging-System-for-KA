@@ -52,7 +52,8 @@ if (fbAuth === null) {
 
 		/* Once everything is done, set authChecksDone to true, that way we can move to the next step. */
 		authChecksDone = true;
-	});
+        /* Make sure no errors are silenced. */
+	}, Contest_Judging_System.logError);
 }
 
 /* Check if we're done with our authentication checks every second. */
