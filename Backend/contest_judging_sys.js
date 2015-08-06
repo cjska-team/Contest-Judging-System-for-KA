@@ -87,7 +87,7 @@ window.Contest_Judging_System = (function() {
                             for (j = 0; j < props.length; j++) if (!curContestData.hasOwnProperty(props[j])) break;
                             /* If we've got all the props, update callbackData. */
                             if (j == props.length) callbackData[key] = curContestData;
-                        });
+                        }, Contest_Judging_System.logError);
                     })(i);
                 }
                 /* Log errors: */
@@ -104,19 +104,9 @@ window.Contest_Judging_System = (function() {
                         /* Stop checking if we're done: */
                         clearInterval(checkDone);
                         /* Call the callback with callbackData: */
-                        console.log(callbackData);
                         callback(callbackData);
                     }
                 }, 1000);
-                /* Log errors: */
-            }, Contest_Judging_System.logError);
-        },
-        /* Load a specific contest entry, based on ID */
-        loadEntry: function(contestId, entryId, callback) {
-            var firebaseRef = new Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contestId + "/entries/");
-
-            firebaseRef.orderByKey().equalTo(entryId).on("child_added", function(entryData) {
-                callback(entryData.val());
                 /* Log errors: */
             }, Contest_Judging_System.logError);
         },
@@ -124,13 +114,70 @@ window.Contest_Judging_System = (function() {
         loadContest: function(contestId, callback) {
             /* Connect to our Firebase app */
             var firebaseRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
-            /* Since we're only going to be dealing with contests in this function, go ahead and create a reference to the "contests" "child". */
-            var contestsRef = firebaseRef.child("contests");
-            /* Query all data, and order the data by the ID child, then pass the data we recieved, into our callback. */
-            contestsRef.orderByChild("id").equalTo(contestId).on("child_added", function(contestData) {
-                callback(contestData.val());
-                /* Log errors: */
-            }, Contest_Judging_System.logError);
+            /* Since we're only going to be dealing with contests in this function, go ahead and create a reference to the "contests" "child". Then, choose the contestId child of that.*/
+            var contestRef = firebaseRef.child("contests").child(contestId);
+            /* This is what we're going to pass through callback: */
+            var callbackData = {};
+            /* These are the property names that callbackData needs to have: */
+            var props = ["desc", "id", "img", "name", "entryCount", "entryKeys"];
+            
+            /* Get the data for all of the props: */
+            for (var i = 0; i < props.length; i++) {
+                /* Put this in a function wrapper to save the value of i: */
+                (function(i) {
+                    contestRef.child(props[i]).once("value", function(snapshot) {
+                        /* Set the data once we've got it. */
+                        callbackData[props[i]] = snapshot.val();
+                        /* Log errors: */
+                    }, Contest_Judging_System.logError);
+                })(i);
+            }
+
+            /* Check every second if we're done: */
+            var checkDone = setTimeout(function() {
+                for (var i = 0; i < props.length; i++) if (!callbackData.hasOwnProperty(props[i])) break;
+                /* If we're done: */
+                if (i == props.length) {
+                    /* Stop checking if we're done: */
+                    clearTimeout(checkDone);
+                    /* Call the callback: */
+                    callback(callbackData);
+                }
+            }, 1000);
+        },
+        /* Load a specific contest entry, based on ID */
+        loadEntry: function(contestId, entryId, callback) {
+            /* Connect to Firebase: */
+            var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/contests/"+contestId+"/entries/"+entryId);           
+            /* This is what we're going to pass through callback: */
+            var callbackData = {};
+            /* These are the property names that callbackData needs to have: */
+            var props = ["id", "thumb", "name", "scores"];
+            
+            /* Get the data for all of the props: */
+            for (var i = 0; i < props.length; i++) {
+                /* Put this in a function wrapper to save the value of i: */
+                (function(i) {
+                    fbRef.child(props[i]).once("value", function(snapshot) {
+                        /* Set the data once we've got it. */
+                        callbackData[props[i]] = snapshot.val();
+                        /* Log errors: */
+                    }, Contest_Judging_System.logError);
+                })(i);
+            }
+
+            /* Check every second if we're done: */
+            var checkDone = setTimeout(function() {
+                for (var i = 0; i < props.length; i++) if (!callbackData.hasOwnProperty(props[i])) break;
+                /* If we're done: */
+                if (i == props.length) {
+                    /* Stop checking if we're done: */
+                    clearTimeout(checkDone);
+                    /* Call the callback: */
+                    console.log(callbackData, entryId);
+                    callback(callbackData);
+                }
+            }, 1000);
         },
         /* Gets N random entries (where N is the number of contests to get) and passes them into a callback. */
         get_N_Entries: function(n, contestId, callback) {
@@ -140,14 +187,14 @@ window.Contest_Judging_System = (function() {
             var pickedEntries = { };
 
             /* This variable is used to store the number of entries for this contest. */
-            var numberOfEntries = 0;
+            var numEntries = 0;
 
             Contest_Judging_System.loadContest(contestId, function(contestData) {
 
                 /* Declare a variable to hold an array of keys for entries */
-                var entriesKeys = Object.keys(contestData.entries);
+                var entriesKeys = Object.keys(contestData.entryKeys);
                 /* These are the number of entries we will turn. We will turn either n entries or all of the entriess if there are less than n. */
-                var numEntries = (entriesKeys.length < n) ? entriesKeys.length : n;
+                numEntries = (entriesKeys.length < n) ? entriesKeys.length : n;
 
                 /* An array to store the keys that we've already picked */
                 var pickedKeys = [ ];
@@ -163,8 +210,14 @@ window.Contest_Judging_System = (function() {
                     /* If we haven't already picked that key... */
                     if (pickedKeys.indexOf(pickedKey) === -1) {
                         /* ...pick it. */
-                        pickedEntries[pickedKey] = contestData.entries[pickedKey];
                         pickedKeys.push(pickedKey);
+                        /* Function wrapper to save pickedKey: */
+                        (function(pickedKey) {
+                            /* Set pickedEntries[pickedKey] to the entry data: */
+                            Contest_Judging_System.loadEntry(contestId, pickedKey, function(entryData) {
+                                pickedEntries[pickedKey] = entryData;
+                            });
+                        })(pickedKey);
                     }
                 }
                     
@@ -174,7 +227,7 @@ window.Contest_Judging_System = (function() {
 
             /* Check if we're done every second and when we are, call the callback and stop checking if we're done. */
             var finishedInterval = setInterval(function() {
-                if (done) {
+                if (done && Object.keys(pickedEntries).length == numEntries) {
                     clearInterval(finishedInterval);
                     callback(pickedEntries);
                 }
