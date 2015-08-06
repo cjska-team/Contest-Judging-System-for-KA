@@ -326,46 +326,17 @@ window.Contest_Judging_System = (function() {
             var expires = "expires="+d.toUTCString();
             document.cookie = cookie + "=" + value + "; " + expires;
         },
-        isJudgeAllowed: function(uid, callback) {
-            /* Check if the judge with id of uid is allowed and then call callback with the Bool that is true iff such is true. */
-
+        getUserData: function(uid, callback) {
+            /* Get the perm level of the user with uid UID and then call the callback while passing the data through the callback: */
             /* Get the Firebase data */
             var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
-            var allowedJudges = fbRef.child("allowedJudges");
-            /* All allowed judges as JSON */
-            var allAllowedJudges = { };
-            /* True iff we've finished */
-            var done = false;
-            /* True iff uid is valid */
-            var valid = false;
-            
-            /* Add in allowedJudges using Firebase */
-            allowedJudges.orderByKey().on("child_added", function(data) {
-                allAllowedJudges[data.key()] = data.val();
-                /* Log errors: */
-            }, Contest_Judging_System.logError);
+            var curUser = fbRef.child("users").child(uid);
 
-            /* Once all of the allAllowedJudges have been added... */
-            allowedJudges.once("value", function() {
-                /* If the uid is valid, set valid and done to true.
-                for (var i in allAllowedJudges) {
-                    if (allAllowedJudges[i].uid == uid && allAllowedJudges[i].allowed == true) {
-                        valid = true;
-                        done = true;
-                    }
-                }
-                /* At this point, valid has been set correctly, so we keep valid as it is (false or true) and simply set done to true. */
-                done = true;
-                /* Log errors: */
-            }, Contest_Judging_System.logError);
-
-            /* Check if we're done every second and if we are, stop checking if we're true and pass callback into valid. */
-            var returnWait = setInterval(function() {
-                if (done) {
-                    clearInterval(returnWait);
-                    callback(valid);
-                }
-            }, 1000);
+            /* Get the user info: */
+            curUser.on("value", function(usersSnapshot) {
+                /* Call the callback: */
+                callback(usersSnapshot.val());
+            });
         },
         judgeEntry: function(contest, entry, scoreData, authToken, callback) {
             /* This judges an entry entry of contest with scoreData from a judge with id as set in cookies. */
@@ -388,11 +359,13 @@ window.Contest_Judging_System = (function() {
                     var newNumberOfJudges = parseInt(entryData.scores.rubric.NumberOfJudges, 10)+1;
                     /* Find the judges who voted (or an empty array if noone voted yet) */
                     var judgesWhoVoted = entryData.scores.rubric.judgesWhoVoted === undefined ? [] : entryData.scores.rubric.judgesWhoVoted;
+                    /* Get the Firebase auth data */
+                    var fbAuth = Contest_Judging_System.getFirebaseAuth();
 
                     /* If this judge hasn't voted on this entry yet... */
-                    if (judgesWhoVoted.indexOf(Contest_Judging_System.getCookie("uid")) === -1) {
+                    if (judgesWhoVoted.indexOf(fbAuth.uid) === -1) {
                         /* Push the uid of this judge into judgesWhoVoted */
-                        judgesWhoVoted.push(Contest_Judging_System.getCookie("uid"));
+                        judgesWhoVoted.push(fbAuth.uid);
                         
                         /* Create a new object for storing scores */
                         var newScoreObj = {
@@ -419,8 +392,8 @@ window.Contest_Judging_System = (function() {
                         /* Set the new scores to newScoreObj */
                         var thisEntry = new Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contest + "/entries/" + entry + "/scores/");
                         thisEntry.child("rubric").set(newScoreObj);
-                        /* Reload the page now that we're done. */
-                        window.location.reload();
+                        /* Tell the user that it worked! */
+                        alert("This entry has been judged. Hooray!");
                     }
                     /* If this judge has already judged this entry, tell them that they've already done so. */
                     else {

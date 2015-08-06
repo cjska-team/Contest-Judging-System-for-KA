@@ -245,10 +245,11 @@ function judgeEntry(scoreData) {
 var authenticated = false;
 function isJudgeAllowed(uid) {
     /* This function simply checks if the judge is allowed with the user ID: */
-    Contest_Judging_System.isJudgeAllowed(uid, function(valid) {
-        authenticated = valid;
+    Contest_Judging_System.getUserData(uid, function(userData) {
+        /* The user can judge if they have permLevel >= 4. */
+        authenticated = userData.permLevel >= 4;
         /* Judge the entry if they've been authenticated. */
-        if (valid) judgeEntry(scoreData);
+        if (authenticated) judgeEntry(scoreData);
         else alert("You aren't in the allowed judges list!");
     });
 }
