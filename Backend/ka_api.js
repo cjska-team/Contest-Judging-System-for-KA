@@ -74,7 +74,6 @@ window.KA_API = (function() {
                                         "rough": 1,
                                         "avg": 1
                                     },
-                                    "NumberOfJudges": 1,
                                     "judgesWhoVoted": [ ]
                                 }
                             }

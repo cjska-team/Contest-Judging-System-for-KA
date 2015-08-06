@@ -225,13 +225,6 @@ $(".toggleCode").on("click", function() {
 	}
 });
 
-function judgeEntry(scoreData) {
-    /* This function simply judges the entry using scoreData. */
-    Contest_Judging_System.judgeEntry(contestId, entryId, scoreData, function(data) {
-		console.log("Submitted scores!");
-	});
-}
-
 $(".viewOnKA").on("click", function() {
 	/* Prompt the user with a message warning them about information that could potentially bias them. */
 	var promptMsg = prompt("By visiting the following page, you're exposing yourself to information that could bias your judging. If you agree to not let information you see on Khan Academy bias your judging, please type \"I agree\" in the box below to show that you read this message. Otherwise, close this prompt.");
@@ -241,8 +234,25 @@ $(".viewOnKA").on("click", function() {
 	}
 });
 
+function judgeEntry(scoreData) {
+    /* This function simply judges the entry using scoreData. */
+    Contest_Judging_System.judgeEntry(contestId, entryId, scoreData, function(data) {
+		console.log("Submitted scores!");
+	});
+}
+
 /* This bool is true if the user has been authenticated. */
 var authenticated = false;
+function isJudgeAllowed(uid) {
+    /* This function simply checks if the judge is allowed with the user ID: */
+    Contest_Judging_System.getUserData(uid, function(userData) {
+        /* The user can judge if they have permLevel >= 4. */
+        authenticated = userData.permLevel >= 4;
+        /* Judge the entry if they've been authenticated. */
+        if (authenticated) judgeEntry(scoreData);
+        else alert("You aren't in the allowed judges list!");
+    });
+}
 $("#submitBtn").on("click", function() {
     /* Tell the user to fill out all criteria if they haven't filled out everything. */
     for (var k in scoreData) if (scoreData[k] == null) {
@@ -253,11 +263,19 @@ $("#submitBtn").on("click", function() {
 
     /* If the user hasn't been authenticated, try to authenticate them and judge the entry if they are a valid judge. */
     /* Notice that this gives them a way to be authenticated multiple times in case a valid judge messes up in logging in the first time. */
-	if (!authenticated) Contest_Judging_System.tryAuthentication(function(valid) {
-        authenticated = valid;
-        if (valid) judgeEntry(scoreData);
-        else alert("You aren't in the allowed judges list!");
-    });
+	if (!authenticated) {
+        /* Check if the user is logged in: */
+        var fbAuth = Contest_Judging_System.getFirebaseAuth();
+        /* If they're not, log them in, update fbAuth, and check if they're allowed: */
+        if (fbAuth == null) {
+            Contest_Judging_System.logUserIn(function(authData) {
+                fbAuth = authData;
+                isJudgeAllowed(fbAuth.uid);
+            });
+        }
+        /* If they're logged in, then go straight to checking if they're allowed: */
+        else isJudgeAllowed(fbAuth.uid);
+    }
     /* Otherwise, if they've already been authenticated, just judge the entry. */
     else judgeEntry(scoreData);
 });
