@@ -27,24 +27,18 @@ loginButton.on("click", function() {
             fbAuth = Contest_Judging_System.getFirebaseAuth();
             /* Access the users child */
             var usersRef = fbRef.child("users");
-            /* This is true iff the following function has run: */
-            var belowRun = false;
-            usersRef.on("value", function(snapshot) {
-                /* Only run this once, so don't run it if it already has run. */
-                if (!belowRun) {
-                    belowRun = true;
-                    /* Add this user into Firebase if they're not already there. */
-                    if (!snapshot.hasChild(fbAuth.uid)) {
-                        usersRef.child(fbAuth.uid).set({
-                            name: fbAuth.google.displayName,
-                            permLevel: 1
-                        });
-                        console.log("Added new user in Firebase!");
-                    }
-                    console.log("Logged user in!");
-                    /* When we're done, hide the login button. */
-                    loginButton.css("display", "none");
+            usersRef.once("value", function(snapshot) {
+                /* Add this user into Firebase if they're not already there. */
+                if (!snapshot.hasChild(fbAuth.uid)) {
+                    usersRef.child(fbAuth.uid).set({
+                        name: fbAuth.google.displayName,
+                        permLevel: 1
+                    });
+                    console.log("Added new user in Firebase!");
                 }
+                console.log("Logged user in!");
+                /* When we're done, hide the login button. */
+                loginButton.css("display", "none");
             /* This logs errors to the console so no errors pass silently. */
             }, function(error) { console.error(error); });
 		}

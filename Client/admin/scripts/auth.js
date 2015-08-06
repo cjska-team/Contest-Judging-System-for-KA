@@ -25,29 +25,30 @@ if (fbAuth === null) {
 
 	/* Once the query is done... */
 	fbRef.once("value", function(data) {
-		/* ...make sure the user exists in Firebase. If they don't: */
-		if (!data.hasChild(userID)) {
-			/* User doesn't exist in Firebase, which means they cannot be an admin. Therefore, set them in Firebase with lowest possible permissions. */
-			fbRef.child(userID).set({
-				name: fbAuth.google.displayName,
-				permLevel: 1
-			});
-			/* Let the user know that we're leaving the page. */
-			alert("You're logged in, but we don't know who you are! Leaving page.");
-			window.location.assign("../index.html");
-		}
+        /* NOTE: We need to keep this case in despite the fixed Client/scripts/auth.js because there might be testers (like Noble) that log themselves in but then forget to add themselves to Firebase. */
+        /* ...make sure the user exists in Firebase. If they don't: */
+        if (!data.hasChild(userID)) {
+            /* User doesn't exist in Firebase, which means they cannot be an admin. Therefore, set them in Firebase with lowest possible permissions. */
+            fbRef.child(userID).set({
+                name: fbAuth.google.displayName,
+                permLevel: 1
+            });
+            /* Let the user know that we're leaving the page. */
+            alert("You're logged in, but we don't know who you are! Leaving page.");
+            window.location.assign("../index.html");
+        }
         /* Otherwise, if they do exist in Firebase: */
         else {
             /* Set userData: */
             userData = data.val()[userID];
-			/* ...make sure they're an admin. */
-			if (userData.permLevel !== 5) {
-				/* User doesn't appear to be an admin. */
-				/* Let the user know that we're leaving the page. */
-				alert("You do not have admin permissions! Leaving page.");
-				window.location.assign("../index.html");
-			}
-		}
+            /* ...make sure they're an admin. */
+            if (userData.permLevel !== 5) {
+                /* User doesn't appear to be an admin. */
+                /* Let the user know that we're leaving the page. */
+                alert("You do not have admin permissions! Leaving page.");
+                window.location.assign("../index.html");
+            }
+        }
 
 		/* Once everything is done, set authChecksDone to true, that way we can move to the next step. */
 		authChecksDone = true;
