@@ -5,7 +5,7 @@
  */
 /* The data we have on the current user. */
 var userData;
-/* True if we're done with the auth checks. */
+/* True iff we're done with the auth checks. */
 var authChecksDone = false;
 
 /* Check if user is logged in using Firebase. */
