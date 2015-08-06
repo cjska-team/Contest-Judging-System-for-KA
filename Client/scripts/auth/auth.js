@@ -15,6 +15,6 @@ if (fbAuth == null) {
 loginButton.on("click", function() {
     Contest_Judging_System.logUserIn(function(authData) {
         /* Hide login button when done: */
-        loginButton.css("display", "none"):
+        loginButton.css("display", "none");
     });
 });

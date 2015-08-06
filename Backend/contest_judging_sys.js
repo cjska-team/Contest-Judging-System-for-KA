@@ -326,17 +326,29 @@ window.Contest_Judging_System = (function() {
             var expires = "expires="+d.toUTCString();
             document.cookie = cookie + "=" + value + "; " + expires;
         },
-        getUserData: function(uid, callback) {
+        getUserData: function(userID, callback) {
             /* Get the perm level of the user with uid UID and then call the callback while passing the data through the callback: */
             /* Get the Firebase data */
             var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
-            var curUser = fbRef.child("users").child(uid);
+            var users = fbRef.child("users");
 
             /* Get the user info: */
-            curUser.on("value", function(usersSnapshot) {
-                /* Call the callback: */
-                callback(usersSnapshot.val());
-            });
+            users.once("value", function(usersSnapshot) {
+                /* Make sure the user exists in Firebase. If they don't: */
+                if (!usersSnapshot.hasChild(userID)) {
+                    /* User doesn't exist in Firebase, which means they cannot be an admin. Therefore, set them in Firebase with lowest possible permissions. */
+                    var userData = {
+                        name: fbAuth.google.displayName,
+                        permLevel: 1
+                    };
+                    fbRef.child(userID).set(userData);
+                    /* Call the callback */
+                    callback(userData);
+                }
+                /* Otherwise, go straight to calling the callback: */
+                else callback(usersSnapshot.val()[userID]);
+                /* Log errors: */
+            }, Contest_Judging_System.logError);
         },
         judgeEntry: function(contest, entry, scoreData, authToken, callback) {
             /* This judges an entry entry of contest with scoreData from a judge with id as set in cookies. */
@@ -355,8 +367,6 @@ window.Contest_Judging_System = (function() {
                 //Contest_Judging_System.getRubrics(function(allRubrics) {
                     /* Get the current rubric score */
                     var currentRubricScore = entryData.scores.rubric;
-                    /* Get the new number of judges by adding the number of judges by 1 */
-                    var newNumberOfJudges = parseInt(entryData.scores.rubric.NumberOfJudges, 10)+1;
                     /* Find the judges who voted (or an empty array if noone voted yet) */
                     var judgesWhoVoted = entryData.scores.rubric.judgesWhoVoted === undefined ? [] : entryData.scores.rubric.judgesWhoVoted;
                     /* Get the Firebase auth data */
@@ -366,26 +376,26 @@ window.Contest_Judging_System = (function() {
                     if (judgesWhoVoted.indexOf(fbAuth.uid) === -1) {
                         /* Push the uid of this judge into judgesWhoVoted */
                         judgesWhoVoted.push(fbAuth.uid);
+                        var numJudges = judgesWhoVoted.length
                         
                         /* Create a new object for storing scores */
                         var newScoreObj = {
                             "Level": {
                                 "rough": entryData.scores.rubric.Level.rough + scoreData.Level,
-                                "avg": Math.round((parseInt(entryData.scores.rubric.Level.rough, 10) + scoreData.Level) / newNumberOfJudges)
+                                "avg": Math.round((parseInt(entryData.scores.rubric.Level.rough, 10) + scoreData.Level) / numJudges)
                             },
                             "Clean_Code": {
                                 "rough": entryData.scores.rubric.Clean_Code.rough + scoreData.Clean_Code,
-                                "avg": (parseInt(entryData.scores.rubric.Clean_Code.rough, 10) + scoreData.Clean_Code) / newNumberOfJudges
+                                "avg": (parseInt(entryData.scores.rubric.Clean_Code.rough, 10) + scoreData.Clean_Code) / numJudges
                             },
                             "Creativity": {
                                 "rough": entryData.scores.rubric.Creativity.rough + scoreData.Creativity,
-                                "avg": (parseInt(entryData.scores.rubric.Creativity.rough, 10) + scoreData.Creativity) / newNumberOfJudges
+                                "avg": (parseInt(entryData.scores.rubric.Creativity.rough, 10) + scoreData.Creativity) / numJudges
                             },
                             "Overall": {
                                 "rough": entryData.scores.rubric.Overall.rough + scoreData.Overall,
-                                "avg": (parseInt(entryData.scores.rubric.Overall.rough, 10) + scoreData.Overall) / newNumberOfJudges
+                                "avg": (parseInt(entryData.scores.rubric.Overall.rough, 10) + scoreData.Overall) / numJudges
                             },
-                            "NumberOfJudges": parseInt(newNumberOfJudges, 10),
                             "judgesWhoVoted": judgesWhoVoted
                         };
 

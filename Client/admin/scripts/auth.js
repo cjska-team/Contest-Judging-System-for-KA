@@ -12,48 +12,28 @@ var authChecksDone = false;
 var fbAuth = Contest_Judging_System.getFirebaseAuth();
 if (fbAuth === null) {
 	/* Let the user know that we're leaving the page. */
-	alert("You don't appear to be logged in! Leaving page.");
+	alert("Please login on the home page. Thanks! Leaving page.");
 	window.location.assign("../index.html");
-} else {
-    /* Connect to Firebase */
-	var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/users/");
-    /* Get the User ID */
-	var userID = fbAuth.uid;
+}
+/* Otherwise, go straight to getting the user info: */
+else getUserInfo();
 
-	/* Query Firebase */
-	fbRef.orderByKey().on("child_added", function(data) { /* Do nothing here. */ });
-
-	/* Once the query is done... */
-	fbRef.once("value", function(data) {
-        /* NOTE: We need to keep this case in despite the fixed Client/scripts/auth.js because there might be testers (like Noble) that log themselves in but then forget to add themselves to Firebase. */
-        /* ...make sure the user exists in Firebase. If they don't: */
-        if (!data.hasChild(userID)) {
-            /* User doesn't exist in Firebase, which means they cannot be an admin. Therefore, set them in Firebase with lowest possible permissions. */
-            fbRef.child(userID).set({
-                name: fbAuth.google.displayName,
-                permLevel: 1
-            });
+function getUserInfo() {
+    /* Get the data we have on the user: */
+    Contest_Judging_System.getUserData(fbAuth.uid, function(userDataLocal) {
+        /* Set userData: */
+        userData = userDataLocal;
+        /* Make sure they're an admin. */
+        if (userData.permLevel !== 5) {
+            /* User doesn't appear to be an admin. */
             /* Let the user know that we're leaving the page. */
-            alert("You're logged in, but we don't know who you are! Leaving page.");
+            alert("You do not have admin permissions! Leaving page.");
             window.location.assign("../index.html");
-        }
-        /* Otherwise, if they do exist in Firebase: */
-        else {
-            /* Set userData: */
-            userData = data.val()[userID];
-            /* ...make sure they're an admin. */
-            if (userData.permLevel !== 5) {
-                /* User doesn't appear to be an admin. */
-                /* Let the user know that we're leaving the page. */
-                alert("You do not have admin permissions! Leaving page.");
-                window.location.assign("../index.html");
-            }
         }
 
 		/* Once everything is done, set authChecksDone to true, that way we can move to the next step. */
 		authChecksDone = true;
-        /* Make sure no errors are silenced. */
-	}, Contest_Judging_System.logError);
+    });
 }
 
 /* Check if we're done with our authentication checks every second. */
