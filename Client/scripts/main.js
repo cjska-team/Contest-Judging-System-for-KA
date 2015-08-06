@@ -10,7 +10,7 @@ var moreContestsBtn = document.querySelector("#more-contests");
 /* This is the number of contests we've displayed. */
 var numContestsDisplayed = 0;
 function displayContests() {
-    /* Displays 20 more contests */
+    /* Displays 10 more contests */
     /* This is the number of contests we'll have displayed when we're done. */
     var shouldBeDisplayed = numContestsDisplayed + 10;
     /* Make sure we don't display more contests then there are! */
