@@ -26,15 +26,11 @@ if (Contest_Judging_System.getCookie("loggedInUser") === "") {
 		if (!data.val().hasOwnProperty(userID)) {
 			/* User doesn't exist in Firebase, which means they cannot be an admin. */
 			/* Let the user know that we're leaving the page. */
-			fbRef.child(userID).set({
-				name: Contest_Judging_System.getCookie("loggedInUsername"),
-				permLevel: 1
-			});
 			alert("User ID \"" + userID + "\" doesn't exist in Firebase. Leaving page.");
 			window.location.assign("../index.html");
 		} else {
 			/* ...make sure they're an admin. */
-			if (data.val()[userID].permLevel !== 5) {
+			if (data.val()[userID].permLevel < 5) {
 				/* User doesn't appear to be an admin. */
 				/* Let the user know that we're leaving the page. */
 				alert("You do not have admin permissions! Leaving page.");
