@@ -58,19 +58,34 @@ window.Contest_Judging_System = (function() {
         },
         /* This function gets all the contests that we have stored on Firebase and passes them into a callback function. */
         getStoredContests: function(callback) {
-            /* This is the object for the contests within our Firebase database. */
-            var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/contests/");
-            /* This is an object to hold all of the data from Firebase. */
-            var fromFirebase = {};
+            /* This is the object containing the paths to the contests within our Firebase database. */
+            var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/contestKeys/");
+            /* This is all of the contests: */
+            var contests = new Firebase("https://contest-judging-sys.firebaseio.com/contests/");
+            /* This is an object to hold all of the data from fbRef. */
+            var fbRefData = [];
+            /* This is the data we need to give to callback: */
+            var callbackData = {};
             
-            /* Insert all of the entries in our database in order by key */
+            /* Get all of the contest data: */
             fbRef.orderByKey().on("child_added", function(item) {
-                fromFirebase[item.key()] = item.val();
+                /* Push the data to fbRefData: */
+                var key = item.val();
+                fbRefData.push(key);
+                /* Get the current contest: */
+                var curContest = contests.child(key);
+                curContest.on("value", function(snapshot) {
+                    /* Get the data for this contest: */
+                    
+                    /* Log errors: */
+                }, Contest_Judging_System.logError);
                 /* Log errors: */
             }, Contest_Judging_System.logError);
-            /* Finally, pass fromFirebase into callback. */
+            
+            /* Once we're done querying fbRef: */
             fbRef.once("value", function(data) {
-                callback(fromFirebase);
+                /* Don't call callback until we're done checking all curContests! */
+                
                 /* Log errors: */
             }, Contest_Judging_System.logError);
         },
