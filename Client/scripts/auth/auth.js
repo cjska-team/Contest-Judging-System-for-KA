@@ -9,6 +9,7 @@ if (fbAuth == null) {
 	loginButton.css("display", "block");
 } else {
 	console.log("You're logged in! Yay!");
+	document.querySelector(".hideWhileNotAuthed").style.display = "block";
 }
 
 /* When the user clicks the login button, log them in: */
@@ -16,5 +17,6 @@ loginButton.on("click", function() {
     Contest_Judging_System.logUserIn(function(authData) {
         /* Hide login button when done: */
         loginButton.css("display", "none");
+		document.querySelector(".hideWhileNotAuthed").style.display = "block";
     });
 });

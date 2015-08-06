@@ -25,6 +25,9 @@ summary * {
     from { -moz-transform: rotate(0deg);}
     to { -moz-transform: rotate(360deg);}
 }
+.hideWhileNotAuthed {
+	display: none;
+}
 /*Give all .contest and .entry <div>s a margin, some padding, and a thin solid black border.*/
 .contest, .entry {
 	margin: 5px;
