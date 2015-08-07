@@ -8,36 +8,20 @@ var userData;
 /* True iff we're done with the auth checks. */
 var authChecksDone = false;
 
-/* Check if user is logged in using Firebase. */
-var fbAuth = Contest_Judging_System.getFirebaseAuth();
+Contest_Judging_System.logInAndGetUserData(function(authData, userDataLocal) {
+    /* Set userData: */
+    userData = userDataLocal;
+    /* Make sure they're an admin. */
+    if (userData.permLevel < 5) {
+        /* User doesn't appear to be an admin. */
+        /* Let the user know that we're leaving the page. */
+        alert("You do not have admin permissions! Leaving page.");
+        window.location.assign("../index.html");
+    }
 
-var getUserInfo = function() {
-    /* Get the data we have on the user: */
-    Contest_Judging_System.getUserData(fbAuth.uid, function(userDataLocal) {
-        /* Set userData: */
-        userData = userDataLocal;
-        /* Make sure they're an admin. */
-        if (userData.permLevel !== 5) {
-            /* User doesn't appear to be an admin. */
-            /* Let the user know that we're leaving the page. */
-            alert("You do not have admin permissions! Leaving page.");
-            window.location.assign("../index.html");
-        }
-
-		/* Once everything is done, set authChecksDone to true, that way we can move to the next step. */
-		authChecksDone = true;
-    });
-};
-
-if (fbAuth === null) {
-	/* Let the user know that we're leaving the page. */
-	alert("Please login on the home page. Thanks! Leaving page.");
-	window.location.assign("../index.html");
-}
-else {
-	/* Otherwise, go straight to getting the user info: */
-	getUserInfo();
-}
+    /* Once everything is done, set authChecksDone to true, that way we can move to the next step. */
+    authChecksDone = true;
+});
 
 /* Check if we're done with our authentication checks every second. */
 var authChecks = setInterval(function() {

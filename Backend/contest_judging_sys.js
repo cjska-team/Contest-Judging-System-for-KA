@@ -98,9 +98,8 @@ window.Contest_Judging_System = (function() {
                 /* Don't call callback until we're done checking all curContests! */
                 /* Check if we have all of the data for all curContests every second: */
                 var checkDone = setTimeout(function() {
-                    for (var i = 0; i < fbRefData.length; i++) if (!callbackData.hasOwnProperty(fbRefData[i])) break;
                     /* If we do: */
-                    if (i == fbRefData.length) {
+                    if (Object.keys(callbackData).length == fbRefData.length) {
                         /* Stop checking if we're done: */
                         clearInterval(checkDone);
                         /* Call the callback with callbackData: */
@@ -119,7 +118,7 @@ window.Contest_Judging_System = (function() {
             /* This is what we're going to pass through callback: */
             var callbackData = {};
             /* These are the property names that callbackData needs to have: */
-            var props = ["desc", "id", "img", "name", "entryCount", "entryKeys"];
+            var props = ["desc", "id", "img", "name", "entryCount", "entryKeys", "rubrics"];
             
             /* Get the data for all of the props: */
             for (var i = 0; i < props.length; i++) {
@@ -135,9 +134,8 @@ window.Contest_Judging_System = (function() {
 
             /* Check every second if we're done: */
             var checkDone = setTimeout(function() {
-                for (var i = 0; i < props.length; i++) if (!callbackData.hasOwnProperty(props[i])) break;
                 /* If we're done: */
-                if (i == props.length) {
+                if (Object.keys(callbackData).length == props.length) {
                     /* Stop checking if we're done: */
                     clearTimeout(checkDone);
                     /* Call the callback: */
@@ -146,13 +144,15 @@ window.Contest_Judging_System = (function() {
             }, 1000);
         },
         /* Load a specific contest entry, based on ID */
-        loadEntry: function(contestId, entryId, callback) {
+        loadEntry: function(contestId, entryId, permLevel, callback) {
             /* Connect to Firebase: */
             var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/contests/"+contestId+"/entries/"+entryId);           
             /* This is what we're going to pass through callback: */
             var callbackData = {};
             /* These are the property names that callbackData needs to have: */
-            var props = ["id", "thumb", "name", "scores"];
+            var props = ["id", "thumb", "name"];
+            /* Include the scores if they can read the scores: */
+            if (permLevel >= 4) props.push("scores");
             
             /* Get the data for all of the props: */
             for (var i = 0; i < props.length; i++) {
@@ -168,29 +168,30 @@ window.Contest_Judging_System = (function() {
 
             /* Check every second if we're done: */
             var checkDone = setTimeout(function() {
-                for (var i = 0; i < props.length; i++) if (!callbackData.hasOwnProperty(props[i])) break;
                 /* If we're done: */
-                if (i == props.length) {
+                if (Object.keys(callbackData).length == props.length) {
                     /* Stop checking if we're done: */
                     clearTimeout(checkDone);
                     /* Call the callback: */
-                    console.log(callbackData, entryId);
                     callback(callbackData);
                 }
             }, 1000);
         },
-        /* Gets N random entries (where N is the number of contests to get) and passes them into a callback. */
-        get_N_Entries: function(n, contestId, callback) {
+        /* Gets N random entries (where N is the number of contests to get) and passes them along with the contest data of contestId into a callback. */
+        get_N_Entries: function(n, contestId, permLevel, callback) {
             /* This bool is true iff we're done picking the n entries. */
             var done = false;
+            /* This is the contest data: */
+            var contestData;
             /* This JSON object stores each of the entries we've picked out to display to the judge */
             var pickedEntries = { };
 
             /* This variable is used to store the number of entries for this contest. */
             var numEntries = 0;
 
-            Contest_Judging_System.loadContest(contestId, function(contestData) {
-
+            Contest_Judging_System.loadContest(contestId, function(contestDataLocal) {
+                /* Set contestData: */
+                contestData = contestDataLocal;
                 /* Declare a variable to hold an array of keys for entries */
                 var entriesKeys = Object.keys(contestData.entryKeys);
                 /* These are the number of entries we will turn. We will turn either n entries or all of the entriess if there are less than n. */
@@ -214,7 +215,7 @@ window.Contest_Judging_System = (function() {
                         /* Function wrapper to save pickedKey: */
                         (function(pickedKey) {
                             /* Set pickedEntries[pickedKey] to the entry data: */
-                            Contest_Judging_System.loadEntry(contestId, pickedKey, function(entryData) {
+                            Contest_Judging_System.loadEntry(contestId, pickedKey, permLevel, function(entryData) {
                                 pickedEntries[pickedKey] = entryData;
                             });
                         })(pickedKey);
@@ -229,7 +230,7 @@ window.Contest_Judging_System = (function() {
             var finishedInterval = setInterval(function() {
                 if (done && Object.keys(pickedEntries).length == numEntries) {
                     clearInterval(finishedInterval);
-                    callback(pickedEntries);
+                    callback(contestData, pickedEntries);
                 }
             }, 1000);
         },
@@ -372,38 +373,6 @@ window.Contest_Judging_System = (function() {
                 }
             }, 1000);
         },
-        /* This function logs the user in and then calls the callback with the Firebase auth data: */
-        logUserIn: function(callback) {
-            /* Connect to Firebase: */
-            var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
-
-            /* Try to log the user in: */
-            fbRef.authWithOAuthPopup("google", function(error, authData) {
-                /* Error Handling: */
-                if (error) {
-                    alert("An error occured. Please try again later.");
-                    console.log(error);
-                } else {
-                    /* Access the users child */
-                    var usersRef = fbRef.child("users");
-                    usersRef.once("value", function(snapshot) {
-                        /* Add this user into Firebase if they're not already there. */
-                        if (!snapshot.hasChild(authData.uid)) {
-                            usersRef.child(authData.uid).set({
-                                name: authData.google.displayName,
-                                permLevel: 1
-                            });
-                            console.log("Added new user in Firebase!");
-                        }
-                        console.log("Logged user in!");
-                        /* When we're done, call the callback. */
-                        callback(authData)
-                    /* This logs errors to the console so no errors pass silently. */
-                    }, Contest_Judging_System.logError);
-                }
-                /* This makes Firebase remember the login for 30 days (which has been set as the default in Firebase). */
-            }, {remember: "default"});
-        },
         /* Cookie functions provided by w3schools */
         getCookie: function(cookie) {
             /* Get the cookie with name cookie (return "" if non-existent) */
@@ -426,8 +395,39 @@ window.Contest_Judging_System = (function() {
             var expires = "expires="+d.toUTCString();
             document.cookie = cookie + "=" + value + "; " + expires;
         },
+        /* This function logs the user in and then calls the callback with the Firebase auth data: */
+        logUserIn: function(callback) {
+            /* Connect to Firebase: */
+            var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
+            /* Try to log the user in: */
+            fbRef.authWithOAuthPopup("google", function(error, authData) {
+                /* Error Handling: */
+                if (error) {
+                    alert("An error occured. Please try again later.");
+                    console.log(error);
+                } else {
+                    /* Access the users child */
+                    var usersRef = fbRef.child("users");
+                    usersRef.once("value", function(snapshot) {
+                        /* Add this user into Firebase if they're not already there. */
+                        if (!snapshot.hasChild(authData.uid)) {
+                            usersRef.child(authData.uid).set({
+                                name: authData.google.displayName,
+                                permLevel: 1
+                            });
+                            console.log("Added new user in Firebase!");
+                        }
+                        console.log("Logged user in!");
+                        /* When we're done, call the callback. */
+                        callback(authData)
+                    /* Log errors: */
+                    }, Contest_Judging_System.logError);
+                }
+                /* This makes Firebase remember the login for 30 days (which has been set as the default in Firebase). */
+            }, {remember: "default"});
+        },
         getUserData: function(userID, callback) {
-            /* Get the perm level of the user with uid UID and then call the callback while passing the data through the callback: */
+            /* Get the data of the user with uid userID and then call the callback while passing the data through the callback: */
             /* Get the Firebase data */
             var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
             var users = fbRef.child("users");
@@ -450,10 +450,31 @@ window.Contest_Judging_System = (function() {
                 /* Log errors: */
             }, Contest_Judging_System.logError);
         },
-        judgeEntry: function(contest, entry, scoreData, authToken, callback) {
-            /* This judges an entry entry of contest with scoreData from a judge with id as set in cookies. */
-            /* TODO: Figure out what to do with authToken. */
-            /* TODO: Figure out what to do with callback. */
+        logInAndGetUserData: function(callback) {
+            /* This function combines logging in and getting the user data so it logs in the user if they're not already logged in and passes the auth data and user data to the callback: */
+            /* Get the Firebase auth data: */
+            var fbAuth = Contest_Judging_System.getFirebaseAuth();
+            /* If they're not logged in: */
+            if (fbAuth == null) {
+                /* Log them in: */
+                Contest_Judging_System.logUserIn(function(authData) {
+                    /* Set fbAuth: */
+                    fbAuth = authData;
+                    /* Get the user data: */
+                    Contest_Judging_System.getUserData(fbAuth.uid, function(userData) {
+                        /* Call callback: */
+                        callback(fbAuth, userData);
+                    });
+                });
+            }
+            /* Otherwise, just get the data: */
+            else Contest_Judging_System.getUserData(fbAuth.uid, function(userData) {
+                /* Call callback: */
+                callback(fbAuth, userData);
+            });
+        },
+        judgeEntry: function(contest, entry, scoreData, permLevel, callback) {
+            /* This judges an entry entry of contest with scoreData from a judge with id as set in cookies. It then passes the new scores through callback. */
 
             /* Get Firebase data */
             var fbContestRef = new Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contest);
@@ -461,55 +482,43 @@ window.Contest_Judging_System = (function() {
             var entries = fbContestRef.child("entries");
 
             /* Load the Firebase data of this entry of this contest and then... */
-            Contest_Judging_System.loadEntry(contest, entry, function(entryData) {
-                /* Get all of the rubrics from Firebase */
-                /* TODO: Figure out if we need .getRubrics() here. */
-                //Contest_Judging_System.getRubrics(function(allRubrics) {
-                    /* Get the current rubric score */
-                    var currentRubricScore = entryData.scores.rubric;
-                    /* Find the judges who voted (or an empty array if noone voted yet) */
-                    var judgesWhoVoted = entryData.scores.rubric.judgesWhoVoted === undefined ? [] : entryData.scores.rubric.judgesWhoVoted;
-                    /* Get the Firebase auth data */
-                    var fbAuth = Contest_Judging_System.getFirebaseAuth();
+            Contest_Judging_System.loadEntry(contest, entry, permLevel, function(entryData) {
+                /* Get the current rubric score */
+                var currentRubricScore = entryData.scores.rubric;
+                /* Find the judges who voted (or an empty array if noone voted yet) */
+                var judgesWhoVoted = entryData.scores.rubric.judgesWhoVoted === undefined ? [] : entryData.scores.rubric.judgesWhoVoted;
+                /* Get the Firebase auth data */
+                var fbAuth = Contest_Judging_System.getFirebaseAuth();
 
-                    /* If this judge hasn't voted on this entry yet... */
-                    if (judgesWhoVoted.indexOf(fbAuth.uid) === -1) {
-                        /* Push the uid of this judge into judgesWhoVoted */
-                        judgesWhoVoted.push(fbAuth.uid);
-                        var numJudges = judgesWhoVoted.length
-                        
-                        /* Create a new object for storing scores */
-                        var newScoreObj = {
-                            "Level": {
-                                "rough": entryData.scores.rubric.Level.rough + scoreData.Level,
-                                "avg": Math.round((parseInt(entryData.scores.rubric.Level.rough, 10) + scoreData.Level) / numJudges)
-                            },
-                            "Clean_Code": {
-                                "rough": entryData.scores.rubric.Clean_Code.rough + scoreData.Clean_Code,
-                                "avg": (parseInt(entryData.scores.rubric.Clean_Code.rough, 10) + scoreData.Clean_Code) / numJudges
-                            },
-                            "Creativity": {
-                                "rough": entryData.scores.rubric.Creativity.rough + scoreData.Creativity,
-                                "avg": (parseInt(entryData.scores.rubric.Creativity.rough, 10) + scoreData.Creativity) / numJudges
-                            },
-                            "Overall": {
-                                "rough": entryData.scores.rubric.Overall.rough + scoreData.Overall,
-                                "avg": (parseInt(entryData.scores.rubric.Overall.rough, 10) + scoreData.Overall) / numJudges
-                            },
-                            "judgesWhoVoted": judgesWhoVoted
+                /* If this judge hasn't voted on this entry yet... */
+                if (judgesWhoVoted.indexOf(fbAuth.uid) === -1) {
+                    /* Push the uid of this judge into judgesWhoVoted */
+                    judgesWhoVoted.push(fbAuth.uid);
+                    var numJudges = judgesWhoVoted.length
+
+                    /* Create a new object for storing scores */
+                    var newScoreObj = {judgesWhoVoted: judgesWhoVoted};
+                    for (var k in currentRubricScore) {
+                        /* If this is the first judge to vote, make sure we're starting off from 0: */
+                        if (judgesWhoVoted.length == 1) currentRubricScore[k].rough = 0;
+                        newScoreObj[k] = {
+                            rough: currentRubricScore[k].rough+scoreData[k],
+                            avg: Math.round((parseInt(currentRubricScore[k].rough, 10)+scoreData[k])/numJudges)
                         };
+                    }
 
-                        /* Set the new scores to newScoreObj */
-                        var thisEntry = new Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contest + "/entries/" + entry + "/scores/");
-                        thisEntry.child("rubric").set(newScoreObj);
-                        /* Tell the user that it worked! */
-                        alert("This entry has been judged. Hooray!");
-                    }
-                    /* If this judge has already judged this entry, tell them that they've already done so. */
-                    else {
-                        alert("You've already judged this entry!");
-                    }
-                //});
+                    /* Set the new scores to newScoreObj */
+                    var thisEntry = new Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contest + "/entries/" + entry + "/scores/");
+                    thisEntry.child("rubric").set(newScoreObj);
+                    /* Tell the user that it worked! */
+                    alert("This entry has been judged. Hooray!");
+                    /* Pass newScoreObj through callback: */
+                    callback(newScoreObj);
+                }
+                /* If this judge has already judged this entry, tell them that they've already done so. */
+                else {
+                    alert("You've already judged this entry!");
+                }
             });
         }
     };

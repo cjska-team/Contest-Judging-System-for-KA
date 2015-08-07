@@ -36,8 +36,8 @@ var baseURL = "https://www.khanacademy.org/computer-programming/entry/{ENTRYID}/
 
 /* A couple elements that we'll be using later on */
 var programPreview = document.querySelector(".program-preview");
-var judgingPane = document.querySelector(".judging-pane");
-var currentScore = document.querySelector(".current-score");
+//var judgingPane = document.querySelector(".judging-pane");
+var currentScoreDiv = document.querySelector(".current-score");
 var rubricsDiv = document.querySelector(".rubrics");
 
 /* Print the contest ID that we found, to the console. */
@@ -58,8 +58,12 @@ $.ajax({
         linesOfCode = response.responseJSON.revision.code.split("\n").length;
         /* Insert it into where it should be in the document. */
         document.querySelector("#program-info").textContent = linesOfCode+" lines of code";
-        /* Call loadEntry() */
-        loadEntry();
+
+        /* Get the user data: */
+        Contest_Judging_System.logInAndGetUserData(function(authData, userData) {
+            /* Call loadEntry: */
+            loadEntry(authData.uid);
+        });
     }
 });
 
@@ -81,136 +85,181 @@ function judgingButtonClick(k, kLower) {
 
 /* The <iframe> for this program */
 var programIframe;
-function loadEntry() {
-    /* Fetch the data for this contest entry, and then use the data to build up the current page. */
-    /* TODO: Fetch all rubrics to automate the min/max/key fetching. */
-    Contest_Judging_System.loadEntry(contestId, entryId, function(entryData) {
-        console.log("Entered loadEntry callback!");
+/* The user ID and permission level of a user: */
+var userID, permLevel;
+/* The rubrics and entry data: */
+var rubrics, entryData;
 
-        /* Set the text of our "program-name" heading to the name of the current entry */
-        document.querySelector("#program-name").textContent = entryData.name;
+function updateScoreData() {
+    /* This function updates currentScoreDiv. */
+    /* Empty currentScoreDiv except for the first element (the heading): */
+    while (currentScoreDiv.childNodes.length > 1) currentScoreDiv.removeChild(currentScoreDiv.childNodes[currentScoreDiv.childNodes.length-1]);
+    /* Go through rubrics in the intended order: */
+    for (var _i = 0; _i < rubrics.Order.length; _i++) {
+        /* Current Property: */
+        var k = rubrics.Order[_i];
+        /* Name of Rubric */
+        var rubricName = k.replace(/_/gi, " ");
+        /* The current score in this rubric */
+        var curRubric = document.createElement("p");
+        /* If there are discrete options to this rubric: */
+        if (rubrics[k].hasOwnProperty("keys")) {
+            /* Set the textContent using .keys: */
+            curRubric.textContent = rubricName+": " +rubrics[k].keys[Math.round(entryData.scores.rubric[k].avg)];
+        }
+        /* Otherwise, the rubric is numerical. */
+        else {
+            /* Set the current score using numbers */
+            curRubric.textContent = rubricName+": "+Math.round(entryData.scores.rubric[k].avg)+" out of "+rubrics[k].max;
+        }
+        /* Append curRubric to currentScoreDiv: */
+        currentScoreDiv.appendChild(curRubric);
+    }
+}
 
-        /* The following stuff is broken in Firefox. Issue reported on Khan Academy live-editor repo. */
-        programIframe = document.createElement("iframe");
-        programIframe.src = baseURL.replace("{ENTRYID}", entryData.id);
-        programIframe.width = "100%";
-        programIframe.height = dimens.height;
-        programIframe.scrolling = "no";
-        programIframe.frameborder = 0;
+function loadEntry(userIDLocal) {
+    /* Set userID: */
+    userID = userIDLocal;
+    /* Get the user data so we know their permissions: */
+    Contest_Judging_System.getUserData(userID, function(userData) {
+       /* Set permLevel: */
+       permLevel = userData.permLevel;
+       /* Fetch the data for this contest entry, and then use the data to build up the current page. */
+       Contest_Judging_System.loadEntry(contestId, entryId, permLevel, function(entryDataLocal) {
+           console.log("Entered loadEntry callback!");
+           /* Set entryData: */
+           entryData = entryDataLocal;
 
-        /* Wrap all this code in a callback to our getRubrics function, that way we can get more data from the rubrics */
-        Contest_Judging_System.getRubrics(function(rubrics) {
-            /* Create a div that will hold all of the elements required to show the current score for this entry */
-            var currentScoreDiv = document.querySelector(".current-score");
-            console.log(JSON.stringify(rubrics));
+           /* Set the text of our "program-name" heading to the name of the current entry */
+           document.querySelector("#program-name").textContent = entryData.name;
 
-            /* For all rubrics... */
-            for (var k in rubrics) {
-                /* Name of Rubric */
-                var rubricName = k.replace(/_/gi, " ");
-                /* Lowercase Property */
-                var kLower = k.toLowerCase();
-                /* The current score in this rubric */
-                var curRubric = document.createElement("p");
-                /* The container for all elems of this rubric */
-                var curGroup = document.createElement("div");
-                curGroup.id = kLower+"_group";
-                /* Create label for this rubric */
-                var curLabel = document.createElement("label");
-                curLabel.htmlFor = kLower;
-                curLabel.textContent = rubricName+": ";
-                
-                /* If there are discrete options to this rubric: */
-                if (rubrics[k].hasOwnProperty("keys")) {
-                    /* Set the current score using keys */
-                    curRubric.textContent = rubricName+": " +rubrics[k].keys[Math.round(entryData.scores.rubric[k].avg)];
+           /* The following stuff is broken in Firefox. Issue reported on Khan Academy live-editor repo. */
+           programIframe = document.createElement("iframe");
+           programIframe.src = baseURL.replace("{ENTRYID}", entryData.id);
+           programIframe.width = "100%";
+           programIframe.height = dimens.height;
+           programIframe.scrolling = "no";
+           programIframe.frameborder = 0;
 
-                    /* Container for curSelectBtnGroup */
-                    var curSelect = document.createElement("div");
-                    curSelect.id = kLower+"-btn-toolbar";
-                    curSelect.className = "btn-toolbar";
+           /* Wrap all this code in a callback to our loadContest to get data from the contest rubrics: */
+           Contest_Judging_System.loadContest(contestId, function(contestData) {
+               /* Get the rubrics: */
+               rubrics = contestData.rubrics;
+               console.log(JSON.stringify(rubrics));
 
-                    /* Container for curSelectBtns */
-                    var curSelectBtnGroup = document.createElement("div");
-                    curSelectBtnGroup.className = "btn-group";
-                    curSelectBtnGroup.role = "group";
+               /* If the user can see the scores, update the scores: */
+               if (entryData.hasOwnProperty("scores")) updateScoreData();
+               /* Otherwise, hide the scores: */
+               else currentScoreDiv.style.display = "none";
 
-                    /* All buttons */
-                    var curSelectBtns = [ ];
-                    /* Initialize selectedBtn[k] and scoreData[k] to null */
-                    selectedBtn[k] = scoreData[k] = null;
-                    /* Create all buttons and push into curSelectBtns */
-                    for (var i = rubrics[k].min; i <= rubrics[k].max; i++){
-                        var curSelectButton = document.createElement("button");
-                        curSelectButton.type = "button";
-                        curSelectButton.id = (kLower+"SelectButton"+(i+1).toString());
-                        curSelectButton.className = "btn btn-sm btn-default";
-                        /* Remember to set the text using rubrics[k].keys and to add a click event using judgingButtonClick() above. */
-                        curSelectButton.textContent = rubrics[k].keys[i];
-                        $(curSelectButton).click(judgingButtonClick(k, kLower));
-                        curSelectBtns.push(curSelectButton);
-                    }
+               /* Go through the rubrics in the order that we want: */
+               for (var _i = 0; _i < rubrics.Order.length; _i++) {
+                   /* Current Property: */
+                   var k = rubrics.Order[_i];
+                   /* Name of Rubric */
+                   var rubricName = k.replace(/_/gi, " ");
+                   /* Lowercase Property */
+                   var kLower = k.toLowerCase();
+                   /* The container for all elems of this rubric */
+                   var curGroup = document.createElement("div");
+                   curGroup.id = kLower+"_group";
+                   /* Create label for this rubric */
+                   var curLabel = document.createElement("label");
+                   curLabel.htmlFor = kLower;
+                   curLabel.textContent = rubricName+": ";
 
-                    /* Append everything to whatever it needs to be appended to */
-                    for (var i = 0; i < curSelectBtns.length; i++){
-                        curSelectBtnGroup.appendChild(curSelectBtns[i]);
-                    }
-                    curSelect.appendChild(curSelectBtnGroup);
-                    curGroup.appendChild(curLabel);
-                    curGroup.appendChild(curSelect);
-                }
-                /* Otherwise, the rubric is numerical. */
-                else {
-                    /* Set the current score using numbers */
-                    curRubric.textContent = k+": "+Math.round(entryData.scores.rubric[k].avg)+" out of "+rubrics[k].max;
-                    /* Edit label textContent */
-                    curLabel.textContent += rubrics[k].min;
+                   /* If there are discrete options to this rubric: */
+                   if (rubrics[k].hasOwnProperty("keys")) {
+                       /* Container for curSelectBtnGroup */
+                       var curSelect = document.createElement("div");
+                       curSelect.id = kLower+"-btn-toolbar";
+                       curSelect.className = "btn-toolbar";
 
-                    /* Initialize scoreData[k] to the minimum */
-                    scoreData[k] = rubrics[k].min;
-                    /* Slider */
-                    var curSlider = document.createElement("div");
-                    curSlider.className = "judgingSlider";
-                    curSlider.role = "slider";
-                    /* This is put in a function wrapper to save the value of curLabel, scoreData, rubricName, and k for the function inside the JSON object. */
-                    (function(curLabel, scoreData, rubricName, k) {
-                        /* Use noUiSlider to create slider */
-                        noUiSlider.create(curSlider, {
-                            connect: "lower",
-                            start: rubrics[k].min,
-                            step: 1,
-                            range: {
-                                min: rubrics[k].min,
-                                max: rubrics[k].max
-                            }
-                        });
-                        curSlider.noUiSlider.on("update", function(values, handle) {
-                            /* Tell the score in curLabel when the slider changes. */
-                            curLabel.textContent = rubricName+": "+parseInt(values[handle]).toString();
-                            /* Set scoreData */
-                            scoreData[k] = parseInt(values[handle]);
-                        });
-                    })(curLabel, scoreData, rubricName, k);
+                       /* Container for curSelectBtns */
+                       var curSelectBtnGroup = document.createElement("div");
+                       curSelectBtnGroup.className = "btn-group";
+                       curSelectBtnGroup.role = "group";
 
-                    /* Append everything to whatever it needs to be appended to */
-                    curGroup.appendChild(curLabel);
-                    curGroup.appendChild(curSlider);
-                }
+                       /* All buttons */
+                       var curSelectBtns = [ ];
+                       /* Initialize scoreData[k] to the minimum: */
+                       scoreData[k] = rubrics[k].min;
+                       /* Create all buttons and push into curSelectBtns */
+                       for (var i = rubrics[k].min; i <= rubrics[k].max; i++){
+                           var curSelectButton = document.createElement("button");
+                           curSelectButton.type = "button";
+                           curSelectButton.id = (kLower+"SelectButton"+i.toString());
+                           /* Intitialize selectedBtn[k] to the id of the minimum: */
+                           if (i == rubrics[k].min) {
+                               selectedBtn[k] = curSelectButton.id;
+                               /* Also, select the button: */
+                               curSelectButton.className = "btn btn-sm btn-success";
+                           }
+                           /* Otherwise, give the button a default look: */
+                           else curSelectButton.className = "btn btn-sm btn-default";
+                           /* Remember to set the text using rubrics[k].keys and to add a click event using judgingButtonClick() above. */
+                           curSelectButton.textContent = rubrics[k].keys[i];
+                           $(curSelectButton).click(judgingButtonClick(k, kLower));
+                           curSelectBtns.push(curSelectButton);
+                       }
 
-                /* Add the current rubric to the current score. */
-                currentScoreDiv.appendChild(curRubric);
-                /* Add this judging tools to the rubrics div */
-                rubricsDiv.appendChild(curGroup);
-            }
+                       /* Append everything to whatever it needs to be appended to */
+                       for (var i = 0; i < curSelectBtns.length; i++){
+                           curSelectBtnGroup.appendChild(curSelectBtns[i]);
+                       }
+                       curSelect.appendChild(curSelectBtnGroup);
+                       curGroup.appendChild(curLabel);
+                       curGroup.appendChild(curSelect);
+                   }
+                   /* Otherwise, the rubric is numerical. */
+                   else {
+                       /* Edit label textContent */
+                       curLabel.textContent += rubrics[k].min;
 
-            /* Append our program iframe to the "program-preview" div. */
-            programPreview.appendChild(programIframe);
+                       /* Initialize scoreData[k] to the minimum */
+                       scoreData[k] = rubrics[k].min;
+                       /* Slider */
+                       var curSlider = document.createElement("div");
+                       curSlider.className = "judgingSlider";
+                       curSlider.role = "slider";
+                       /* This is put in a function wrapper to save the value of curLabel, scoreData, rubricName, and k for the function inside the JSON object. */
+                       (function(curLabel, scoreData, rubricName, k) {
+                           /* Use noUiSlider to create slider */
+                           noUiSlider.create(curSlider, {
+                               connect: "lower",
+                               start: rubrics[k].min,
+                               step: 1,
+                               range: {
+                                   min: rubrics[k].min,
+                                   max: rubrics[k].max
+                               }
+                           });
+                           curSlider.noUiSlider.on("update", function(values, handle) {
+                               /* Tell the score in curLabel when the slider changes. */
+                               curLabel.textContent = rubricName+": "+parseInt(values[handle]).toString();
+                               /* Set scoreData */
+                               scoreData[k] = parseInt(values[handle]);
+                           });
+                       })(curLabel, scoreData, rubricName, k);
 
-            /* Set the widths of our sliders to 30% */
-            $(".judgingSlider").width("30%");
-        });
+                       /* Append everything to whatever it needs to be appended to */
+                       curGroup.appendChild(curLabel);
+                       curGroup.appendChild(curSlider);
+                   }
 
-        console.log("Exiting loadEntry callback!");
+                   /* Add this judging tools to the rubrics div */
+                   rubricsDiv.appendChild(curGroup);
+               }
+
+               /* Append our program iframe to the "program-preview" div. */
+               programPreview.appendChild(programIframe);
+
+               /* Set the widths of our sliders to 30% */
+               $(".judgingSlider").width("30%");
+           });
+
+           console.log("Exiting loadEntry callback!");
+       });
     });
 }
 
@@ -234,52 +283,20 @@ $(".viewOnKA").on("click", function() {
 	}
 });
 
-function judgeEntry(scoreData) {
-    /* This function simply judges the entry using scoreData. */
-    Contest_Judging_System.judgeEntry(contestId, entryId, scoreData, function(data) {
-		console.log("Submitted scores!");
-	});
-}
-
-/* This bool is true if the user has been authenticated. */
-var authenticated = false;
-function isJudgeAllowed(uid) {
-    /* This function simply checks if the judge is allowed with the user ID: */
-    Contest_Judging_System.getUserData(uid, function(userData) {
-        /* The user can judge if they have permLevel >= 4. */
-        authenticated = userData.permLevel >= 4;
-        /* Judge the entry if they've been authenticated. */
-        if (authenticated) judgeEntry(scoreData);
-        else alert("You aren't in the allowed judges list!");
-    });
-}
 $("#submitBtn").on("click", function() {
     /* Tell the user to fill out all criteria if they haven't filled out everything. */
-    for (var k in scoreData) if (scoreData[k] == null) {
-		alert("Please fill out all criteria.");
-		return;
-	}
     console.log(scoreData);
 
-    /* If the user hasn't been authenticated, try to authenticate them and judge the entry if they are a valid judge. */
-    /* Notice that this gives them a way to be authenticated multiple times in case a valid judge messes up in logging in the first time. */
-	if (!authenticated) {
-        /* Check if the user is logged in: */
-        var fbAuth = Contest_Judging_System.getFirebaseAuth();
-        /* If they're not, log them in, update fbAuth, and check if they're allowed: */
-        if (fbAuth == null) {
-            Contest_Judging_System.logUserIn(function(authData) {
-                fbAuth = authData;
-                isJudgeAllowed(fbAuth.uid);
-            });
-        }
-        /* If they're logged in, then go straight to checking if they're allowed: */
-        else isJudgeAllowed(fbAuth.uid);
-    }
-    /* Otherwise, if they've already been authenticated, just judge the entry. */
-    else judgeEntry(scoreData);
+    /* Judge the entry if they have a permLevel of at least 4. */
+    if (permLevel >= 4) Contest_Judging_System.judgeEntry(contestId, entryId, scoreData, permLevel, function(scoreData) {
+        /* Update the score data when done: */
+        entryData.scores.rubric = scoreData;
+        updateScoreData();
+    });
+    /* Make sure permLevel has been set: */
+    else if (!permLevel) alert("You haven't logged in yet!");
+    else alert("You aren't in the allowed judges list!");
 });
-
 
 /* When we click the "Set Dimensions" button, set the dimensions of the program. */
 $("#setdimensions").on("click", function(event) {

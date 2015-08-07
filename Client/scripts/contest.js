@@ -30,27 +30,23 @@ console.log("We're going to load " + (numberOfEntries === null ? "all" : numberO
 /* Hide elements that we've marked with the class "hideWhileLoad". */
 $(".hideWhileLoad").css("display", "none");
 
-/* Attempt to load a contest, based on the ID we found in the URL. */
-Contest_Judging_System.loadContest(contestId, function(contest) {
-
-	/* Randomly pick n entries, and then display them on the page. */
-	Contest_Judging_System.get_N_Entries((numberOfEntries === null ? KA_API.misc.allData : numberOfEntries), contest.id, function(entries) {
-
-		/* Setup the page */
-		$("title").text(contest.name);
-		$("#contestName").text(contest.name);
-		$("#contestDescription").html("Description coming soon!");
+Contest_Judging_System.logInAndGetUserData(function(authData, userData) {
+    /* Randomly pick n entries, and then display them on the page. */
+    Contest_Judging_System.get_N_Entries((numberOfEntries === null ? KA_API.misc.allData : numberOfEntries), contestId, userData.permLevel, function(contest, entries) {
+        /* Setup the page */
+        $("title").text(contest.name);
+        $("#contestName").text(contest.name);
 
         /* Get the "contestDescription" div, and store it in a variable for later use. */
-		var detailsDiv = document.getElementById("contestDescription");
+        var detailsDiv = document.getElementById("contestDescription");
         /* Set the innerHTML of the contestDescription div, to the description stored in Firebase, or "No description found", if we don't have a description stored in Firebase. */
-		detailsDiv.innerHTML = contest.desc || "No description found!";
+        detailsDiv.innerHTML = contest.desc || "No description found!";
 
-		/* Add all entries to the page */
-		for (var i in entries) {
+        /* Add all entries to the page */
+        for (var i in entries) {
             /* The JSON object corresponding to this entry. */
             var curr = entries[i];
-            
+
             /* Create a list item element, and give it Bootstrap's "media" class. */
             var mediaListItem = document.createElement("li");
             mediaListItem.className = "media entry";
@@ -76,71 +72,61 @@ Contest_Judging_System.loadContest(contestId, function(contest) {
             /* Create a heading element (tier 4), and set it's text to this entry's name. */
             var mediaHeading = document.createElement("h4");
             mediaHeading.textContent = curr.name;
-
-            /* Create a div that will hold more information about this entry */
-            var infoDiv = document.createElement("div");
-            infoDiv.className = "info";
-
-            /* Create a heading element (tier 5), to mark the "Score" heading */
-            var scoreHeading = document.createElement("h5");
-            scoreHeading.textContent = "Score:";
             
-            /* Create an unordered list element that will be used to display score information for this entry. */
-            var scoreList = document.createElement("ul");
-
-            /* Go through all the score information for this entry, and create a list item for it. */
-            for (var rubric in curr.scores.rubric) {
-                /* This is in a function wrapper so rubric and scoreList will not be lost. */
-                (function() {
-                    /* Store the current rubric in a new variable, so we don't lose the old one. */
-                    var currRubric = rubric;
-                    /* Store the score list for the currenty entry, in a new variable so we don't lose the old one. */
-                    var currScoreList = scoreList;
-
-                    /* We don't need to look for a max for the "NumberOfJudges" rubric, so if we're currently at it, return. */
-                    if (currRubric === "NumberOfJudges") {
-                        return;
-                    }
-
-                    /* Round the average score for the current rubric, down. */
-                    var val = Math.floor(curr.scores.rubric[rubric].avg);
-
-                    Contest_Judging_System.getRubrics(function(rubrics) {
-                        var max = rubrics[currRubric].max;
-                        /* Credit to @NobleMushtak for the following idea. */
-                        var selectedRubric = currRubric.replace(/_/gi, " ");
-
-                        /* If the current rubric has the [optional] keys property, let's convert the IDs to human-readable keys */
-                        if (rubrics[currRubric].hasOwnProperty("keys")) {
-                            val = rubrics[currRubric].keys[val];
-
-                            var listItem = document.createElement("li");
-                            listItem.textContent = selectedRubric + ": " + val;
-
-                            currScoreList.appendChild(listItem);
-                        } else {
-                            var listItem = document.createElement("li");
-                            listItem.textContent = selectedRubric + ": " + val + " out of " + max;
-                            currScoreList.appendChild(listItem);
-                        }
-                    });
-                })();
-            }
-
             /* Append everything */
-            infoDiv.appendChild(scoreHeading);
-            infoDiv.appendChild(scoreList);
             aElem.appendChild(mediaObj);
             mediaLeftDiv.appendChild(aElem);
             mediaBody.appendChild(mediaHeading);
             mediaListItem.appendChild(mediaLeftDiv);
-            mediaBody.appendChild(infoDiv);
             mediaListItem.appendChild(mediaBody);
             entriesList.appendChild(mediaListItem);
+
+            /* If the user can read the scores: */
+            if (curr.hasOwnProperty("scores")) {
+                /* Create a div that will hold more information about this entry */
+                var infoDiv = document.createElement("div");
+                infoDiv.className = "info";
+
+                /* Create a heading element (tier 5), to mark the "Score" heading */
+                var scoreHeading = document.createElement("h5");
+                scoreHeading.textContent = "Score:";
+
+                /* Create an unordered list element that will be used to display score information for this entry. */
+                var scoreList = document.createElement("ul");
+
+                /* Get the rubrics: */
+                var rubrics = contest.rubrics;
+                /* Go through all the score information for this entry in the order we want, and create a list item for it. */
+                for (var _i = 0; _i < rubrics.Order.length; _i++) {
+                    /* Get the current rubric: */
+                    var rubric = rubrics.Order[_i];
+                    /* Round the average score for the current rubric, down. */
+                    var val = Math.floor(curr.scores.rubric[rubric].avg);
+                    /* The maximum for this rubric. */
+                    var max = rubrics[rubric].max;
+                    /* Credit to @NobleMushtak for the following idea. */
+                    var selectedRubric = rubric.replace(/_/gi, " ");
+
+                    /* If the current rubric has the [optional] keys property, let's convert the IDs to human-readable keys */
+                    var listItem = document.createElement("li");
+                    if (rubrics[rubric].hasOwnProperty("keys")) {
+                        val = rubrics[rubric].keys[val];
+                        listItem.textContent = selectedRubric + ": " + val;
+                        scoreList.appendChild(listItem);
+                    } else {
+                        listItem.textContent = selectedRubric + ": " + val + " out of " + max;
+                        scoreList.appendChild(listItem);
+                    }
+                }
+                /* Append everything */
+                infoDiv.appendChild(scoreHeading);
+                infoDiv.appendChild(scoreList);
+                mediaBody.appendChild(infoDiv);
+            }
         }
 
-		/* Hide the loading div and show items that were hidden during loading. */
-		$("#loading").css("display", "none");
-		$(".hideWhileLoad").css("display", "block");
-	});
+        /* Hide the loading div and show items that were hidden during loading. */
+        $("#loading").css("display", "none");
+        $(".hideWhileLoad").css("display", "block");
+    });
 });
