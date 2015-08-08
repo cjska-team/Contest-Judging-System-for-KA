@@ -33,7 +33,7 @@ window.Contest_Judging_System = (function() {
             /* Return the authentication object: */
             return firebaseRef.getAuth();
         },
-        /* This function gets all the "Rubrics" that we've defined in Firebase. */
+        /* This function gets the default rubric that we've defined in Firebase. */
         getRubrics: function(callback) {
             /* Connect to our Firebase app. */
             var firebaseRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
@@ -55,6 +55,16 @@ window.Contest_Judging_System = (function() {
                 callback(rubrics);
                 /* Log errors: */
             }, Contest_Judging_System.logError);
+        },
+        /* This function gets the rubrics for a specific contest or the default rubric if we there's not custom rubric: */
+        getRubricsForContest: function(contestId, callback) {
+            /* First check for a custom rubrics: */
+            Contest_Judging_System.loadContest(contestId, function(contestData) {
+                /* If there's a custom rubric, call callback: */
+                if (contestData.rubrics != null) callback(contestData.rubrics);
+                /* Otherwise, get the default rubrics and pass it through callback: */
+                else Contest_Judging_System.getRubrics(callback);
+            });
         },
         /* This function gets all the contests that we have stored on Firebase and passes them into a callback function. */
         getStoredContests: function(callback) {

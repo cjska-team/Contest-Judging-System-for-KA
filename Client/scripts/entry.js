@@ -141,10 +141,10 @@ function loadEntry(userIDLocal) {
            programIframe.scrolling = "no";
            programIframe.frameborder = 0;
 
-           /* Wrap all this code in a callback to our loadContest to get data from the contest rubrics: */
-           Contest_Judging_System.loadContest(contestId, function(contestData) {
+           /* Wrap all this code in a callback to get the rubrics: */
+           Contest_Judging_System.getRubricsForContest(contestId, function(rubricsLocal) {
                /* Get the rubrics: */
-               rubrics = contestData.rubrics;
+               rubrics = rubricsLocal;
                console.log(JSON.stringify(rubrics));
 
                /* If the user can see the scores, update the scores: */
