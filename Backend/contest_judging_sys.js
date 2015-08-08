@@ -152,7 +152,7 @@ window.Contest_Judging_System = (function() {
             /* These are the property names that callbackData needs to have: */
             var props = ["id", "thumb", "name"];
             /* Include the scores if they can read the scores: */
-            if (permLevel >= 4) props.push("scores");
+            if (permLevel >= 5) props.push("scores");
             
             /* Get the data for all of the props: */
             for (var i = 0; i < props.length; i++) {
