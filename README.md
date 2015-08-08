@@ -2,7 +2,7 @@
 As mentioned by Pamela Fox ( @pamelafox )
 
 ## Running
-You can view a live version of this app running at [gigabytegiant.com](http://gigabytegiant.com/kacjs/)
+You can view a live version of this app running at [gigabytegiant.com](http://gigabytegiant.com/kacjs/).
 The project contributors use Python3's `http.server` to run this.
 
 To run this...
