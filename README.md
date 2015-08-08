@@ -2,7 +2,8 @@
 As mentioned by Pamela Fox ( @pamelafox )
 
 ## Running
-Currently, we don't have this published anywhere. The project contributors use Python3's `http.server` to run this.
+You can view a live version of this app running at [gigabytegiant.com](http://gigabytegiant.com/kacjs/).
+The project contributors use Python3's `http.server` to run this.
 
 To run this...
  * ...clone this repository with `git clone https://github.com/Team-Delta-KA/KA-Contest-Judging-System.git`
