@@ -188,18 +188,29 @@ document.querySelector("#submitcontest").addEventListener("click", function(even
     /* Make sure the form doesn't redirect. */
     event.preventDefault();
     /* Get the program ID: */
-    var programID = parseInt(document.forms.new_contest.program_id.value)
+    var programID;
+    if (document.forms.new_contest.program_id.value.indexOf("/") === -1) {
+        programID = (document.forms.new_contest.program_id.value);
+    } else {
+        programID = (document.forms.new_contest.program_id.value.split("/")[5]);
+    }
+
+    console.log(programID);
     /* From the front-end, we simply check if the program ID is a number. From the back end, we'll check if it's an actual contest by Pamela. */
-    if (isNaN(programID)) {
+    if (programID === undefined) {
         alert("Please enter a valid program ID. Only numbers are valid program IDs. A program ID can be found by visiting the link of a contest and looking for a number within that link before the contest title. Thanks!");
         return;
     }
-    /* Make sure that the user has added some rubrics: */
-    if (!numRubrics) {
-        alert("Please add some rubrics for your contest. Thanks!");
+    if (document.forms.new_contest.contest_name === undefined) {
+        alert("Please enter a contest name!");
         return;
     }
     
+    console.log(rubrics);
+
     /* If everything is OK, then alert to the user that they can't submit contests yet. */
-    alert("We can't submit contests yet because we haven't coded that in yet. Sorry!");
+    Contest_Judging_System.createContest(programID, rubrics, function(href) {
+        alert("Contest created! Navigating to the contest page on KACJS.");
+        //window.location.assign(href);
+    });
 });

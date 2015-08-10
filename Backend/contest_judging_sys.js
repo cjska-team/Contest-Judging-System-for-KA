@@ -203,7 +203,7 @@ window.Contest_Judging_System = (function() {
                 /* Set contestData: */
                 contestData = contestDataLocal;
                 /* Declare a variable to hold an array of keys for entries */
-                var entriesKeys = Object.keys(contestData.entryKeys);
+                var entriesKeys = Object.keys(contestData.entryKeys || { });
                 /* These are the number of entries we will turn. We will turn either n entries or all of the entriess if there are less than n. */
                 numEntries = (entriesKeys.length < n) ? entriesKeys.length : n;
 
@@ -530,6 +530,43 @@ window.Contest_Judging_System = (function() {
                     alert("You've already judged this entry!");
                 }
             });
+        },
+        createContest: function(contestId, contestRubrics, callback) {
+            var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
+            var fbContestRef = fbRef.child("contests");
+            var fbContestKeysRef = fbRef.child("contestKeys");
+
+            if (Contest_Judging_System.getFirebaseAuth() !== null) {
+                var programQuery = $.ajax({
+                    type: "GET",
+                    url: KA_API.urls.scratchpadInfo(contestId),
+                    async: true,
+                    complete: function(response) {
+                        var programData = response.responseJSON;
+
+                        var id = contestId;
+                        var name = programData.translatedTitle;
+                        var img = programData.imagePath;
+                        var description = programData.description;
+                        var rubrics = contestRubrics;
+
+                        fbContestKeysRef.child(id).set(true);
+                        fbContestRef.child(id).set({
+                            id: id,
+                            name: name,
+                            img: img,
+                            desc: description,
+                            entries: { },
+                            entryKeys: { },
+                            entryCount: 0,
+                            rubrics: rubrics,
+                            cannotDestroy: true
+                        });
+
+                        callback(window.location.href.replace("/admin/new_contest.html", "/contest.html?contest=" + contestId + "&entries=all"));
+                    }
+                });
+            }
         }
     };
 })();
