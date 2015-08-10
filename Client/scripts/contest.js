@@ -85,7 +85,7 @@ Contest_Judging_System.logInAndGetUserData(function(authData, userData) {
 
             /* If the user can read the scores, get the rubrics. Also, put it in a function wrapper to save the value of mediaBody and i. */
             if (curr.hasOwnProperty("scores")) (function(mediaBody, i) {
-                Contest_Judging_System.getRubricsForContest(contestId, function(rubrics) {
+                Contest_Judging_System.getRubrics(function(rubrics) {
                     /* Create a div that will hold more information about this entry */
                     var infoDiv = document.createElement("div");
                     infoDiv.className = "info";
