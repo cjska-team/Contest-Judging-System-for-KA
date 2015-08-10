@@ -197,7 +197,7 @@ document.querySelector("#submitcontest").addEventListener("click", function(even
 
     console.log(programID);
     /* From the front-end, we simply check if the program ID is a number. From the back end, we'll check if it's an actual contest by Pamela. */
-    if (programID === undefined) {
+    if (isNaN(parseInt(programID, 10))) {
         alert("Please enter a valid program ID. Only numbers are valid program IDs. A program ID can be found by visiting the link of a contest and looking for a number within that link before the contest title. Thanks!");
         return;
     }
