@@ -1,6 +1,5 @@
-# KA-Contest-Judging-System
-
 [![Join the chat at https://gitter.im/Team-Delta-KA/KA-Contest-Judging-System](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Team-Delta-KA/KA-Contest-Judging-System?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# KA-Contest-Judging-System
 As mentioned by Pamela Fox ( @pamelafox )
 
 ## Running
