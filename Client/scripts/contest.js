@@ -82,7 +82,7 @@ var waitToGetEntries = setInterval(function() {
 
                 /* Create an image element and set it's src to this entry's thumbnail */
                 var mediaObj = document.createElement("img");
-                mediaObj.src = "https://www.khanacademy.org/" + curr.thumb;
+                mediaObj.src = "https://www.khanacademy.org" + curr.thumb;
                 mediaObj.alt = "Entry thumbnail";
 
                 /* Create a div element, and give it Bootstrap's "media-body" class. */
