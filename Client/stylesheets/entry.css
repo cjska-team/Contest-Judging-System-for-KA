@@ -15,3 +15,7 @@ button, label, select, input, p {
 label, select, input {
      margin: 5px;
 }
+/* Color the sliders */
+.noUi-base {
+	background-color: #62B75A;
+}
