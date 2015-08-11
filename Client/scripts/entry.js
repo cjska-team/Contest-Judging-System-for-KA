@@ -120,6 +120,14 @@ function updateScoreData() {
 function loadEntry(userIDLocal) {
     /* Set userID: */
     userID = userIDLocal;
+
+    var fbAuthenticationData = Contest_Judging_System.getFirebaseAuth();
+
+    if (fbAuthenticationData) {
+        // TODO: get user data
+    } else {
+        // TODO: assume the user is logged out
+    }
     /* Get the user data so we know their permissions: */
     Contest_Judging_System.getUserData(userID, function(userData) {
        /* Set permLevel: */

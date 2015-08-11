@@ -30,7 +30,7 @@ console.log("We're going to load " + (numberOfEntries === null ? "all" : numberO
 /* Hide elements that we've marked with the class "hideWhileLoad". */
 $(".hideWhileLoad").css("display", "none");
 
-var fbAuthenticationData = (new Firebase("https://contest-judging-sys.firebaseio.com")).getAuth();
+var fbAuthenticationData = Contest_Judging_System.getFirebaseAuth();
 
 if (fbAuthenticationData) {
     // TODO: get user data
