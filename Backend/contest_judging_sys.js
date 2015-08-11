@@ -442,28 +442,6 @@ window.Contest_Judging_System = (function() {
                     callback(authData);
                 }, Contest_Judging_System.logError);
             }, { remember: "default" });
-
-            /*
-            fbRef.authWithOAuthPopup("google", function(error, authData) {
-                if (error) {
-                    alert("An error occured. Please try again later.");
-                    console.log(error);
-                } else {
-                    var usersRef = fbRef.child("users");
-                    usersRef.once("value", function(snapshot) {
-                        if (!snapshot.hasChild(authData.uid)) {
-                            usersRef.child(authData.uid).set({
-                                name: authData.google.displayName,
-                                permLevel: 1
-                            });
-                            console.log("Added new user in Firebase!");
-                        }
-                        console.log("Logged user in!");
-                        callback(authData)
-                    }, Contest_Judging_System.logError);
-                }
-            }, {remember: "default"});
-            */
         },
         getUserData: function(userID, callback) {
             /* Get the data of the user with uid userID and then call the callback while passing the data through the callback: */
