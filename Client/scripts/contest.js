@@ -30,9 +30,17 @@ console.log("We're going to load " + (numberOfEntries === null ? "all" : numberO
 /* Hide elements that we've marked with the class "hideWhileLoad". */
 $(".hideWhileLoad").css("display", "none");
 
-Contest_Judging_System.logInAndGetUserData(function(authData, userData) {
+var fbAuthenticationData = (new Firebase("https://contest-judging-sys.firebaseio.com")).getAuth();
+
+if (fbAuthenticationData) {
+    // TODO: get user data
+} else {
+    // TODO: assume the user is logged out
+}
+
+//Contest_Judging_System.logInAndGetUserData(function(authData, userData) {
     /* Randomly pick n entries, and then display them on the page. */
-    Contest_Judging_System.get_N_Entries((numberOfEntries === null ? KA_API.misc.allData : numberOfEntries), contestId, userData.permLevel, function(contest, entries) {
+    Contest_Judging_System.get_N_Entries((numberOfEntries === null ? KA_API.misc.allData : numberOfEntries), contestId, (window.userData === undefined ? 1 : userData.permLevel), function(contest, entries) {
         /* Setup the page */
         $("title").text(contest.name);
         $("#contestName").text(contest.name);
@@ -142,4 +150,4 @@ Contest_Judging_System.logInAndGetUserData(function(authData, userData) {
             }
         }, 1000);
     });
-});
+//});

@@ -51,7 +51,7 @@ var linesOfCode;
 /* Send an AJAX request to the KA API for this program. */
 $.ajax({
     type: "GET",
-    url: "https://www.khanacademy.org/api/internal/scratchpads/"+entryId,
+    url: "https://www.khanacademy.org/api/internal/scratchpads/" + entryId,
     async: true,
     complete: function(response) {
         /* Calculate the number of lines of code in this entry. */
