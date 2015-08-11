@@ -56,3 +56,6 @@ summary * {
 .logout {
     display: none;
 }
+.judgeOnly {
+    display: none;
+}
