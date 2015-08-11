@@ -410,16 +410,37 @@ window.Contest_Judging_System = (function() {
             /* Connect to Firebase: */
             var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
             /* Try to log the user in: */
+            // TODO: Stop using OAuth popups, and instead switch to OAuth redirects.
+            fbRef.authWithOAuthRedirect("google", function(error, authData) {
+                /* If a Firebase error occurs, alert the user, and log the error to the browser console. After doing all of that, exit the function. */
+                if (error) {
+                    alert("An error occured. Please try again later.");
+                    console.error(error);
+                    return;
+                }
+
+                var usersRef = fbRef.child("users");
+                usersRef.once("value", function(snapshot) {
+                    if (!snapshot.hasChild(authData.uid)) {
+                        usersRef.child(authData.uid).set({
+                            name: authData.google.displayName,
+                            permLevel: 1
+                        });
+                        console.log("Added new user to Firebase. Name: " + authData.google.displayName + " Permission Level: 1");
+                    }
+                    console.log("User logged in!");
+                    callback(authData);
+                }, Contest_Judging_System.logError);
+            }, { remember: "default" });
+
+            /*
             fbRef.authWithOAuthPopup("google", function(error, authData) {
-                /* Error Handling: */
                 if (error) {
                     alert("An error occured. Please try again later.");
                     console.log(error);
                 } else {
-                    /* Access the users child */
                     var usersRef = fbRef.child("users");
                     usersRef.once("value", function(snapshot) {
-                        /* Add this user into Firebase if they're not already there. */
                         if (!snapshot.hasChild(authData.uid)) {
                             usersRef.child(authData.uid).set({
                                 name: authData.google.displayName,
@@ -428,13 +449,11 @@ window.Contest_Judging_System = (function() {
                             console.log("Added new user in Firebase!");
                         }
                         console.log("Logged user in!");
-                        /* When we're done, call the callback. */
                         callback(authData)
-                    /* Log errors: */
                     }, Contest_Judging_System.logError);
                 }
-                /* This makes Firebase remember the login for 30 days (which has been set as the default in Firebase). */
             }, {remember: "default"});
+            */
         },
         getUserData: function(userID, callback) {
             /* Get the data of the user with uid userID and then call the callback while passing the data through the callback: */
