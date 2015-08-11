@@ -412,23 +412,33 @@ window.Contest_Judging_System = (function() {
             /* Try to log the user in: */
             // TODO: Stop using OAuth popups, and instead switch to OAuth redirects.
             fbRef.authWithOAuthRedirect("google", function(error, authData) {
-                /* If a Firebase error occurs, alert the user, and log the error to the browser console. After doing all of that, exit the function. */
+                /* If a Firebase error occurs... */
                 if (error) {
+                    /* ...alert the user, and... */
                     alert("An error occured. Please try again later.");
+                    /* ...log the error to the console, and... */
                     console.error(error);
+                    /* ...exit the function. */
                     return;
                 }
 
+                /* Create a reference to the "users" child on Firebase */
                 var usersRef = fbRef.child("users");
+                /* Whenever the query to Firebase is done, and we've retrieved the data we need... */
                 usersRef.once("value", function(snapshot) {
+                    /* ...check to see if this Auth UID exists, if it doesn't... */
                     if (!snapshot.hasChild(authData.uid)) {
+                        /* ...add it to Firebase, and give it the default permLevel of "1". */
                         usersRef.child(authData.uid).set({
                             name: authData.google.displayName,
                             permLevel: 1
                         });
+                        /* Also, log a message to the console. */
                         console.log("Added new user to Firebase. Name: " + authData.google.displayName + " Permission Level: 1");
                     }
+                    /* ...log a message to the console saying that the user was logged in, and... */
                     console.log("User logged in!");
+                    /* ...call the callback function, passing it the authData that we recieved. */
                     callback(authData);
                 }, Contest_Judging_System.logError);
             }, { remember: "default" });
