@@ -102,7 +102,7 @@ function updateScoreData() {
 		/* If there are discrete options to this rubric: */
 		if (rubrics[k].hasOwnProperty("keys")) {
 			/* Set the textContent using .keys: */
-			curRubric.textContent = rubricName+": " +rubrics[k].keys[Math.round(entryData.scores.rubric[k].avg)];
+			curRubric.textContent = rubricName+": " +rubrics[k].keys[Math.round(entryData.scores.rubric[k] === undefined ? 1 : entryData.scores.rubric[k].avg)];
 		}
 		/* Otherwise, the rubric is numerical. */
 		else {
