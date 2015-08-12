@@ -107,7 +107,7 @@ function updateScoreData() {
 		/* Otherwise, the rubric is numerical. */
 		else {
 			/* Set the current score using numbers */
-			curRubric.textContent = rubricName+": "+Math.round(entryData.scores.rubric[k].avg)+" out of "+rubrics[k].max;
+			curRubric.textContent = rubricName+": "+Math.round(entryData.scores.rubric[k] === undefined ? 0 : entryData.scores.rubric[k].avg)+" out of "+rubrics[k].max;
 		}
 		/* Append curRubric to currentScoreDiv: */
 		currentScoreDiv.appendChild(curRubric);
@@ -142,7 +142,7 @@ function loadEntry() {
             programIframe.frameborder = 0;
 
             /* Wrap all this code in a callback to get the rubrics: */
-            Contest_Judging_System.getRubricsForContest(contestId, function(rubricsLocal) {
+            Contest_Judging_System.getAllRubrics(contestId, function(rubricsLocal) {
                 /* Get the rubrics: */
                 rubrics = rubricsLocal;
                 console.log(JSON.stringify(rubrics));
@@ -216,38 +216,40 @@ function loadEntry() {
                         }
                         /* Otherwise, the rubric is numerical. */
                         else {
-                            /* Edit label textContent */
-                            curLabel.textContent += rubrics[k].min;
+                            if (Contest_Judging_System.misc.rubricsToIgnore.indexOf(k) === -1) {
+                                /* Edit label textContent */
+                                curLabel.textContent += rubrics[k].min;
 
-                            /* Initialize scoreData[k] to the minimum */
-                            scoreData[k] = rubrics[k].min;
-                            /* Slider */
-                            var curSlider = document.createElement("div");
-                            curSlider.className = "judgingSlider";
-                            curSlider.role = "slider";
-                            /* This is put in a function wrapper to save the value of curLabel, scoreData, rubricName, and k for the function inside the JSON object. */
-                            (function(curLabel, scoreData, rubricName, k) {
-                                /* Use noUiSlider to create slider */
-                                noUiSlider.create(curSlider, {
-                                    connect: "lower",
-                                    start: rubrics[k].min,
-                                    step: 1,
-                                    range: {
-                                        min: rubrics[k].min,
-                                        max: rubrics[k].max
-                                    }
-                                });
-                                curSlider.noUiSlider.on("update", function(values, handle) {
-                                    /* Tell the score in curLabel when the slider changes. */
-                                    curLabel.textContent = rubricName+": "+parseInt(values[handle]).toString();
-                                    /* Set scoreData */
-                                    scoreData[k] = parseInt(values[handle]);
-                                });
-                            })(curLabel, scoreData, rubricName, k);
+                                /* Initialize scoreData[k] to the minimum */
+                                scoreData[k] = rubrics[k].min;
+                                /* Slider */
+                                var curSlider = document.createElement("div");
+                                curSlider.className = "judgingSlider";
+                                curSlider.role = "slider";
+                                /* This is put in a function wrapper to save the value of curLabel, scoreData, rubricName, and k for the function inside the JSON object. */
+                                (function(curLabel, scoreData, rubricName, k) {
+                                    /* Use noUiSlider to create slider */
+                                    noUiSlider.create(curSlider, {
+                                        connect: "lower",
+                                        start: rubrics[k].min,
+                                        step: 1,
+                                        range: {
+                                            min: rubrics[k].min,
+                                            max: rubrics[k].max
+                                        }
+                                    });
+                                    curSlider.noUiSlider.on("update", function(values, handle) {
+                                        /* Tell the score in curLabel when the slider changes. */
+                                        curLabel.textContent = rubricName+": "+parseInt(values[handle]).toString();
+                                        /* Set scoreData */
+                                        scoreData[k] = parseInt(values[handle]);
+                                    });
+                                })(curLabel, scoreData, rubricName, k);
 
-                            /* Append everything to whatever it needs to be appended to */
-                            curGroup.appendChild(curLabel);
-                            curGroup.appendChild(curSlider);
+                                /* Append everything to whatever it needs to be appended to */
+                                curGroup.appendChild(curLabel);
+                                curGroup.appendChild(curSlider);
+                            }
                         }
 
                         /* Add this judging tools to the rubrics div */

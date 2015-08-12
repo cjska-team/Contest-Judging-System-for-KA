@@ -91,7 +91,7 @@ Contest_Judging_System.logInAndGetUserData(function(authData, userData) {
 
             /* If the user can read the scores, get the rubrics. Also, put it in a function wrapper to save the value of mediaBody and i. */
             if (curr.hasOwnProperty("scores")) (function(mediaBody, i) {
-                Contest_Judging_System.getRubricsForContest(contestId, function(rubrics) {
+                Contest_Judging_System.getAllRubrics(contestId, function(rubrics) {
                     /* Create a div that will hold more information about this entry */
                     var infoDiv = document.createElement("div");
                     infoDiv.className = "info";
@@ -107,22 +107,26 @@ Contest_Judging_System.logInAndGetUserData(function(authData, userData) {
                     for (var _i = 0; _i < rubrics.Order.length; _i++) {
                         /* Get the current rubric: */
                         var rubric = rubrics.Order[_i];
-                        /* Round the average score for the current rubric, down. */
-                        var val = Math.floor(curr.scores.rubric[rubric].avg);
-                        /* The maximum for this rubric. */
-                        var max = rubrics[rubric].max;
-                        /* Credit to @NobleMushtak for the following idea. */
-                        var selectedRubric = rubric.replace(/_/gi, " ");
+                        if (Contest_Judging_System.misc.rubricsToIgnore.indexOf(k) === -1) {
+                            /* Round the average score for the current rubric, down. */
+                            var val = Math.floor(curr.scores.rubric[rubric] === undefined ? 0 : curr.scores.rubric[rubric].avg);
+                            /* The maximum for this rubric. */
+                            var max = rubrics[rubric].max;
+                            /* Credit to @NobleMushtak for the following idea. */
+                            var selectedRubric = rubric.replace(/_/gi, " ");
 
-                        /* If the current rubric has the [optional] keys property, let's convert the IDs to human-readable keys */
-                        var listItem = document.createElement("li");
-                        if (rubrics[rubric].hasOwnProperty("keys")) {
-                            val = rubrics[rubric].keys[val];
-                            listItem.textContent = selectedRubric + ": " + val;
-                            scoreList.appendChild(listItem);
-                        } else {
-                            listItem.textContent = selectedRubric + ": " + val + " out of " + max;
-                            scoreList.appendChild(listItem);
+                            console.log(rubric);
+
+                            /* If the current rubric has the [optional] keys property, let's convert the IDs to human-readable keys */
+                            var listItem = document.createElement("li");
+                            if (rubrics[rubric].hasOwnProperty("keys")) {
+                                val = rubrics[rubric].keys[val];
+                                listItem.textContent = selectedRubric + ": " + val;
+                                scoreList.appendChild(listItem);
+                            } else {
+                                listItem.textContent = selectedRubric + ": " + val + " out of " + max;
+                                scoreList.appendChild(listItem);
+                            } 
                         }
                     }
                     /* Append everything */
