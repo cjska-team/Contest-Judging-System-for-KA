@@ -61,9 +61,13 @@ window.Contest_Judging_System = (function() {
             /* First check for a custom rubrics: */
             Contest_Judging_System.loadContest(contestId, function(contestData) {
                 /* If there's a custom rubric, call callback: */
-                if (contestData.rubrics != null) callback(contestData.rubrics);
+                if (contestData.rubrics !== null) {
+                    callback(contestData.rubrics);
+                }
                 /* Otherwise, get the default rubrics and pass it through callback: */
-                else Contest_Judging_System.getRubrics(callback);
+                else {
+                    Contest_Judging_System.getRubrics(callback);
+                }
             });
         },
         /* This function gets all the contests that we have stored on Firebase and passes them into a callback function. */
@@ -94,9 +98,15 @@ window.Contest_Judging_System = (function() {
                     (function(i) {
                         curContest.child(props[i]).once("value", function(snapshot) {
                             curContestData[props[i]] = snapshot.val();
-                            for (j = 0; j < props.length; j++) if (!curContestData.hasOwnProperty(props[j])) break;
+                            for (j = 0; j < props.length; j++) {
+                                if (!curContestData.hasOwnProperty(props[j])) {
+                                    break;
+                                }
+                            }
                             /* If we've got all the props, update callbackData. */
-                            if (j == props.length) callbackData[key] = curContestData;
+                            if (j === props.length) {
+                                callbackData[key] = curContestData;
+                            }
                         }, Contest_Judging_System.logError);
                     })(i);
                 }
@@ -109,7 +119,7 @@ window.Contest_Judging_System = (function() {
                 /* Check if we have all of the data for all curContests every second: */
                 var checkDone = setTimeout(function() {
                     /* If we do: */
-                    if (Object.keys(callbackData).length == fbRefData.length) {
+                    if (Object.keys(callbackData).length === fbRefData.length) {
                         /* Stop checking if we're done: */
                         clearInterval(checkDone);
                         /* Call the callback with callbackData: */
@@ -145,7 +155,7 @@ window.Contest_Judging_System = (function() {
             /* Check every second if we're done: */
             var checkDone = setTimeout(function() {
                 /* If we're done: */
-                if (Object.keys(callbackData).length == props.length) {
+                if (Object.keys(callbackData).length === props.length) {
                     /* Stop checking if we're done: */
                     clearTimeout(checkDone);
                     /* Call the callback: */
@@ -179,7 +189,7 @@ window.Contest_Judging_System = (function() {
             /* Check every second if we're done: */
             var checkDone = setTimeout(function() {
                 /* If we're done: */
-                if (Object.keys(callbackData).length == props.length) {
+                if (Object.keys(callbackData).length === props.length) {
                     /* Stop checking if we're done: */
                     clearTimeout(checkDone);
                     /* Call the callback: */
@@ -238,7 +248,7 @@ window.Contest_Judging_System = (function() {
 
             /* Check if we're done every second and when we are, call the callback and stop checking if we're done. */
             var finishedInterval = setInterval(function() {
-                if (done && Object.keys(pickedEntries).length == numEntries) {
+                if (done && Object.keys(pickedEntries).length === numEntries) {
                     clearInterval(finishedInterval);
                     callback(contestData, pickedEntries);
                 }
@@ -391,7 +401,7 @@ window.Contest_Judging_System = (function() {
             var cookieList = document.cookie.split(';');
             for (var i = 0; i < cookieList.length; i++) {
                 var curCookie = cookieList[i];
-                while (curCookie[0] == ' ') curCookie = curCookie.substring(1);
+                while (curCookie[0] === ' ') curCookie = curCookie.substring(1);
                 /* If we've found the right cookie, return its value. */
                 if (curCookie.indexOf(name) == 0) return curCookie.substring(name.length, curCookie.length);
             }
@@ -463,7 +473,9 @@ window.Contest_Judging_System = (function() {
                     callback(userData);
                 }
                 /* Otherwise, go straight to calling the callback: */
-                else callback(usersSnapshot.val()[userID]);
+                else {
+                    callback(usersSnapshot.val()[userID]);
+                }
                 /* Log errors: */
             }, Contest_Judging_System.logError);
         },
@@ -485,10 +497,12 @@ window.Contest_Judging_System = (function() {
                 });
             }
             /* Otherwise, just get the data: */
-            else Contest_Judging_System.getUserData(fbAuth.uid, function(userData) {
-                /* Call callback: */
-                callback(fbAuth, userData);
-            });
+            else {
+                Contest_Judging_System.getUserData(fbAuth.uid, function(userData) {
+                    /* Call callback: */
+                    callback(fbAuth, userData);
+                });
+            };
         },
         judgeEntry: function(contest, entry, scoreData, permLevel, callback) {
             /* This judges an entry entry of contest with scoreData from a judge with id as set in cookies. It then passes the new scores through callback. */
@@ -517,7 +531,9 @@ window.Contest_Judging_System = (function() {
                     var newScoreObj = {judgesWhoVoted: judgesWhoVoted};
                     for (var k in currentRubricScore) {
                         /* If this is the first judge to vote, make sure we're starting off from 0: */
-                        if (judgesWhoVoted.length == 1) currentRubricScore[k].rough = 0;
+                        if (judgesWhoVoted.length === 1) {
+                            currentRubricScore[k].rough = 0;
+                        }
                         newScoreObj[k] = {
                             rough: currentRubricScore[k].rough+scoreData[k],
                             avg: Math.round((parseInt(currentRubricScore[k].rough, 10)+scoreData[k])/numJudges)
