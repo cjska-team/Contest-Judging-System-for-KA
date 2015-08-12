@@ -205,8 +205,8 @@ document.querySelector("#submitcontest").addEventListener("click", function(even
     console.log(rubrics);
 
     /* If everything is OK, then alert to the user that they can't submit contests yet. */
-    /*Contest_Judging_System.createContest(programID, rubrics, function(href) {
+    Contest_Judging_System.createContest(programID, rubrics, function(href) {
         alert("Contest created! Navigating to the contest page on KACJS.");
-        //window.location.assign(href);
-    });*/
+        window.location.assign(href);
+    });
 });
