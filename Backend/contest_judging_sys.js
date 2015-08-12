@@ -591,6 +591,9 @@ window.Contest_Judging_System = (function() {
                             if (!contestExists) {
                                 fbContestKeysRef.child(id).set(true);
                                 newFbData.cannotDestroy = true;
+                            } else {
+                                newFbData.entryKeys = snapshot.val().entryKeys;
+                                newFbData.entries = snapshot.val().entries;
                             }
                             fbContestRef.child(id).update(newFbData);
                         });
