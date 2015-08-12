@@ -98,13 +98,8 @@ window.Contest_Judging_System = (function() {
                     (function(i) {
                         curContest.child(props[i]).once("value", function(snapshot) {
                             curContestData[props[i]] = snapshot.val();
-                            for (j = 0; j < props.length; j++) {
-                                if (!curContestData.hasOwnProperty(props[j])) {
-                                    break;
-                                }
-                            }
                             /* If we've got all the props, update callbackData. */
-                            if (j === props.length) {
+                            if (Object.keys(curContestData).length === props.length) {
                                 callbackData[key] = curContestData;
                             }
                         }, Contest_Judging_System.logError);
