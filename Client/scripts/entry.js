@@ -95,22 +95,24 @@ function updateScoreData() {
 	for (var _i = 0; _i < rubrics.Order.length; _i++) {
 		/* Current Property: */
 		var k = rubrics.Order[_i];
-		/* Name of Rubric */
-		var rubricName = k.replace(/_/gi, " ");
-		/* The current score in this rubric */
-		var curRubric = document.createElement("p");
-		/* If there are discrete options to this rubric: */
-		if (rubrics[k].hasOwnProperty("keys")) {
-			/* Set the textContent using .keys: */
-			curRubric.textContent = rubricName+": " +rubrics[k].keys[Math.round(entryData.scores.rubric[k] === undefined ? 1 : entryData.scores.rubric[k].avg)];
-		}
-		/* Otherwise, the rubric is numerical. */
-		else {
-			/* Set the current score using numbers */
-			curRubric.textContent = rubricName+": "+Math.round(entryData.scores.rubric[k] === undefined ? 0 : entryData.scores.rubric[k].avg)+" out of "+rubrics[k].max;
-		}
-		/* Append curRubric to currentScoreDiv: */
-		currentScoreDiv.appendChild(curRubric);
+        if (Contest_Judging_System.indexOf(k) === -1) {
+    		/* Name of Rubric */
+    		var rubricName = k.replace(/_/gi, " ");
+    		/* The current score in this rubric */
+    		var curRubric = document.createElement("p");
+    		/* If there are discrete options to this rubric: */
+    		if (rubrics[k].hasOwnProperty("keys")) {
+    			/* Set the textContent using .keys: */
+    			curRubric.textContent = rubricName+": " +rubrics[k].keys[Math.round(entryData.scores.rubric[k] === undefined ? 1 : entryData.scores.rubric[k].avg)];
+    		}
+    		/* Otherwise, the rubric is numerical. */
+    		else {
+    			/* Set the current score using numbers */
+    			curRubric.textContent = rubricName+": "+Math.round(entryData.scores.rubric[k] === undefined ? 1 : entryData.scores.rubric[k].avg)+" out of "+rubrics[k].max;
+    		}
+    		/* Append curRubric to currentScoreDiv: */
+    		currentScoreDiv.appendChild(curRubric);
+        }
 	}
 }
 
