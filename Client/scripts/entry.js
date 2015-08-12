@@ -95,7 +95,7 @@ function updateScoreData() {
 	for (var _i = 0; _i < rubrics.Order.length; _i++) {
 		/* Current Property: */
 		var k = rubrics.Order[_i];
-        if (Contest_Judging_System.indexOf(k) === -1) {
+        if (Contest_Judging_System.misc.rubricsToIgnore.indexOf(k) === -1) {
     		/* Name of Rubric */
     		var rubricName = k.replace(/_/gi, " ");
     		/* The current score in this rubric */
