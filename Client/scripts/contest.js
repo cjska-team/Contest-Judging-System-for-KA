@@ -17,7 +17,9 @@ if (window.location.search.indexOf("&entries") === -1) {
 
 /* Locate the contest ID in the URL, and store it for later use. */
 var contestId = window.location.href.split("?contest=")[1].split("&entries")[0];
-var numberOfEntries = window.location.href.split("&entries=")[1] === "all" ? null : parseInt(window.location.href.split("&entries=")[1], 10);
+var numberOfEntries = window.location.href.split("&entries=")[1];
+if (numberOfEntries.indexOf("#") > -1) numberOfEntries = numberOfEntries.substring(0, numberOfEntries.indexOf("#"));
+numberOfEntries = numberOfEntries === "all" ? null : parseInt(numberOfEntries, 10);
 
 /* Go ahead and find the div that we'll store all the entries in. */
 var entriesList = document.querySelector(".media-list");
@@ -31,12 +33,8 @@ console.log("We're going to load " + (numberOfEntries === null ? "all" : numberO
 $(".hideWhileLoad").css("display", "none");
 
 /* Firebase authentication data and our Firebase user data */
-var fbAuthenticationData, global_userData;
-/* Log the user in: */
-Contest_Judging_System.logInAndGetUserData(function(authData, userData) {
-    fbAuthenticationData = authData;
-    global_userData = userData;
-    
+var fbAuth = Contest_Judging_System.getFirebaseAuth(), global_userData = {};
+function loadEntries() {
     /* Randomly pick n entries, and then display them on the page. */
     Contest_Judging_System.get_N_Entries((numberOfEntries === null ? KA_API.misc.allData : numberOfEntries), contestId, global_userData.permLevel, function(contest, entries) {
         /* Setup the page */
@@ -148,4 +146,18 @@ Contest_Judging_System.logInAndGetUserData(function(authData, userData) {
             }
         }, 1000);
     });
-});
+}
+
+/* Get the user data if they're logged in: */
+if (fbAuth) {
+    Contest_Judging_System.getUserData(fbAuth.uid, function(userData) {
+        global_userData = userData;
+        /* Load the entries when done: */
+        loadEntries();
+    });
+}
+/* Otherwise, just load the entries with default data: */
+else {
+    global_userData = {"permLevel": 1};
+    loadEntries();
+}
