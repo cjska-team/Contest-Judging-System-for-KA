@@ -109,7 +109,7 @@ Contest_Judging_System.logInAndGetUserData("popup", function(authData, userData)
                         var rubric = rubrics.Order[_i];
                         if (Contest_Judging_System.misc.rubricsToIgnore.indexOf(rubric) === -1) {
                             /* Round the average score for the current rubric, down. */
-                            var val = Math.floor(curr.scores.rubric[rubric] === undefined ? 0 : curr.scores.rubric[rubric].avg);
+                            var val = Math.floor(curr.scores.rubric[rubric] === undefined ? 1 : curr.scores.rubric[rubric].avg);
                             /* The maximum for this rubric. */
                             var max = rubrics[rubric].max;
                             /* Credit to @NobleMushtak for the following idea. */
