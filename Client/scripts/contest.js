@@ -33,7 +33,7 @@ $(".hideWhileLoad").css("display", "none");
 /* Firebase authentication data and our Firebase user data */
 var fbAuthenticationData, global_userData;
 /* Log the user in: */
-Contest_Judging_System.logInAndGetUserData(function(authData, userData) {
+Contest_Judging_System.logInAndGetUserData("popup", function(authData, userData) {
     fbAuthenticationData = authData;
     global_userData = userData;
     

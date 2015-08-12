@@ -118,7 +118,7 @@ function updateScoreData() {
 var fbAuthenticationData, global_userData;
 function loadEntry() {
     /* Log the user in: */
-    Contest_Judging_System.logInAndGetUserData(function(authData, userData) {
+    Contest_Judging_System.logInAndGetUserData("popup", function(authData, userData) {
         fbAuthenticationData = authData;
         global_userData = userData;
         console.log(global_userData);
