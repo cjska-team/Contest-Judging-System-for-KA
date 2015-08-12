@@ -420,42 +420,77 @@ window.Contest_Judging_System = (function() {
             document.cookie = cookie + "=" + value + "; " + expires;
         },
         /* This function logs the user in and then calls the callback with the Firebase auth data: */
-        logUserIn: function(callback) {
+        logUserIn: function(type, callback) {
             /* Connect to Firebase: */
             var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
             /* Try to log the user in: */
             // TODO: Stop using OAuth popups, and instead switch to OAuth redirects.
-            fbRef.authWithOAuthRedirect("google", function(error, authData) {
-                /* If a Firebase error occurs... */
-                if (error) {
-                    /* ...alert the user, and... */
-                    alert("An error occured. Please try again later.");
-                    /* ...log the error to the console, and... */
-                    console.error(error);
-                    /* ...exit the function. */
-                    return;
-                }
 
-                /* Create a reference to the "users" child on Firebase */
-                var usersRef = fbRef.child("users");
-                /* Whenever the query to Firebase is done, and we've retrieved the data we need... */
-                usersRef.once("value", function(snapshot) {
-                    /* ...check to see if this Auth UID exists, if it doesn't... */
-                    if (!snapshot.hasChild(authData.uid)) {
-                        /* ...add it to Firebase, and give it the default permLevel of "1". */
-                        usersRef.child(authData.uid).set({
-                            name: authData.google.displayName,
-                            permLevel: 1
-                        });
-                        /* Also, log a message to the console. */
-                        console.log("Added new user to Firebase. Name: " + authData.google.displayName + " Permission Level: 1");
+            if (type === "redirect") {
+                fbRef.authWithOAuthRedirect("google", function(error, authData) {
+                    /* If a Firebase error occurs... */
+                    if (error) {
+                        /* ...alert the user, and... */
+                        alert("An error occured. Please try again later.");
+                        /* ...log the error to the console, and... */
+                        console.error(error);
+                        /* ...exit the function. */
+                        return;
                     }
-                    /* ...log a message to the console saying that the user was logged in, and... */
-                    console.log("User logged in!");
-                    /* ...call the callback function, passing it the authData that we recieved. */
-                    callback(authData);
-                }, Contest_Judging_System.logError);
-            }, { remember: "default" });
+
+                    /* Create a reference to the "users" child on Firebase */
+                    var usersRef = fbRef.child("users");
+                    /* Whenever the query to Firebase is done, and we've retrieved the data we need... */
+                    usersRef.once("value", function(snapshot) {
+                        /* ...check to see if this Auth UID exists, if it doesn't... */
+                        if (!snapshot.hasChild(authData.uid)) {
+                            /* ...add it to Firebase, and give it the default permLevel of "1". */
+                            usersRef.child(authData.uid).set({
+                                name: authData.google.displayName,
+                                permLevel: 1
+                            });
+                            /* Also, log a message to the console. */
+                            console.log("Added new user to Firebase. Name: " + authData.google.displayName + " Permission Level: 1");
+                        }
+                        /* ...log a message to the console saying that the user was logged in, and... */
+                        console.log("User logged in!");
+                        /* ...call the callback function, passing it the authData that we recieved. */
+                        callback(authData);
+                    }, Contest_Judging_System.logError);
+                }, { remember: "default" });
+            } else if (type === "popup") {
+                fbRef.authWithOAuthPopup("google", function(error, authData) {
+                    /* If a Firebase error occurs... */
+                    if (error) {
+                        /* ...alert the user, and... */
+                        alert("An error occured. Please try again later.");
+                        /* ...log the error to the console, and... */
+                        console.error(error);
+                        /* ...exit the function. */
+                        return;
+                    }
+
+                    /* Create a reference to the "users" child on Firebase */
+                    var usersRef = fbRef.child("users");
+                    /* Whenever the query to Firebase is done, and we've retrieved the data we need... */
+                    usersRef.once("value", function(snapshot) {
+                        /* ...check to see if this Auth UID exists, if it doesn't... */
+                        if (!snapshot.hasChild(authData.uid)) {
+                            /* ...add it to Firebase, and give it the default permLevel of "1". */
+                            usersRef.child(authData.uid).set({
+                                name: authData.google.displayName,
+                                permLevel: 1
+                            });
+                            /* Also, log a message to the console. */
+                            console.log("Added new user to Firebase. Name: " + authData.google.displayName + " Permission Level: 1");
+                        }
+                        /* ...log a message to the console saying that the user was logged in, and... */
+                        console.log("User logged in!");
+                        /* ...call the callback function, passing it the authData that we recieved. */
+                        callback(authData);
+                    }, Contest_Judging_System.logError);
+                }, { remember: "default" });
+            }
         },
         getUserData: function(userID, callback) {
             /* Get the data of the user with uid userID and then call the callback while passing the data through the callback: */
@@ -485,14 +520,14 @@ window.Contest_Judging_System = (function() {
                 /* Log errors: */
             }, Contest_Judging_System.logError);
         },
-        logInAndGetUserData: function(callback) {
+        logInAndGetUserData: function(type, callback) {
             /* This function combines logging in and getting the user data so it logs in the user if they're not already logged in and passes the auth data and user data to the callback: */
             /* Get the Firebase auth data: */
             var fbAuth = Contest_Judging_System.getFirebaseAuth();
             /* If they're not logged in: */
             if (fbAuth === null) {
                 /* Log them in: */
-                Contest_Judging_System.logUserIn(function(authData) {
+                Contest_Judging_System.logUserIn(type, function(authData) {
                     /* Set fbAuth: */
                     fbAuth = authData;
                     /* Get the user data: */
