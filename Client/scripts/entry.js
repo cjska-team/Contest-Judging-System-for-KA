@@ -152,8 +152,8 @@ function loadEntry() {
                 /* Otherwise, hide the scores: */
                 else currentScoreDiv.style.display = "none";
 
-                /* If the user is >= Judge... */
-                if (global_userData.permLevel >= 4) {
+                /* If the user can see the scores... */
+                if (entryData.hasOwnProperty("scores")) {
                     document.querySelector(".judgeOnly").style.display = "block";
                     /* ...Go through the rubrics in the order that we want: */
                     for (var _i = 0; _i < rubrics.Order.length; _i++) {
@@ -291,7 +291,7 @@ $("#submitBtn").on("click", function() {
 	console.log(scoreData);
 
 	/* Judge the entry if they have a permLevel of at least 4. */
-	if (permLevel >= 4) Contest_Judging_System.judgeEntry(contestId, entryId, scoreData, permLevel, function(scoreData) {
+	if (entryData.hasOwnProperty("scores")) Contest_Judging_System.judgeEntry(contestId, entryId, scoreData, permLevel, function(scoreData) {
 		/* Update the score data when done: */
 		entryData.scores.rubric = scoreData;
 		updateScoreData();
