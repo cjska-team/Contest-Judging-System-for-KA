@@ -99,7 +99,7 @@ function deleteRubric(event) {
     /* This click event handler deletes a rubric when clicked. */
     /* Remove the option from rubrics and allRubrics: */
     delete rubrics[event.currentTarget.id];
-    rubrics.Order.split(rubrics.Order.indexOf(event.currentTarget.id), 1);
+    rubrics.Order.splice(rubrics.Order.indexOf(event.currentTarget.id), 1);
     allRubrics.removeChild(event.currentTarget);
     /* Hide deleteRubricLabel if there are no more rubrics: */
     if (!rubrics.Order.length) deleteRubricLabel.style.display = "none";
@@ -114,7 +114,7 @@ document.querySelector("#addrubric").addEventListener("click", function(event) {
         alert("Please enter a rubric name. Thanks!");
         return;
     }
-    
+
     /* Use this for the actual JSON property of the rubric so there's no whitespace in the property name. */
     var jsonProp = document.forms.new_contest.rubric_name.value.split(" ").join("_").split("\t").join("_");
     /* Make sure that the user didn't already use this rubric name: */
@@ -147,7 +147,7 @@ document.querySelector("#addrubric").addEventListener("click", function(event) {
                 delete rubrics[jsonProp];
                 return;
             }
-            
+
             /* A <ul> element for minimum and maximum: */
             var minmaxList = document.createElement("ul");
             /* Add the minimum: */
@@ -173,7 +173,7 @@ document.querySelector("#addrubric").addEventListener("click", function(event) {
                 min: 0,
                 max: currentOptions.length-1
             };
-            
+
             /* A <ul> element for all of the options: */
             var optionsList = document.createElement("ul");
             /* Append all options of this rubric into optionsList: */
@@ -224,7 +224,7 @@ document.querySelector("#submitcontest").addEventListener("click", function(even
         alert("Please enter a valid program ID. Only numbers are valid program IDs. A program ID can be found by visiting the link of a contest and looking for a number within that link before the contest title. Thanks!");
         return;
     }
-    
+
     console.log(rubrics);
 
     /* If everything is OK, then alert to the user that they can't submit contests yet. */
