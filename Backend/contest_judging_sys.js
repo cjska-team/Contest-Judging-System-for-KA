@@ -161,7 +161,7 @@ window.Contest_Judging_System = (function() {
         /* Load a specific contest entry, based on ID */
         loadEntry: function(contestId, entryId, permLevel, callback) {
             /* Connect to Firebase: */
-            var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/contests/"+contestId+"/entries/"+entryId);           
+            var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/contests/"+contestId+"/entries/"+entryId.replace("#", ""));           
             /* This is what we're going to pass through callback: */
             var callbackData = {};
             /* These are the property names that callbackData needs to have: */
