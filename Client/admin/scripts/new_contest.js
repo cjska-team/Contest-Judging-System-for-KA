@@ -201,16 +201,12 @@ document.querySelector("#submitcontest").addEventListener("click", function(even
         alert("Please enter a valid program ID. Only numbers are valid program IDs. A program ID can be found by visiting the link of a contest and looking for a number within that link before the contest title. Thanks!");
         return;
     }
-    if (document.forms.new_contest.contest_name === undefined) {
-        alert("Please enter a contest name!");
-        return;
-    }
     
     console.log(rubrics);
 
     /* If everything is OK, then alert to the user that they can't submit contests yet. */
-    Contest_Judging_System.createContest(programID, rubrics, function(href) {
+    /*Contest_Judging_System.createContest(programID, rubrics, function(href) {
         alert("Contest created! Navigating to the contest page on KACJS.");
         //window.location.assign(href);
-    });
+    });*/
 });
