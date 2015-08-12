@@ -9,6 +9,7 @@
         <meta property="og:url" content="http://gigabytegiant.com/kacjs/Client/admin/new_contest.html">
         <meta property="og:description" content="Submit new Khan Academy contests to the Khan Academy Contest Judging System here!"/>
 		<link rel="icon" href="../../Resources/favicon.ico">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/8.0.2/nouislider.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
         <link rel="stylesheet" href="../stylesheets/main.css">
         <link rel="stylesheet" href="stylesheets/main.css">
@@ -28,31 +29,33 @@
             <div class="controls">
                 <form name="new_contest">
                     <div class="form-group">
-                        <label for="program_id"><h3>Khan Academy Program Link:</h3></label>
+                        <label><h3>Khan Academy Program Link:</h3></label>
                         <input type="text" name="program_id" class="form-control"></input>
                     </div>
                     <div class="form-group">
                         <label><h3>New Rubric</h3></label><br/>
-                        <label for="rubric_name">Rubric Name: </label><input type="text" name="rubric_name" class="form-control"/><br/>
-                        <label for="rubric_type">Rubric Type</label><br/>
-                        <input type="radio" name="rubric_type" value="minmax" checked/>Minimum/Maximum<br/>
+                        <label>Rubric Name: </label><input type="text" name="rubric_name" class="form-control"/><br/>
+                        <label>Rubric Type</label><br/>
+                        <input type="radio" name="rubric_type" value="minmax" checked/>Slider<br/>
                         <input type="radio" name="rubric_type" value="keys"/>Multiple Options
                         <div id="minmax">
-                            <label for="min">Minimum:</label>
+                            <label>This will create a slider with a given minimum and maximum that judges can choose between. For example, the below is a slider from 1 to 5. Creating a slider gives judges the option to give a value on a numerical scale.</label>
+                            <label for="slider" id="sliderLabel">Value: 1</label>
+                            <div id="slider" role="slider"></div><br/>
+                            <label>Minimum:</label>
                             <input type="number" name="minimum" min="0" class="form-control"/><br/>
-                            <label for="max">Maximum:</label>
-                            <input type="number" name="maximum" class="form-control"/><br/>
+                            <label>Maximum:</label>
+                            <input type="number" name="maximum" min="0" id="maximum" class="form-control"/><br/>
                         </div>
                         <div id="keys">
+                            <label>This will create a rubric with a bunch of buttons. Judges can only choose one of these buttons. <span id="optionsExample">Look below the input box for an example of these buttons.</span> Creating an options rubric gives judges discrete options to choose from rather than numbers.</label>
                             <div class="form-group">
-                                <label for="option">Enter Option(s) Here: (Multiple options should be separated by commas, i.e. <code>Option1, Option2, Option3</code>.)</label>
+                                <label>Enter Option(s) Here: (Multiple options should be separated by commas, i.e. <code>Option1, Option2, Option3</code>.)</label>
                                 <input type="text" name="option" class="form-control"/>
-                            </div>
-                            <div class="form-group">
                                 <input type="submit" class="btn btn-xs btn-default" value="Add Option" id="addoption" class="form-control"/>
                             </div>
                             <div class="form-group">
-                                <label for="option" id="deleteOptionLabel" class="delete">Click an option below to delete it:</label>
+                                <label id="deleteOptionLabel" class="delete">Click an option below to delete it:</label>
                                 <div id="options"></div>
                             </div>
                         </div>
@@ -61,7 +64,7 @@
                         <input type="submit" class="btn btn-sm btn-warning" value="Add Rubric" id="addrubric" class="form-control"/>
                     </div>
                     <div class="form-group">
-                        <label for="option" id="deleteRubricLabel" class="delete">Click a rubric below to delete it:</label>
+                        <label id="deleteRubricLabel" class="delete">Click a rubric below to delete it:</label>
                         <div id="rubrics"></div>
                         <input type="submit" class="btn btn-success" value="Submit Contest" id="submitcontest" class="form-control"/>
                     </div>
@@ -70,6 +73,7 @@
 		</main>
 		<script src="../../Resources/firebase.js"></script>
         <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/8.0.2/nouislider.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
         <script src="../../Backend/ka_api.js"></script>
         <script src="../../Backend/contest_judging_sys.js"></script>

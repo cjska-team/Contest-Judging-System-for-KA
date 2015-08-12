@@ -26,3 +26,11 @@ label.delete {
 div.rubric:hover {
     background-color: rgba(0, 0, 0, 0.1);
 }
+/* Make the slider not take up the whole screen width: */
+#slider {
+    width: 32%;
+}
+/* Color the sliders. */
+.noUi-base {
+	background-color: #62B75A;
+}
