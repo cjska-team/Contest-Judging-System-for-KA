@@ -19,16 +19,18 @@ var defaultOption = document.createElement("button");
 defaultOption.className = "btn btn-default";
 /* The label for deleting options: */
 var deleteOptionLabel = document.querySelector("#deleteOptionLabel");
+/* The span referencing deleteOptionLabel: */
+var optionsExample = document.querySelector("#optionsExample");
 
 function deleteOption(event) {
     /* This click event handler deletes an option when clicked. */
     /* Make sure the form doesn't redirect: */
     event.preventDefault();
     /* Remove the option from currentOptions and allOptions: */
-    currentOptions.splice(parseInt(event.currentTarget.getAttribute("data-index")), 1);
+    currentOptions.splice(currentOptions.indexOf(event.currentTarget.textContent), 1);
     allOptions.removeChild(event.currentTarget);
-    /* Hide deleteOptionLabel if there are no more options: */
-    if (!currentOptions.length) deleteOptionLabel.style.display = "none";
+    /* Hide deleteOptionLabel and optionsExample if there are no more options: */
+    if (!currentOptions.length) optionsExample.style.display = "none", deleteOptionLabel.style.display = "none";
 }
 
 function addOption(option) {
@@ -44,16 +46,19 @@ function addOption(option) {
     /* Append a representation of the option into #options: */
     var curOption = defaultOption.cloneNode();
     curOption.textContent = option;
-    /* Keep the index of where it is in currentOptions in a data- attribute: */
-    curOption.setAttribute("data-index", currentOptions.length);
     allOptions.appendChild(curOption);
     /* Bind deleteOption to the click of curOption: */
     curOption.addEventListener("click", deleteOption);
     /* Push the option into currentOptions. */
     currentOptions.push(option);
-    /* Show deleteOptionLabel. */
-    deleteOptionLabel.style.display = "block";
+    /* Show deleteOptionLabel and optionsExample. */
+    optionsExample.style.display = "inline", deleteOptionLabel.style.display = "block";
 }
+
+/* Example options: */
+var exampleOptions = ["Unknown", "Beginner", "Intermediate", "Advanced"];
+/* Add all of the example options: */
+for (var i = 0; i < exampleOptions.length; i++) addOption(exampleOptions[i]);
 
 /* When the user tries to add an option: */
 document.querySelector("#addoption").addEventListener("click", function(event) {
@@ -70,6 +75,23 @@ document.querySelector("#addoption").addEventListener("click", function(event) {
     for (var i = 0; i < newOptions.length; i++) addOption(newOptions[i]);
     /* Clear the option textbox */
     document.forms.new_contest.option.value = "";
+});
+
+/* Use noUiSlider to create slider */
+var slider = document.querySelector("#slider"), sliderLabel = document.querySelector("#sliderLabel");
+noUiSlider.create(slider, {
+    connect: "lower",
+    start: 1,
+    step: 1,
+    range: {
+        min: 1,
+        max: 5
+    }
+});
+/* When the slider value changes... */
+slider.noUiSlider.on("update", function(values, handle) {
+    /* Tell the value in sliderLabel: */
+    sliderLabel.textContent = "Value: "+parseInt(values[handle]).toString();
 });
 
 function deleteRubric(event) {
@@ -179,8 +201,8 @@ document.querySelector("#addrubric").addEventListener("click", function(event) {
     currentOptions = [];
     while (allOptions.childNodes.length) allOptions.removeChild(allOptions.childNodes[0]);
     document.forms.new_contest.rubric_name.value = "";
-    /* Hide deleteOptionLabel: */
-    deleteOptionLabel.style.display = "none";
+    /* Hide deleteOptionLabel and optionsExample: */
+    optionsExample.style.display = "none", deleteOptionLabel.style.display = "none";
 });
 
 /* When the user tries to submit a contest: */
