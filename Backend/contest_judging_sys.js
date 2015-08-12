@@ -172,7 +172,9 @@ window.Contest_Judging_System = (function() {
             /* These are the property names that callbackData needs to have: */
             var props = ["id", "thumb", "name"];
             /* Include the scores if they can read the scores: */
-            if (permLevel >= 5) props.push("scores");
+            if (permLevel >= 5) {
+                props.push("scores");
+            }
             
             /* Get the data for all of the props: */
             for (var i = 0; i < props.length; i++) {
@@ -401,9 +403,13 @@ window.Contest_Judging_System = (function() {
             var cookieList = document.cookie.split(';');
             for (var i = 0; i < cookieList.length; i++) {
                 var curCookie = cookieList[i];
-                while (curCookie[0] === ' ') curCookie = curCookie.substring(1);
+                while (curCookie[0] === ' ') {
+                    curCookie = curCookie.substring(1);
+                }
                 /* If we've found the right cookie, return its value. */
-                if (curCookie.indexOf(name) == 0) return curCookie.substring(name.length, curCookie.length);
+                if (curCookie.indexOf(name) === 0) {
+                    return curCookie.substring(name.length, curCookie.length);
+                }
             }
             /* Otherwise, if the cookie doesn't exist, return "" */
             return "";
@@ -484,7 +490,7 @@ window.Contest_Judging_System = (function() {
             /* Get the Firebase auth data: */
             var fbAuth = Contest_Judging_System.getFirebaseAuth();
             /* If they're not logged in: */
-            if (fbAuth == null) {
+            if (fbAuth === null) {
                 /* Log them in: */
                 Contest_Judging_System.logUserIn(function(authData) {
                     /* Set fbAuth: */
@@ -525,7 +531,7 @@ window.Contest_Judging_System = (function() {
                 if (judgesWhoVoted.indexOf(fbAuth.uid) === -1) {
                     /* Push the uid of this judge into judgesWhoVoted */
                     judgesWhoVoted.push(fbAuth.uid);
-                    var numJudges = judgesWhoVoted.length
+                    var numJudges = judgesWhoVoted.length;
 
                     /* Create a new object for storing scores */
                     var newScoreObj = {judgesWhoVoted: judgesWhoVoted};
