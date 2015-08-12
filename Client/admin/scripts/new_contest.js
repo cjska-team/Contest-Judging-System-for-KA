@@ -1,5 +1,8 @@
 /* The rubrics for this contest: */
-var rubrics = {};
+var rubrics = {
+    /* The order of the rubrics: */
+    Order: []
+};
 /* A <div> containing all of the rubrics: */
 var allRubrics = document.querySelector("#rubrics");
 /* A default <div> representing a rubric: */
@@ -7,8 +10,6 @@ var defaultRubric = document.createElement("div");
 defaultRubric.className = "rubric";
 /* The label for deleting rubrics: */
 var deleteRubricLabel = document.querySelector("#deleteRubricLabel");
-/* The number of rubrics we have now: */
-var numRubrics = 0;
 
 /* A <div> containing all of the options: */
 var allOptions = document.querySelector("#options");
@@ -98,10 +99,10 @@ function deleteRubric(event) {
     /* This click event handler deletes a rubric when clicked. */
     /* Remove the option from rubrics and allRubrics: */
     delete rubrics[event.currentTarget.id];
+    rubrics.Order.split(rubrics.Order.indexOf(event.currentTarget.id), 1);
     allRubrics.removeChild(event.currentTarget);
-    /* Decrement numRubrics and hide deleteRubricLabel if there are no more options: */
-    numRubrics--;
-    if (!numRubrics) deleteRubricLabel.style.display = "none";
+    /* Hide deleteRubricLabel if there are no more rubrics: */
+    if (!rubrics.Order.length) deleteRubricLabel.style.display = "none";
 }
 
 /* When the user tries to add a rubric: */
@@ -115,7 +116,7 @@ document.querySelector("#addrubric").addEventListener("click", function(event) {
     }
     
     /* Use this for the actual JSON property of the rubric so there's no whitespace in the property name. */
-    var jsonProp = document.forms.new_contest.rubric_name.value.replace(/\s/, "_");
+    var jsonProp = document.forms.new_contest.rubric_name.value.split(" ").join("_").split("\t").join("_");
     /* Make sure that the user didn't already use this rubric name: */
     if (rubrics.hasOwnProperty(jsonProp)) {
         alert("Please don't reuse rubric names. You already used this rubric name, so why don't you make another one? Thanks!");
@@ -187,9 +188,9 @@ document.querySelector("#addrubric").addEventListener("click", function(event) {
             curRubric.appendChild(optionsList);
             break;
     }
-    
-    /* Increment numRubrics and show deleteRubricLabel: */
-    numRubrics++;
+
+    /* Update rubrics.Order: */
+    rubrics.Order.push(jsonProp);
     deleteRubricLabel.style.display = "block";
     /* Set the ID of curRubric so we can find it in rubrics later: */
     curRubric.id = jsonProp;

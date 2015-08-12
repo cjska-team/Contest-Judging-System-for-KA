@@ -577,23 +577,25 @@ window.Contest_Judging_System = (function() {
                         var description = programData.description;
                         var rubrics = contestRubrics;
 
-                        rubrics.Order = ["Level", "Clean_Code", "Creativity", "Overall"];
-
-                        thisContest.once("value", function(snapshot) {
-                            fbContestKeysRef.child(id).set(true);
-                            fbContestRef.child(id).set({
+                        fbContestRef.once("value", function(snapshot) {
+                            var contestExists = !snapshot.hasChild(id);
+                            var newFbData = {
                                 id: id,
                                 name: name,
                                 img: img,
                                 desc: description,
-                                entries: snapshot.val().entries || {},
-                                entryKeys: snapshot.val().entryKeys || {},
-                                entryCount: 0,
-                                rubrics: rubrics
-                            });
+                                rubrics: rubrics,
+                                entries: null,
+                                entryKeys: null
+                            };
+                            if (!contestExists) {
+                                fbContestKeysRef.child(id).set(true);
+                                newFbData.cannotDestroy = true;
+                            }
+                            fbContestRef.child(id).update(newFbData);
                         });
 
-                        callback(window.location.href.replace("/admin/new_contest.html", "/contest.html?contest=" + contestId + "&entries=all"));
+                        callback(window.location.href.replace("/admin/new_contest.html", "/contest.html?contest=" + contestId + "&entries=30"));
                     }
                 });
             }
