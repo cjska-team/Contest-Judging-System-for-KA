@@ -14,13 +14,15 @@ fbRef.onAuth(function(authData) {
         loginButton.css("display", "block");
         logoutButton.css("display", "none");
         /* Also, hide the stuff needing authentication: */
-        document.querySelector(".hideWhileNotAuthed").style.display = "none";
+        $(".hideWhileNotAuthed").css("display", "none");
     } else {
+        /* Get the user data to add them to Firebase. We're not actually going to do anything in the callback. */
+        Contest_Judging_System.getUserData(authData.uid, function(authData, userData) {});
         /* If they are logged in, then show the logout button: */
         loginButton.css("display", "none");
         logoutButton.css("display", "block");
         /* Also, show the stuff needing authentication: */
-        document.querySelector(".hideWhileNotAuthed").style.display = "block";
+        $(".hideWhileNotAuthed").css("display", "block");
     }
 });
 

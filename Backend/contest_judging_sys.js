@@ -464,12 +464,14 @@ window.Contest_Judging_System = (function() {
             users.once("value", function(usersSnapshot) {
                 /* Make sure the user exists in Firebase. If they don't: */
                 if (!usersSnapshot.hasChild(userID)) {
+                    /* Get the Firebase authentication data: */
+                    var fbAuth = Contest_Judging_System.getFirebaseAuth();
                     /* User doesn't exist in Firebase, which means they cannot be an admin. Therefore, set them in Firebase with lowest possible permissions. */
                     var userData = {
                         name: fbAuth.google.displayName,
                         permLevel: 1
                     };
-                    fbRef.child(userID).set(userData);
+                    users.child(userID).set(userData);
                     /* Call the callback */
                     callback(userData);
                 }
