@@ -56,11 +56,6 @@ function addOption(option) {
     optionsExample.style.display = "inline", deleteOptionLabel.style.display = "block";
 }
 
-/* Example options: */
-var exampleOptions = ["Unknown", "Beginner", "Intermediate", "Advanced"];
-/* Add all of the example options: */
-for (var i = 0; i < exampleOptions.length; i++) addOption(exampleOptions[i]);
-
 /* When the user tries to add an option: */
 document.querySelector("#addoption").addEventListener("click", function(event) {
     /* Make sure the form doesn't redirect. */
