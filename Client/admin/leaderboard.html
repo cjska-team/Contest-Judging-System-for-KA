@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html>
-	<head prefix="og: http://ogp.me/ns#">
-		<title>Khan Academy Contest Leaderboard</title>
-        <meta name="description" content="View the leaderboard of a Khan Academy contest here!"/>
-        <meta property="og:title" content="Khan Academy Contest Leaderboard"/>
-        <meta property="og:site_name" content="Khan Academy Contest Judging System"/>
-        <meta property="og:type" content="website"/>
-        <meta property="og:description" content="View the leaderboard of a Khan Academy contest here!"/>
-		<link rel="icon" href="../Resources/favicon.ico">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-        <link rel="stylesheet" href="stylesheets/main.css">
+	<head>
+		<title>Leaderboard</title>
+		<!-- TODO: Add meta tags -->
+		<link rel="icon" href="../../Resources/favicon.ico">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<link rel="stylesheet" href="stylesheets/main.css">
 	</head>
 	<body>
 		<div class="container">
-			
+			<div class="jumbotron">
+				<h3>Leaderboard</h3>
+			</div>
 		</div>
-		<script src="../Resources/firebase.js"></script>
+
+		<script src="../../Resources/firebase.js"></script>
         <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-        <script src="../Backend/ka_api.js"></script>
-        <script src="../Backend/contest_judging_sys.js"></script>
+        <script src="../../Backend/ka_api.js"></script>
+        <script src="../../Backend/contest_judging_sys.js"></script>
+        <script src="scripts/auth.js"></script>
         <script src="scripts/leaderboard.js"></script>
 	</body>
 </html>

@@ -6,9 +6,7 @@ if (window.location.search.indexOf("?contest=") === -1) {
 }
 
 /* Find the contest ID that was specified in the URL */
-var contestId = window.location.href.split("?contest=")[1];
+var contestId = window.location.href.split("?contest=")[1].split("&")[0];
 
 /* Log the Contest ID that we found, to the console. */
 console.log("Contest ID found! " + contestId);
-
-// TODO: Load x of the top entries for this contest.
