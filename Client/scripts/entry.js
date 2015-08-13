@@ -49,8 +49,8 @@ console.log("Entry ID: " + entryId);
 
 /* The number of lines of code of this project */
 var linesOfCode;
-/* Firebase authentication data and our Firebase user data: */
-var fbAuth = Contest_Judging_System.getFirebaseAuth(), global_userData = {};
+/* Our Firebase user data: */
+var global_userData = {};
 /* Send an AJAX request to the KA API for this program. */
 $.ajax({
 	type: "GET",
@@ -61,20 +61,6 @@ $.ajax({
 		linesOfCode = response.responseJSON.revision.code.split("\n").length;
 		/* Insert it into where it should be in the document. */
 		document.querySelector("#program-info").textContent = linesOfCode+" lines of code";
-
-        /* Get the user data if they're logged in: */
-        if (fbAuth) {
-            Contest_Judging_System.getUserData(fbAuth.uid, function(userData) {
-                global_userData = userData;
-                /* Load the entry when done: */
-                loadEntry();
-            });
-        }
-        /* Otherwise, just load the entry with default data: */
-        else {
-            global_userData = {"permLevel": 1};
-            loadEntry();
-        }
 	}
 });
 
@@ -109,22 +95,22 @@ function updateScoreData() {
 	for (var _i = 0; _i < rubrics.Order.length; _i++) {
 		/* Current Property: */
 		var k = rubrics.Order[_i];
-		/* Name of Rubric */
-		var rubricName = k.replace(/_/gi, " ");
-		/* The current score in this rubric */
-		var curRubric = document.createElement("p");
-		/* If there are discrete options to this rubric: */
-		if (rubrics[k].hasOwnProperty("keys")) {
-			/* Set the textContent using .keys: */
-			curRubric.textContent = rubricName+": " +rubrics[k].keys[Math.round(entryData.scores.rubric[k].avg)];
-		}
-		/* Otherwise, the rubric is numerical. */
-		else {
-			/* Set the current score using numbers */
-			curRubric.textContent = rubricName+": "+Math.round(entryData.scores.rubric[k].avg)+" out of "+rubrics[k].max;
-		}
-		/* Append curRubric to currentScoreDiv: */
-		currentScoreDiv.appendChild(curRubric);
+        /* Name of Rubric */
+        var rubricName = k.replace(/_/gi, " ");
+        /* The current score in this rubric */
+        var curRubric = document.createElement("p");
+        /* If there are discrete options to this rubric: */
+        if (rubrics[k].hasOwnProperty("keys")) {
+            /* Set the textContent using .keys: */
+            curRubric.textContent = rubricName+": " +rubrics[k].keys[Math.round(entryData.scores.rubric[k] === undefined ? 1 : entryData.scores.rubric[k].avg)];
+        }
+        /* Otherwise, the rubric is numerical. */
+        else {
+            /* Set the current score using numbers */
+            curRubric.textContent = rubricName+": "+Math.round(entryData.scores.rubric[k] === undefined ? 1 : entryData.scores.rubric[k].avg)+" out of "+rubrics[k].max;
+        }
+        /* Append curRubric to currentScoreDiv: */
+        currentScoreDiv.appendChild(curRubric);
 	}
 }
 
@@ -142,7 +128,6 @@ function loadEntry() {
         document.querySelector("#program-name").textContent = entryData.name;
 
         /* The following stuff is broken in Firefox. Issue reported on Khan Academy live-editor repo. */
-        /* Make the <iframe> if it's not already there: */
         if (!programPreview.childNodes.length) {
             programIframe = document.createElement("iframe");
             programIframe.src = baseURL.replace("{ENTRYID}", entryData.id);
@@ -158,7 +143,6 @@ function loadEntry() {
             rubrics = rubricsLocal;
             console.log(JSON.stringify(rubrics));
 
-            console.log(entryData.hasOwnProperty("scores"));
             /* If the user can see the scores, update the scores: */
             if (entryData.hasOwnProperty("scores")) updateScoreData();
             /* Otherwise, hide the scores: */
@@ -281,29 +265,20 @@ function loadEntry() {
 
 /* Connect to Firebase: */
 var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
-/* Make sure this is not the intial page load: */
-var initLoad = true;
 /* On authentication change... */
-fbRef.onAuth(function(authData) {
-    /* If it's the initial page load, mark future changes as not initial: */
-    if (!initLoad) initLoad = true;
-    else {
-        /* Otherwise, load the entry again: */
-        /* Update fbAuth: */
-        fbAuth = authData;
-        /* Get the user data if they're logged in: */
-        if (fbAuth) {
-            Contest_Judging_System.getUserData(fbAuth.uid, function(userData) {
-                global_userData = userData;
-                /* Load the entry when done: */
-                loadEntry();
-            });
-        }
-        /* Otherwise, just load the entry with default data: */
-        else {
-            global_userData = {"permLevel": 1};
+fbRef.onAuth(function(fbAuth) {
+    /* Get the user data if they're logged in: */
+    if (fbAuth) {
+        Contest_Judging_System.getUserData(fbAuth.uid, function(userData) {
+            global_userData = userData;
+            /* Load the entry when done: */
             loadEntry();
-        }
+        });
+    }
+    /* Otherwise, just load the entry with default data: */
+    else {
+        global_userData = {"permLevel": 1};
+        loadEntry();
     }
 });
 
@@ -337,10 +312,10 @@ $("#submitBtn").on("click", function() {
 		entryData.scores.rubric = scoreData;
 		updateScoreData();
 	});
-		/* Make sure permLevel has been set: */
-		else if (!permLevel) alert("You haven't logged in yet!");
-		else alert("You aren't in the allowed judges list!");
-	});
+    /* Make sure permLevel has been set: */
+    else if (!permLevel) alert("You haven't logged in yet!");
+    else alert("You aren't in the allowed judges list!");
+});
 
 /* When we click the "Set Dimensions" button, set the dimensions of the program. */
 $("#setdimensions").on("click", function(event) {

@@ -8,7 +8,7 @@ var userData;
 /* True iff we're done with the auth checks. */
 var authChecksDone = false;
 
-Contest_Judging_System.logInAndGetUserData(function(authData, userDataLocal) {
+Contest_Judging_System.logInAndGetUserData("popup", function(authData, userDataLocal) {
     /* Set userData: */
     userData = userDataLocal;
     /* Make sure they're an admin. */

@@ -56,18 +56,26 @@ window.Contest_Judging_System = (function() {
                 /* Log errors: */
             }, Contest_Judging_System.logError);
         },
-        /* This function gets the rubrics for a specific contest or the default rubric if we there's not custom rubric: */
+        /* This function gets the rubrics for a specific contest: */
         getRubricsForContest: function(contestId, callback) {
-            /* First check for a custom rubrics: */
-            Contest_Judging_System.loadContest(contestId, function(contestData) {
-                /* If there's a custom rubric, call callback: */
-                if (contestData.rubrics !== null) {
-                    callback(contestData.rubrics);
-                }
-                /* Otherwise, get the default rubrics and pass it through callback: */
-                else {
-                    Contest_Judging_System.getRubrics(callback);
-                }
+            /* Get the default rubrics: */
+            Contest_Judging_System.getRubrics(function(rubrics) {
+                /* Now check for a custom rubrics: */
+                Contest_Judging_System.loadContest(contestId, function(contestData) {
+                     /* If there is a custom rubrics, merge it with rubrics: */
+                     if (contestData.rubrics !== null) {
+                         for (var k in contestData.rubrics) {
+                             if (k !== "Order") {
+                                 rubrics[k] = contestData.rubrics[k];
+                             } else {
+                                 /* Merge the .Order arrays: */
+                                 for (var i = 0; i < contestData.rubrics.Order.length; i++) rubrics.Order.push(contestData.rubrics.Order[i]);
+                             }
+                         }
+                     }
+                     /* Pass rubrics through callback: */
+                     callback(rubrics);
+                });
             });
         },
         /* This function gets all the contests that we have stored on Firebase and passes them into a callback function. */
@@ -417,12 +425,17 @@ window.Contest_Judging_System = (function() {
             document.cookie = cookie + "=" + value + "; " + expires;
         },
         /* This function logs the user in and then calls the callback with the Firebase auth data: */
-        logUserIn: function(callback) {
+        logUserIn: function(type, callback) {
             /* Connect to Firebase: */
             var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
+            /* The login method: */
+            var loginMethod = {
+                "popup": "authWithOAuthPopup",
+                "redirect": "authWithOAuthRedirect"
+            }[type];
             /* Try to log the user in: */
-            // TODO: Stop using OAuth popups, and instead switch to OAuth redirects.
-            fbRef.authWithOAuthRedirect("google", function(error, authData) {
+
+            fbRef[loginMethod]("google", function(error, authData) {
                 /* If a Firebase error occurs... */
                 if (error) {
                     /* ...alert the user, and... */
@@ -482,14 +495,14 @@ window.Contest_Judging_System = (function() {
                 /* Log errors: */
             }, Contest_Judging_System.logError);
         },
-        logInAndGetUserData: function(callback) {
+        logInAndGetUserData: function(type, callback) {
             /* This function combines logging in and getting the user data so it logs in the user if they're not already logged in and passes the auth data and user data to the callback: */
             /* Get the Firebase auth data: */
             var fbAuth = Contest_Judging_System.getFirebaseAuth();
             /* If they're not logged in: */
             if (fbAuth === null) {
                 /* Log them in: */
-                Contest_Judging_System.logUserIn(function(authData) {
+                Contest_Judging_System.logUserIn(type, function(authData) {
                     /* Set fbAuth: */
                     fbAuth = authData;
                     /* Get the user data: */
@@ -515,46 +528,57 @@ window.Contest_Judging_System = (function() {
             /* All entries of this contest */
             var entries = fbContestRef.child("entries");
 
-            /* Load the Firebase data of this entry of this contest and then... */
-            Contest_Judging_System.loadEntry(contest, entry, permLevel, function(entryData) {
-                /* Get the current rubric score */
-                var currentRubricScore = entryData.scores.rubric;
-                /* Find the judges who voted (or an empty array if noone voted yet) */
-                var judgesWhoVoted = entryData.scores.rubric.judgesWhoVoted === undefined ? [] : entryData.scores.rubric.judgesWhoVoted;
-                /* Get the Firebase auth data */
-                var fbAuth = Contest_Judging_System.getFirebaseAuth();
+            /* Get the rubrics from Firebase: */
+            Contest_Judging_System.getRubricsForContest(contest, function(contestRubrics) {
+                /* Load the Firebase data of this entry of this contest and then... */
+                Contest_Judging_System.loadEntry(contest, entry, permLevel, function(entryData) {
+                    /* Find the judges who voted (or an empty array if noone voted yet) */
+                    var judgesWhoVoted = entryData.scores.rubric.judgesWhoVoted === undefined ? [] : entryData.scores.rubric.judgesWhoVoted;
+                    /* Get the current rubric score */
+                    var currentRubricScore = entryData.scores.rubric;
+                    /* Get the Firebase auth data */
+                    var fbAuth = Contest_Judging_System.getFirebaseAuth();
 
-                /* If this judge hasn't voted on this entry yet... */
-                if (judgesWhoVoted.indexOf(fbAuth.uid) === -1) {
-                    /* Push the uid of this judge into judgesWhoVoted */
-                    judgesWhoVoted.push(fbAuth.uid);
-                    var numJudges = judgesWhoVoted.length;
+                    /* If this judge hasn't voted on this entry yet... */
+                    if (judgesWhoVoted.indexOf(fbAuth.uid) === -1) {
+                        /* Push the uid of this judge into judgesWhoVoted */
+                        judgesWhoVoted.push(fbAuth.uid);
+                        var numJudges = judgesWhoVoted.length;
 
-                    /* Create a new object for storing scores */
-                    var newScoreObj = {judgesWhoVoted: judgesWhoVoted};
-                    for (var k in currentRubricScore) {
-                        /* If this is the first judge to vote, make sure we're starting off from 0: */
-                        if (judgesWhoVoted.length === 1) {
-                            currentRubricScore[k].rough = 0;
+                        /* Create a new object for storing scores */
+                        var newScoreObj = {judgesWhoVoted: judgesWhoVoted};
+                        /* Loop through the rubric: */
+                        for (var _i = 0; _i < contestRubrics.Order.length; _i++) {
+                            /* Get the rubric item: */
+                            var k = contestRubrics.Order[_i];
+                            /* If this property is not in currentRubricScore yet, add it in: */
+                            if (!currentRubricScore.hasOwnProperty(k)) {
+                                currentRubricScore[k] = {rough: 0, avg: 0};
+                            }
+                            /* Otherwise,  this is the first judge to vote, make sure we're starting off from 0: */
+                            else if (judgesWhoVoted.length === 1) {
+                                currentRubricScore[k].rough = 0;
+                            }
+                            console.log(contestRubricScore[k].rough, scoreData[k], numJudges);
+                            newScoreObj[k] = {
+                                rough: currentRubricScore[k].rough+scoreData[k],
+                                avg: Math.round((parseInt(currentRubricScore[k].rough, 10)+scoreData[k])/numJudges)
+                            };
                         }
-                        newScoreObj[k] = {
-                            rough: currentRubricScore[k].rough+scoreData[k],
-                            avg: Math.round((parseInt(currentRubricScore[k].rough, 10)+scoreData[k])/numJudges)
-                        };
-                    }
 
-                    /* Set the new scores to newScoreObj */
-                    var thisEntry = new Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contest + "/entries/" + entry + "/scores/");
-                    thisEntry.child("rubric").set(newScoreObj);
-                    /* Tell the user that it worked! */
-                    alert("This entry has been judged. Hooray!");
-                    /* Pass newScoreObj through callback: */
-                    callback(newScoreObj);
-                }
-                /* If this judge has already judged this entry, tell them that they've already done so. */
-                else {
-                    alert("You've already judged this entry!");
-                }
+                        /* Set the new scores to newScoreObj */
+                        var thisEntry = new Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contest + "/entries/" + entry + "/scores/");
+                        thisEntry.child("rubric").set(newScoreObj);
+                        /* Tell the user that it worked! */
+                        alert("This entry has been judged. Hooray!");
+                        /* Pass newScoreObj through callback: */
+                        callback(newScoreObj);
+                    }
+                    /* If this judge has already judged this entry, tell them that they've already done so. */
+                    else {
+                        alert("You've already judged this entry!");
+                    }
+                });
             });
         },
         createContest: function(contestId, contestRubrics, callback) {
@@ -571,13 +595,21 @@ window.Contest_Judging_System = (function() {
                     complete: function(response) {
                         var programData = response.responseJSON;
 
-                        var id = contestId;
-                        var name = programData.translatedTitle;
-                        var img = programData.imagePath;
-                        var description = programData.description;
-                        var rubrics = contestRubrics;
-
                         fbContestRef.once("value", function(snapshot) {
+                            var id = contestId;
+                            var name = programData.translatedTitle;
+                            var img = programData.imagePath;
+                            var description = programData.description;
+                            var rubrics = snapshot.child(id).rubrics === undefined ? { } : snapshot.child(id).rubrics;
+
+                            for (var i in contestRubrics) {
+                                if (!rubrics.hasOwnProperty(i)) {
+                                    rubrics[i] = contestRubrics[i];
+                                }
+                            }
+
+                            console.log(snapshot.child(id).child("entries"));
+
                             var contestExists = !snapshot.hasChild(id);
                             var newFbData = {
                                 id: id,
@@ -585,17 +617,20 @@ window.Contest_Judging_System = (function() {
                                 img: img,
                                 desc: description,
                                 rubrics: rubrics,
-                                entries: null,
-                                entryKeys: null
+                                entries: snapshot.child(id).entries === null ? { } : snapshot.child(id).child("entries").val(),
+                                entryKeys: snapshot.child(id).entryKeys === null ? { } : snapshot.child(id).child("entryKeys").val()
                             };
                             if (!contestExists) {
                                 fbContestKeysRef.child(id).set(true);
                                 newFbData.cannotDestroy = true;
                             }
-                            fbContestRef.child(id).update(newFbData);
-                        });
 
-                        callback(window.location.href.replace("/admin/new_contest.html", "/contest.html?contest=" + contestId + "&entries=30"));
+                            console.log(newFbData);
+
+                            fbContestRef.child(id).update(newFbData);
+
+                            callback(window.location.href.replace("/admin/new_contest.html", "/contest.html?contest=" + contestId + "&entries=30"));
+                        });
                     }
                 });
             }

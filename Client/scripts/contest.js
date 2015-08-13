@@ -17,9 +17,7 @@ if (window.location.search.indexOf("&entries") === -1) {
 
 /* Locate the contest ID in the URL, and store it for later use. */
 var contestId = window.location.href.split("?contest=")[1].split("&entries")[0];
-var numberOfEntries = window.location.href.split("&entries=")[1];
-if (numberOfEntries.indexOf("#") > -1) numberOfEntries = numberOfEntries.substring(0, numberOfEntries.indexOf("#"));
-numberOfEntries = numberOfEntries === "all" ? null : parseInt(numberOfEntries, 10);
+var numberOfEntries = window.location.href.split("&entries=")[1] === "all" ? null : parseInt(window.location.href.split("&entries=")[1], 10);
 
 /* Go ahead and find the div that we'll store all the entries in. */
 var entriesList = document.querySelector(".media-list");
@@ -32,9 +30,15 @@ console.log("We're going to load " + (numberOfEntries === null ? "all" : numberO
 /* Hide elements that we've marked with the class "hideWhileLoad". */
 $(".hideWhileLoad").css("display", "none");
 
-/* Firebase authentication data and our Firebase user data */
-var fbAuth = Contest_Judging_System.getFirebaseAuth(), global_userData = {};
+/* Our Firebase user data */
+var global_userData = {};
+/* Log the user in: */
 function loadEntries() {
+    /* Clear entriesList: */
+    while (entriesList.childNodes.length) entriesList.removeChild(entriesList.childNodes[0]);
+    /* Hide and show what we need to while loading: */
+    $("#loading").css("display", "block");
+    $(".hideWhileLoad").css("display", "none");
     /* Randomly pick n entries, and then display them on the page. */
     Contest_Judging_System.get_N_Entries((numberOfEntries === null ? KA_API.misc.allData : numberOfEntries), contestId, global_userData.permLevel, function(contest, entries) {
         /* Setup the page */
@@ -106,7 +110,7 @@ function loadEntries() {
                         /* Get the current rubric: */
                         var rubric = rubrics.Order[_i];
                         /* Round the average score for the current rubric, down. */
-                        var val = Math.floor(curr.scores.rubric[rubric].avg);
+                        var val = Math.floor(curr.scores.rubric[rubric] === undefined ? 1 : curr.scores.rubric[rubric].avg);
                         /* The maximum for this rubric. */
                         var max = rubrics[rubric].max;
                         /* Credit to @NobleMushtak for the following idea. */
@@ -121,7 +125,7 @@ function loadEntries() {
                         } else {
                             listItem.textContent = selectedRubric + ": " + val + " out of " + max;
                             scoreList.appendChild(listItem);
-                        }
+                        } 
                     }
                     /* Append everything */
                     infoDiv.appendChild(scoreHeading);
@@ -148,16 +152,21 @@ function loadEntries() {
     });
 }
 
-/* Get the user data if they're logged in: */
-if (fbAuth) {
-    Contest_Judging_System.getUserData(fbAuth.uid, function(userData) {
-        global_userData = userData;
-        /* Load the entries when done: */
+/* Connect to Firebase: */
+var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
+/* When the auth state changes (and on pageload): */
+fbRef.onAuth(function(fbAuth) {
+    /* Get the user data if they're logged in: */
+    if (fbAuth) {
+        Contest_Judging_System.getUserData(fbAuth.uid, function(userData) {
+            global_userData = userData;
+            /* Load the entries when done: */
+            loadEntries();
+        });
+    }
+    /* Otherwise, just load the entries with default data: */
+    else {
+        global_userData = {"permLevel": 1};
         loadEntries();
-    });
-}
-/* Otherwise, just load the entries with default data: */
-else {
-    global_userData = {"permLevel": 1};
-    loadEntries();
-}
+    }
+});
