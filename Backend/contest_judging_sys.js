@@ -24,9 +24,6 @@ window.Contest_Judging_System = (function() {
     return {
         /* Puts the script injection function inside of this namespace. */
         include: includeFunc,
-        misc: {
-            rubricsToIgnore: [ "Order" ]
-        },
         /* This function takes an error and logs it into the console. We pass this into Firebase calls so that no errors are silenced. */
         logError: function(error) { console.error(error); },
         /* This function gets the authentication object. */
@@ -59,18 +56,26 @@ window.Contest_Judging_System = (function() {
                 /* Log errors: */
             }, Contest_Judging_System.logError);
         },
-        /* This function gets the rubrics for a specific contest or the default rubric if we there's not custom rubric: */
+        /* This function gets the rubrics for a specific contest: */
         getRubricsForContest: function(contestId, callback) {
-            /* First check for a custom rubrics: */
-            Contest_Judging_System.loadContest(contestId, function(contestData) {
-                /* If there's a custom rubric, call callback: */
-                if (contestData.rubrics !== null) {
-                    callback(contestData.rubrics);
-                }
-                /* Otherwise, get the default rubrics and pass it through callback: */
-                else {
-                    Contest_Judging_System.getRubrics(callback);
-                }
+            /* Get the default rubrics: */
+            Contest_Judging_System.getRubrics(function(rubrics) {
+                /* Now check for a custom rubrics: */
+                Contest_Judging_System.loadContest(contestId, function(contestData) {
+                     /* If there is a custom rubrics, merge it with rubrics: */
+                     if (contestData.rubrics !== null) {
+                         for (var k in contestData.rubrics) {
+                             if (k !== "Order") {
+                                 rubrics[k] = contestData.rubrics[k];
+                             } else {
+                                 /* Merge the .Order arrays: */
+                                 for (var i = 0; i < contestData.rubrics.Order.length; i++) rubrics.Order.push(contestData.rubrics.Order[i]);
+                             }
+                         }
+                     }
+                     /* Pass rubrics through callback: */
+                     callback(rubrics);
+                });
             });
         },
         /* This function gets all the contests that we have stored on Firebase and passes them into a callback function. */
@@ -423,74 +428,44 @@ window.Contest_Judging_System = (function() {
         logUserIn: function(type, callback) {
             /* Connect to Firebase: */
             var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
+            /* The login method: */
+            var loginMethod = {
+                "popup": "authWithOAuthPopup",
+                "redirect": "authWithOAuthRedirect"
+            }[type];
             /* Try to log the user in: */
-            // TODO: Stop using OAuth popups, and instead switch to OAuth redirects.
 
-            if (type === "redirect") {
-                fbRef.authWithOAuthRedirect("google", function(error, authData) {
-                    /* If a Firebase error occurs... */
-                    if (error) {
-                        /* ...alert the user, and... */
-                        alert("An error occured. Please try again later.");
-                        /* ...log the error to the console, and... */
-                        console.error(error);
-                        /* ...exit the function. */
-                        return;
+            fbRef[loginMethod]("google", function(error, authData) {
+                /* If a Firebase error occurs... */
+                if (error) {
+                    /* ...alert the user, and... */
+                    alert("An error occured. Please try again later.");
+                    /* ...log the error to the console, and... */
+                    console.error(error);
+                    /* ...exit the function. */
+                    return;
+                }
+
+                /* Create a reference to the "users" child on Firebase */
+                var usersRef = fbRef.child("users");
+                /* Whenever the query to Firebase is done, and we've retrieved the data we need... */
+                usersRef.once("value", function(snapshot) {
+                    /* ...check to see if this Auth UID exists, if it doesn't... */
+                    if (!snapshot.hasChild(authData.uid)) {
+                        /* ...add it to Firebase, and give it the default permLevel of "1". */
+                        usersRef.child(authData.uid).set({
+                            name: authData.google.displayName,
+                            permLevel: 1
+                        });
+                        /* Also, log a message to the console. */
+                        console.log("Added new user to Firebase. Name: " + authData.google.displayName + " Permission Level: 1");
                     }
-
-                    /* Create a reference to the "users" child on Firebase */
-                    var usersRef = fbRef.child("users");
-                    /* Whenever the query to Firebase is done, and we've retrieved the data we need... */
-                    usersRef.once("value", function(snapshot) {
-                        /* ...check to see if this Auth UID exists, if it doesn't... */
-                        if (!snapshot.hasChild(authData.uid)) {
-                            /* ...add it to Firebase, and give it the default permLevel of "1". */
-                            usersRef.child(authData.uid).set({
-                                name: authData.google.displayName,
-                                permLevel: 1
-                            });
-                            /* Also, log a message to the console. */
-                            console.log("Added new user to Firebase. Name: " + authData.google.displayName + " Permission Level: 1");
-                        }
-                        /* ...log a message to the console saying that the user was logged in, and... */
-                        console.log("User logged in!");
-                        /* ...call the callback function, passing it the authData that we recieved. */
-                        callback(authData);
-                    }, Contest_Judging_System.logError);
-                }, { remember: "default" });
-            } else if (type === "popup") {
-                fbRef.authWithOAuthPopup("google", function(error, authData) {
-                    /* If a Firebase error occurs... */
-                    if (error) {
-                        /* ...alert the user, and... */
-                        alert("An error occured. Please try again later.");
-                        /* ...log the error to the console, and... */
-                        console.error(error);
-                        /* ...exit the function. */
-                        return;
-                    }
-
-                    /* Create a reference to the "users" child on Firebase */
-                    var usersRef = fbRef.child("users");
-                    /* Whenever the query to Firebase is done, and we've retrieved the data we need... */
-                    usersRef.once("value", function(snapshot) {
-                        /* ...check to see if this Auth UID exists, if it doesn't... */
-                        if (!snapshot.hasChild(authData.uid)) {
-                            /* ...add it to Firebase, and give it the default permLevel of "1". */
-                            usersRef.child(authData.uid).set({
-                                name: authData.google.displayName,
-                                permLevel: 1
-                            });
-                            /* Also, log a message to the console. */
-                            console.log("Added new user to Firebase. Name: " + authData.google.displayName + " Permission Level: 1");
-                        }
-                        /* ...log a message to the console saying that the user was logged in, and... */
-                        console.log("User logged in!");
-                        /* ...call the callback function, passing it the authData that we recieved. */
-                        callback(authData);
-                    }, Contest_Judging_System.logError);
-                }, { remember: "default" });
-            }
+                    /* ...log a message to the console saying that the user was logged in, and... */
+                    console.log("User logged in!");
+                    /* ...call the callback function, passing it the authData that we recieved. */
+                    callback(authData);
+                }, Contest_Judging_System.logError);
+            }, { remember: "default" });
         },
         getUserData: function(userID, callback) {
             /* Get the data of the user with uid userID and then call the callback while passing the data through the callback: */
@@ -553,73 +528,58 @@ window.Contest_Judging_System = (function() {
             /* All entries of this contest */
             var entries = fbContestRef.child("entries");
 
-            /* Load the Firebase data of this entry of this contest and then... */
-            Contest_Judging_System.loadEntry(contest, entry, permLevel, function(entryData) {
-                /* Get the current rubric score */
-                var currentRubricScore = entryData.scores.rubric;
-                /* Find the judges who voted (or an empty array if noone voted yet) */
-                var judgesWhoVoted = entryData.scores.rubric.judgesWhoVoted === undefined ? [] : entryData.scores.rubric.judgesWhoVoted;
-                /* Get the Firebase auth data */
-                var fbAuth = Contest_Judging_System.getFirebaseAuth();
+            /* Get the rubrics from Firebase: */
+            Contest_Judging_System.getRubricsForContest(contest, function(contestRubrics) {
+                /* Load the Firebase data of this entry of this contest and then... */
+                Contest_Judging_System.loadEntry(contest, entry, permLevel, function(entryData) {
+                    /* Find the judges who voted (or an empty array if noone voted yet) */
+                    var judgesWhoVoted = entryData.scores.rubric.judgesWhoVoted === undefined ? [] : entryData.scores.rubric.judgesWhoVoted;
+                    /* Get the current rubric score */
+                    var currentRubricScore = entryData.scores.rubric;
+                    /* Get the Firebase auth data */
+                    var fbAuth = Contest_Judging_System.getFirebaseAuth();
 
-                /* If this judge hasn't voted on this entry yet... */
-                if (judgesWhoVoted.indexOf(fbAuth.uid) === -1) {
-                    /* Push the uid of this judge into judgesWhoVoted */
-                    judgesWhoVoted.push(fbAuth.uid);
-                    var numJudges = judgesWhoVoted.length;
+                    /* If this judge hasn't voted on this entry yet... */
+                    if (judgesWhoVoted.indexOf(fbAuth.uid) === -1) {
+                        /* Push the uid of this judge into judgesWhoVoted */
+                        judgesWhoVoted.push(fbAuth.uid);
+                        var numJudges = judgesWhoVoted.length;
 
-                    /* Create a new object for storing scores */
-                    var newScoreObj = {judgesWhoVoted: judgesWhoVoted};
-                    for (var k in currentRubricScore) {
-                        /* If this is the first judge to vote, make sure we're starting off from 0: */
-                        if (judgesWhoVoted.length === 1) {
-                            currentRubricScore[k].rough = 0;
+                        /* Create a new object for storing scores */
+                        var newScoreObj = {judgesWhoVoted: judgesWhoVoted};
+                        /* Loop through the rubric: */
+                        for (var _i = 0; _i < contestRubrics.Order.length; _i++) {
+                            /* Get the rubric item: */
+                            var k = contestRubrics.Order[_i];
+                            /* If this property is not in currentRubricScore yet, add it in: */
+                            if (!currentRubricScore.hasOwnProperty(k)) {
+                                currentRubricScore[k] = {rough: 0, avg: 0};
+                            }
+                            /* Otherwise,  this is the first judge to vote, make sure we're starting off from 0: */
+                            else if (judgesWhoVoted.length === 1) {
+                                currentRubricScore[k].rough = 0;
+                            }
+                            console.log(contestRubricScore[k].rough, scoreData[k], numJudges);
+                            newScoreObj[k] = {
+                                rough: currentRubricScore[k].rough+scoreData[k],
+                                avg: Math.round((parseInt(currentRubricScore[k].rough, 10)+scoreData[k])/numJudges)
+                            };
                         }
-                        newScoreObj[k] = {
-                            rough: currentRubricScore[k].rough+scoreData[k],
-                            avg: Math.round((parseInt(currentRubricScore[k].rough, 10)+scoreData[k])/numJudges)
-                        };
+
+                        /* Set the new scores to newScoreObj */
+                        var thisEntry = new Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contest + "/entries/" + entry + "/scores/");
+                        thisEntry.child("rubric").set(newScoreObj);
+                        /* Tell the user that it worked! */
+                        alert("This entry has been judged. Hooray!");
+                        /* Pass newScoreObj through callback: */
+                        callback(newScoreObj);
                     }
-
-                    /* Set the new scores to newScoreObj */
-                    var thisEntry = new Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contest + "/entries/" + entry + "/scores/");
-                    thisEntry.child("rubric").set(newScoreObj);
-                    /* Tell the user that it worked! */
-                    alert("This entry has been judged. Hooray!");
-                    /* Pass newScoreObj through callback: */
-                    callback(newScoreObj);
-                }
-                /* If this judge has already judged this entry, tell them that they've already done so. */
-                else {
-                    alert("You've already judged this entry!");
-                }
+                    /* If this judge has already judged this entry, tell them that they've already done so. */
+                    else {
+                        alert("You've already judged this entry!");
+                    }
+                });
             });
-        },
-        getAllRubrics: function(contestId, callback) {
-            var defaultRetrieved = false;
-            var customRetrieved = false;
-
-            var rubrics = { };
-            Contest_Judging_System.getRubrics(function(defaultRubrics) {
-                for (var i in defaultRubrics) {
-                    rubrics[i] = defaultRubrics[i];
-                }
-                defaultRetrieved = true;
-            });
-
-            Contest_Judging_System.getRubricsForContest(contestId, function(customRubrics) {
-                for (var i in customRubrics) {
-                    rubrics[i] = customRubrics[i];
-                }
-                customRetrieved = true;
-            });
-
-            var callbackWait = setInterval(function() {
-                if (defaultRetrieved && customRetrieved) {
-                    clearInterval(callbackWait);
-                    callback(rubrics);
-                }
-            }, 1000);
         },
         createContest: function(contestId, contestRubrics, callback) {
             var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
@@ -646,12 +606,6 @@ window.Contest_Judging_System = (function() {
                                 if (!rubrics.hasOwnProperty(i)) {
                                     rubrics[i] = contestRubrics[i];
                                 }
-                            }
-
-                            rubrics.Order = [ "Level", "Clean_Code", "Creativity", "Overall" ];
-
-                            for (var i in contestRubrics) {
-                                rubrics.Order.push(i);
                             }
 
                             console.log(snapshot.child(id).child("entries"));

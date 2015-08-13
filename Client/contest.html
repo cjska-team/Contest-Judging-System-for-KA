@@ -21,6 +21,9 @@
                     <summary><h3 id="contestName"></h3></summary>
                     <div id="contestDescription"></div>
                 </details>
+                <a href="admin/" class="hideWhileNotAuthed">Visit admin dashboard</a>
+                <button class="btn btn-primary login">Login with Google</button>
+                <button class="btn btn-danger logout">Logout</button>
             </div>
             <!--The loading <div>-->
             <div id="loading">
@@ -31,6 +34,7 @@
             </div>
             <!--Holds all data for contests-->
             <div id="entries" class="hideWhileLoad">
+                <!-- NOTE: There can not be whitespace between the details and the summary elements here because of how the JavaScript works -->
                 <ul class="media-list"></ul>
             </div>
         </div>
@@ -40,6 +44,7 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
         <script src="../Backend/ka_api.js"></script>
         <script src="../Backend/contest_judging_sys.js"></script>
+        <script src="scripts/auth/auth.js"></script>
         <script src="scripts/contest.js"></script>
     </body>
 </html>

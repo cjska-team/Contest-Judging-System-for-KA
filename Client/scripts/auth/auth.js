@@ -29,7 +29,7 @@ fbRef.onAuth(function(authData) {
 /* When the user clicks the login button, log them in: */
 loginButton.on("click", function() {
     /* Pass an empty callback because .onAuth() will take care of everything once they're logged in: */
-    Contest_Judging_System.logUserIn(function(authData) {});
+    Contest_Judging_System.logUserIn("redirect", function(authData) {});
 });
 
 /* When the user clicks the logout button, log them out: */

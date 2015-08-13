@@ -5,10 +5,15 @@
  */
 /* The data we have on the current user. */
 var userData;
-/* True iff we're done with the auth checks. */
-var authChecksDone = false;
 
-Contest_Judging_System.logInAndGetUserData("popup", function(authData, userDataLocal) {
+/* Get the Firebase auth data: */
+var fbAuth = Contest_Judging_System.getFirebaseAuth();
+/* If they're not logged in, put them somewhere else: */
+if (fbAuth === null) {
+    alert("Please log in at the home page. Thanks! Leaving page.");
+    window.location.assign("../index.html");
+}
+Contest_Judging_System.getUserData(fbAuth.uid, function(userDataLocal) {
     /* Set userData: */
     userData = userDataLocal;
     /* Make sure they're an admin. */
@@ -19,23 +24,13 @@ Contest_Judging_System.logInAndGetUserData("popup", function(authData, userDataL
         window.location.assign("../index.html");
     }
 
-    /* Once everything is done, set authChecksDone to true, that way we can move to the next step. */
-    authChecksDone = true;
+    /* Stop loading and show the content. */
+    document.querySelector("#loading").style.display = "none";
+    document.querySelector(".hideWhileAuthCheck").style.display = "block";
+
+    /* Stop checking if we're done with our authentication checks. */
+    console.log("Authenticated!");
+
+    /* Welcome the user to the admin dashboard. */
+    document.getElementById("welcomeMessage").textContent = document.getElementById("welcomeMessage").textContent.replace("{{name}}", userData.name);
 });
-
-/* Check if we're done with our authentication checks every second. */
-var authChecks = setInterval(function() {
-    /* If we're done with our authentication checks: */
-	if (authChecksDone) {
-        /* Stop loading and show the content. */
-		document.querySelector("#loading").style.display = "none";
-		document.querySelector(".hideWhileAuthCheck").style.display = "block";
-
-        /* Stop checking if we're done with our authentication checks. */
-		clearInterval(authChecks);
-		console.log("Authenticated!");
-
-		/* Welcome the user to the admin dashboard. */
-		document.getElementById("welcomeMessage").textContent = document.getElementById("welcomeMessage").textContent.replace("{{name}}", userData.name);
-	}
-}, 1000);
