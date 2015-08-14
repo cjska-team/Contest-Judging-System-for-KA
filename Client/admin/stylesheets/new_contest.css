@@ -34,3 +34,7 @@ div.rubric:hover {
 .noUi-base {
 	background-color: #62B75A;
 }
+/* Make #optionsExample hidden by default: */
+#optionsExample {
+    display: none;
+}
