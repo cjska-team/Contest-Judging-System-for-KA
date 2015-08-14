@@ -559,7 +559,7 @@ window.Contest_Judging_System = (function() {
                             else if (judgesWhoVoted.length === 1) {
                                 currentRubricScore[k].rough = 0;
                             }
-                            console.log(contestRubricScore[k].rough, scoreData[k], numJudges);
+                            console.log(currentRubricScore[k].rough, scoreData[k], numJudges);
                             newScoreObj[k] = {
                                 rough: currentRubricScore[k].rough+scoreData[k],
                                 avg: Math.round((parseInt(currentRubricScore[k].rough, 10)+scoreData[k])/numJudges)
