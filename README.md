@@ -17,7 +17,7 @@ To run this...
 
 ## Screenshots
 #### How are we currently presenting contests to judges?
-![Screenshot 1 of KACJS](https://lh6.googleusercontent.com/khxx5RweBpZEn-BYwfLFMeSDQsBmRGHKwBYv7AFPUgkOuygXDQBRBDKZdFJ1ZKYSe_u4-q1KQyqfCBk=w1277-h451-rw)
+![Screenshot 1 of KACJS](https://i.imgur.com/UhWuXYE.png?1)
 
 ## Contribution Guidelines (READ BEFORE ATTEMPTING TO CONTRIBUTE!)
 
