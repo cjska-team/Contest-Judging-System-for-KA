@@ -11,7 +11,7 @@ var fbAuth = Contest_Judging_System.getFirebaseAuth();
 /* If they're not logged in, put them somewhere else: */
 if (fbAuth === null) {
     alert("Please log in at the home page. Thanks! Leaving page.");
-    window.location.assign("../../");
+    window.location.assign(window.location.href.split("admin")[0]);
 }
 Contest_Judging_System.getUserData(fbAuth.uid, function(userDataLocal) {
     /* Set userData: */
