@@ -72,8 +72,10 @@ function finishRequest(contests) {
         var mediaHeading = document.createElement("h4");
         mediaHeading.className = "media-heading";
         mediaHeading.textContent = curr.name;
-        var mediaSmall = document.createElement("small");
-        mediaSmall.textContent = " (" + curr.entryCount + " entries)";
+        mediaHeading.innerHTML += " ";
+        var mediaSmall = document.createElement("span");
+        mediaSmall.className = "badge";
+        mediaSmall.textContent = curr.entryCount + " entries";
         /* Create the div containing the contest details */
         var detailsDiv = document.createElement("div");
         detailsDiv.className = "details";
