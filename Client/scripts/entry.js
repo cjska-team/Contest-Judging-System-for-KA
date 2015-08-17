@@ -105,7 +105,7 @@ function updateScoreData() {
         /* Otherwise, the rubric is numerical. */
         else {
             /* Set the current score using numbers */
-            curRubric.textContent = rubricName+": "+Math.round(entryData.scores.rubric[k] === undefined ? 1 : entryData.scores.rubric[k].avg)+" out of "+rubrics[k].max;
+            curRubric.textContent = rubricName+": "+Math.round(entryData.scores.rubric.hasOwnProperty(k) ? entryData.scores.rubric[k].avg : rubrics[k].min)+" out of "+rubrics[k].max;
         }
         /* Append curRubric to currentScoreDiv: */
         currentScoreDiv.appendChild(curRubric);

@@ -95,7 +95,7 @@ function loadEntries() {
             mediaHeading.innerHTML += " ";
 
             /* If the user can read the scores, get the rubrics. Also, put it in a function wrapper to save the value of mediaBody and i. */
-            if (curr.hasOwnProperty("scores")) (function(mediaBody, i) {
+            if (curr.hasOwnProperty("scores")) (function(mediaBody, curr, i) {
                 var hasBeenJudgedLabel = document.createElement("span");
                 if (curr.scores.rubric.hasOwnProperty("judgesWhoVoted")) {
                     hasBeenJudgedLabel.className = "label label-" + (curr.scores.rubric.judgesWhoVoted.indexOf(global_userData.uid) !== -1 ? "success" : "danger");
@@ -148,7 +148,7 @@ function loadEntries() {
                     /* Tell entriesDone that we're done: */
                     entriesDone[i] = true;
                 });
-            })(mediaBody, i);
+            })(mediaBody, curr, i);
             /* Otherwise, if the user can't read the scores, then tell entriesDone that we're done: */
             else entriesDone[i] = true;
 
