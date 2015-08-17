@@ -82,17 +82,21 @@ function loadEntries() {
             /* Create a heading element (tier 4), and set it's text to this entry's name. */
             var mediaHeading = document.createElement("h4");
             mediaHeading.textContent = curr.name;
-
-            /* Append everything */
-            aElem.appendChild(mediaObj);
-            mediaLeftDiv.appendChild(aElem);
-            mediaBody.appendChild(mediaHeading);
-            mediaListItem.appendChild(mediaLeftDiv);
-            mediaListItem.appendChild(mediaBody);
-            entriesList.appendChild(mediaListItem);
+            mediaHeading.innerHTML += " ";
 
             /* If the user can read the scores, get the rubrics. Also, put it in a function wrapper to save the value of mediaBody and i. */
             if (curr.hasOwnProperty("scores")) (function(mediaBody, i) {
+                var hasBeenJudgedLabel = document.createElement("span");
+                if (curr.scores.rubric.hasOwnProperty("judgesWhoVoted")) {
+                    hasBeenJudgedLabel.className = "label label-" + (curr.scores.rubric.judgesWhoVoted.indexOf(global_userData.uid) !== -1 ? "success" : "danger");
+                    hasBeenJudgedLabel.textContent = (curr.scores.rubric.judgesWhoVoted.indexOf(global_userData.uid) !== -1 ? "Judged" : "Not yet judged");
+                } else {
+                    hasBeenJudgedLabel.className = "label label-danger";
+                    hasBeenJudgedLabel.textContent = "Not yet judged";
+                }
+
+                mediaHeading.appendChild(hasBeenJudgedLabel);
+
                 Contest_Judging_System.getRubricsForContest(contestId, function(rubrics) {
                     /* Create a div that will hold more information about this entry */
                     var infoDiv = document.createElement("div");
@@ -137,6 +141,14 @@ function loadEntries() {
             })(mediaBody, i);
             /* Otherwise, if the user can't read the scores, then tell entriesDone that we're done: */
             else entriesDone[i] = true;
+
+            /* Append everything */
+            aElem.appendChild(mediaObj);
+            mediaLeftDiv.appendChild(aElem);
+            mediaBody.appendChild(mediaHeading);
+            mediaListItem.appendChild(mediaLeftDiv);
+            mediaListItem.appendChild(mediaBody);
+            entriesList.appendChild(mediaListItem);
         }
 
         /* Check every second to see if we're done: */
@@ -160,6 +172,7 @@ fbRef.onAuth(function(fbAuth) {
     if (fbAuth) {
         Contest_Judging_System.getUserData(fbAuth.uid, function(userData) {
             global_userData = userData;
+            global_userData.uid = fbAuth.uid;
             /* Load the entries when done: */
             loadEntries();
         });
