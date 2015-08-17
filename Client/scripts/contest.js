@@ -15,9 +15,19 @@ if (window.location.search.indexOf("&entries") === -1) {
 	window.history.back();
 }
 
+var includeJudged;
+/* If it doesn't look like there's a parameter specifying that we want to include judged entries, set a default value. */
+if (window.location.search.indexOf("&includeJudged") === -1) {
+    includeJudged = false;
+    console.log("We're not going to load entries that've already been judged.");
+} else {
+    includeJudged = true;
+    console.log("We're going to load entries; even the ones that've already been judged.");
+}
+
 /* Locate the contest ID in the URL, and store it for later use. */
 var contestId = window.location.href.split("?contest=")[1].split("&entries")[0];
-var numberOfEntries = window.location.href.split("&entries=")[1] === "all" ? null : parseInt(window.location.href.split("&entries=")[1], 10);
+var numberOfEntries = window.location.href.split("&entries=")[1].split("&")[0] === "all" ? null : parseInt(window.location.href.split("&entries=")[1].split("&")[0], 10);
 
 /* Go ahead and find the div that we'll store all the entries in. */
 var entriesList = document.querySelector(".media-list");
@@ -40,7 +50,7 @@ function loadEntries() {
     $("#loading").css("display", "block");
     $(".hideWhileLoad").css("display", "none");
     /* Randomly pick n entries, and then display them on the page. */
-    Contest_Judging_System.get_N_Entries((numberOfEntries === null ? KA_API.misc.allData : numberOfEntries), contestId, global_userData.permLevel, function(contest, entries) {
+    Contest_Judging_System.get_N_Entries((numberOfEntries === null ? KA_API.misc.allData : numberOfEntries), contestId, global_userData.permLevel, global_userData.uid, includeJudged, function(contest, entries) {
         /* Setup the page */
         $("title").text(contest.name);
         $("#contestName").text(contest.name);

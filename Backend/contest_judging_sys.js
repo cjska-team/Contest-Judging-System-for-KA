@@ -203,7 +203,8 @@ window.Contest_Judging_System = (function() {
             }, 1000);
         },
         /* Gets N random entries (where N is the number of contests to get) and passes them along with the contest data of contestId into a callback. */
-        get_N_Entries: function(n, contestId, permLevel, callback) {
+        get_N_Entries: function(n, contestId, permLevel, uid, includeJudged, callback) {
+            console.log(uid);
             /* This bool is true iff we're done picking the n entries. */
             var done = false;
             /* This is the contest data: */
@@ -241,6 +242,16 @@ window.Contest_Judging_System = (function() {
                         (function(pickedKey) {
                             /* Set pickedEntries[pickedKey] to the entry data: */
                             Contest_Judging_System.loadEntry(contestId, pickedKey, permLevel, function(entryData) {
+                                if (!includeJudged) {
+                                    if (entryData.scores.rubric.hasOwnProperty("judgesWhoVoted")) {
+                                        if (entryData.scores.rubric.judgesWhoVoted.indexOf(uid) !== -1) {
+                                            console.log("This entry has already been judged.");
+                                            pickedKeys.pop();
+                                            return;
+                                        }
+                                    }
+                                }
+                                console.log("This entry hasn't been judged.");
                                 pickedEntries[pickedKey] = entryData;
                             });
                         })(pickedKey);
