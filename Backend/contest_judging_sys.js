@@ -627,7 +627,9 @@ window.Contest_Judging_System = (function() {
 
                             console.log(newFbData);
 
-                            fbContestRef.child(id).update(newFbData);
+                            fbContestRef.child(id).update(newFbData, function(error) {
+                                if (error) Contest_Judging_System.logError(error);
+                            });
 
                             callback(window.location.href.replace("/admin/new_contest.html", "/contest.html?contest=" + contestId + "&entries=30"));
                         });
