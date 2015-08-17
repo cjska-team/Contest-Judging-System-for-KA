@@ -110,7 +110,7 @@ function loadEntries() {
                         /* Get the current rubric: */
                         var rubric = rubrics.Order[_i];
                         /* Round the average score for the current rubric, down. */
-                        var val = Math.floor(curr.scores.rubric[rubric] === undefined ? 1 : curr.scores.rubric[rubric].avg);
+                        var val = Math.floor(curr.scores.rubric.hasOwnProperty(rubric) ? curr.scores.rubric[rubric].avg : rubrics[rubric].min);
                         /* The maximum for this rubric. */
                         var max = rubrics[rubric].max;
                         /* Credit to @NobleMushtak for the following idea. */

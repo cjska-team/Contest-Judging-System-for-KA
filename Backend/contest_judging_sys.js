@@ -175,7 +175,7 @@ window.Contest_Judging_System = (function() {
             /* These are the property names that callbackData needs to have: */
             var props = ["id", "thumb", "name"];
             /* Include the scores if they can read the scores: */
-            if (permLevel >= 5) {
+            if (permLevel >= 4) {
                 props.push("scores");
             }
             
@@ -456,7 +456,8 @@ window.Contest_Judging_System = (function() {
                         usersRef.child(authData.uid).set({
                             name: authData.google.displayName,
                             permLevel: 1
-                        });
+                            /* Log errors: */
+                        }, Contest_Judging_System.logError);
                         /* Also, log a message to the console. */
                         console.log("Added new user to Firebase. Name: " + authData.google.displayName + " Permission Level: 1");
                     }
@@ -484,7 +485,8 @@ window.Contest_Judging_System = (function() {
                         name: fbAuth.google.displayName,
                         permLevel: 1
                     };
-                    users.child(userID).set(userData);
+                    /* Log errors with .logError: */
+                    users.child(userID).set(userData, Contest_Judging_System.logError);
                     /* Call the callback */
                     callback(userData);
                 }
@@ -568,7 +570,8 @@ window.Contest_Judging_System = (function() {
 
                         /* Set the new scores to newScoreObj */
                         var thisEntry = new Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contest + "/entries/" + entry + "/scores/");
-                        thisEntry.child("rubric").set(newScoreObj);
+                        /* Log errors with .logError: */
+                        thisEntry.child("rubric").set(newScoreObj, Contest_Judging_System.logError);
                         /* Tell the user that it worked! */
                         alert("This entry has been judged. Hooray!");
                         /* Pass newScoreObj through callback: */
@@ -582,64 +585,75 @@ window.Contest_Judging_System = (function() {
             });
         },
         createContest: function(contestId, contestRubrics, callback) {
+            /* Get Firebase refs:: */
             var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
             var fbContestRef = fbRef.child("contests");
             var fbContestKeysRef = fbRef.child("contestKeys");
-            var thisContest = fbContestRef.child(contestId);
 
-            if (Contest_Judging_System.getFirebaseAuth() !== null) {
-                var programQuery = $.ajax({
-                    type: "GET",
-                    url: KA_API.urls.scratchpadInfo(contestId),
-                    async: true,
-                    complete: function(response) {
-                        var programData = response.responseJSON;
+            /* Send AJAX request to get info on contest: */
+            var programQuery = $.ajax({
+                type: "GET",
+                url: KA_API.urls.scratchpadInfo(contestId),
+                async: true,
+                complete: function(response) {
+                    var programData = response.responseJSON;
 
-                        fbContestRef.once("value", function(snapshot) {
-                            var id = contestId;
-                            var name = programData.translatedTitle;
-                            var img = programData.imagePath;
-                            var description = programData.description;
-                            var rubrics = snapshot.child(id).rubrics === undefined ? { } : snapshot.child(id).child("rubrics").val();
-                            console.log(JSON.stringify(rubrics));
+                    /* Connect to Firebase: */
+                    fbContestRef.once("value", function(snapshot) {
+                        /* Get the program info: */
+                        var id = contestId;
+                        var name = programData.translatedTitle;
+                        var img = programData.imagePath;
+                        var description = programData.description;
+                        var rubrics = snapshot.child(id).hasChild("rubrics") ? snapshot.child(id).child("rubrics").val() : {};
 
-                            for (var i in contestRubrics) {
-                                if (!rubrics.hasOwnProperty(i)) {
-                                    rubrics[i] = contestRubrics[i];
-                                }
+                        /* Merge rubrics and contestRubrics: */
+                        for (var i in contestRubrics) {
+                            if (!rubrics.hasOwnProperty(i)) {
+                                rubrics[i] = contestRubrics[i];
                             }
-                            for (var i = 0; i < contestRubrics.Order.length; i++) if (rubrics.Order.indexOf(contestRubrics.Order[i]) == -1) rubrics.Order.push(contestRubrics.Order[i]);
-                            console.log(JSON.stringify(rubrics));
+                        }
+                        /* Merge rubrics.Order and contestRubrics.Order: */
+                        for (var i = 0; i < contestRubrics.Order.length; i++) if (rubrics.Order.indexOf(contestRubrics.Order[i]) == -1) rubrics.Order.push(contestRubrics.Order[i]);
 
-                            console.log(snapshot.child(id).child("entries"));
+                        /* Get the new Firebase data: */
+                        var newFbData = {
+                            id: id,
+                            name: name,
+                            img: img,
+                            desc: description,
+                            rubrics: rubrics
+                        };
+                        
+                        /* Check if the contest exists  */
+                        var contestExists = snapshot.hasChild(id);
+                        /* If the contest doesn't exist: */
+                        if (!contestExists) {
+                            /* If it doesn't exist, add it to fbContestKeys and set .cannotDestroy to true: */
+                            newFbData.cannotDestroy = true;
+                            fbContestKeysRef.child(id).set(true, function(err) {
+                                /* Log errors: */
+                                if (err) Contest_Judging_System.logError(err);
+                                /* When we're done, update fbContestRef: */
+                                else updateFirebase();
+                            });
+                        }
+                        /* Otherwise, go straight to updating fbContestRef: */
+                        else updateFirebase();
 
-                            var contestExists = snapshot.hasChild(id);
-                            var newFbData = {
-                                id: id,
-                                name: name,
-                                img: img,
-                                desc: description,
-                                rubrics: rubrics
-                            };
-                            if (!contestExists) {
-                                newFbData.cannotDestroy = true;
-                                fbContestKeysRef.child(id).set(true, function(err) {
-                                    if (err) Contest_Judging_System.logError(err);
-                                    else updateFirebase();
-                                });
-                            } else updateFirebase();
-
-                            function updateFirebase() {
-                                console.log(JSON.stringify(newFbData));
-                                fbContestRef.child(id).update(newFbData, function(err) {
-                                    if (err) Contest_Judging_System.logError(err);
-                                    else callback(window.location.href.replace("/admin/new_contest.html", "/contest.html?contest=" + contestId + "&entries=30"));
-                                });
-                            }
-                        }, Contest_Judging_System.logError);
-                    }
-                });
-            }
+                        function updateFirebase() {
+                            /* This function updates fbContestRef: */
+                            fbContestRef.child(id).update(newFbData, function(err) {
+                                /* Log errors: */
+                                if (err) Contest_Judging_System.logError(err);
+                                /* Once we're done, call the callback with a link to the new contest judging page: */
+                                else callback(window.location.href.replace("/admin/new_contest.html", "/contest.html?contest=" + contestId + "&entries=30"));
+                            });
+                        }
+                        /* Log errors: */
+                    }, Contest_Judging_System.logError);
+                }
+            });
         }
     };
 })();

@@ -11,7 +11,7 @@ var fbAuth = Contest_Judging_System.getFirebaseAuth();
 /* If they're not logged in, put them somewhere else: */
 if (fbAuth === null) {
     alert("Please log in at the home page. Thanks! Leaving page.");
-    window.location.assign("../index.html");
+    window.location.assign("/Client/");
 }
 Contest_Judging_System.getUserData(fbAuth.uid, function(userDataLocal) {
     /* Set userData: */
@@ -21,16 +21,18 @@ Contest_Judging_System.getUserData(fbAuth.uid, function(userDataLocal) {
         /* User doesn't appear to be an admin. */
         /* Let the user know that we're leaving the page. */
         alert("You do not have admin permissions! Leaving page.");
-        window.location.assign("../index.html");
+        window.location.assign("/Client/");
     }
+    /* If they're an admin: */
+    else {
+        /* Stop loading and show the content. */
+        document.querySelector("#loading").style.display = "none";
+        document.querySelector(".hideWhileAuthCheck").style.display = "block";
 
-    /* Stop loading and show the content. */
-    document.querySelector("#loading").style.display = "none";
-    document.querySelector(".hideWhileAuthCheck").style.display = "block";
+        /* Stop checking if we're done with our authentication checks. */
+        console.log("Authenticated!");
 
-    /* Stop checking if we're done with our authentication checks. */
-    console.log("Authenticated!");
-
-    /* Welcome the user to the admin dashboard. */
-    document.getElementById("welcomeMessage").textContent = document.getElementById("welcomeMessage").textContent.replace("{{name}}", userData.name);
+        /* Welcome the user to the admin dashboard. */
+        document.getElementById("welcomeMessage").textContent = document.getElementById("welcomeMessage").textContent.replace("{{name}}", userData.name);
+   }
 });
