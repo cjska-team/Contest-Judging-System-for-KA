@@ -65,6 +65,11 @@ function finishRequest(contests) {
         viewAllEntriesBtn.textContent = "View all " + curr.entryCount + " Entries";
         viewAllEntriesBtn.href = "contest.html?contest=" + curr.id + "&entries=all&includeJudged";
 
+        var viewLeaderboardBtn = document.createElement("a");
+        viewLeaderboardBtn.className = "btn btn-sm btn-primary center-block";
+        viewLeaderboardBtn.textContent = "Visit the leaderboard";
+        viewLeaderboardBtn.href = "admin/leaderboard.html?contest=" + curr.id;
+
         /* Create the div containing the body of contest info */
         var mediaBody = document.createElement("div");
         mediaBody.className = "media-body";
@@ -90,6 +95,7 @@ function finishRequest(contests) {
             mediaLeftDiv.appendChild(viewEntriesBtn);
         }
         mediaLeftDiv.appendChild(viewAllEntriesBtn);
+        mediaLeftDiv.appendChild(viewLeaderboardBtn);
 
         /* Put heading inside body */
         mediaHeading.appendChild(mediaSmall);
