@@ -1,33 +1,33 @@
 /***
  * This file will contain all the scripts required for display entries to judges.
 ***/
+
+/* Get the GET params: */
+var getParams = Contest_Judging_System.getGETParams();
 /* If it doesn't look like there's a contest ID in the URL, show an alert, and go back one page. */
-if (window.location.search.indexOf("?contest") === -1) {
+if (!getParams.contest) {
 	alert("Contest ID not found!");
-
 	window.history.back();
 }
-
 /* If it doesn't look like there's an entry count in the URL, shown an alert, and go back one page. */
-if (window.location.search.indexOf("&entries") === -1) {
+if (!getParams.entries) {
 	alert("Please specify the number of entries you'd like to view!");
-
 	window.history.back();
 }
 
-var includeJudged;
-/* If it doesn't look like there's a parameter specifying that we want to include judged entries, set a default value. */
-if (window.location.search.indexOf("&includeJudged") === -1) {
-    includeJudged = false;
-    console.log("We're not going to load entries that've already been judged.");
-} else {
-    includeJudged = true;
+/* Set includeJudged based on whether or not there's a includeJudged GET param: */
+var includeJudged = getParams.hasOwnProperty("includeJudged");
+/* Log a message based off the value of includeJudged: */
+if (includeJudged) {
     console.log("We're going to load entries; even the ones that've already been judged.");
+} else {
+    console.log("We're not going to load entries that've already been judged.");
 }
 
-/* Locate the contest ID in the URL, and store it for later use. */
-var contestId = window.location.href.split("?contest=")[1].split("&entries")[0];
-var numberOfEntries = window.location.href.split("&entries=")[1].split("&")[0] === "all" ? null : parseInt(window.location.href.split("&entries=")[1].split("&")[0], 10);
+/* Get the contest ID and number of entries: */
+var contestId = getParams.contest;
+var numberOfEntries = parseInt(getParams.entries, 10);
+if (isNaN(numberOfEntries)) numberOfEntries = null;
 
 /* Go ahead and find the div that we'll store all the entries in. */
 var entriesList = document.querySelector(".media-list");

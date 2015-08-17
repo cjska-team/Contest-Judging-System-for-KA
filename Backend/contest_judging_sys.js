@@ -26,6 +26,33 @@ window.Contest_Judging_System = (function() {
         include: includeFunc,
         /* This function takes an error and logs it into the console. We pass this into Firebase calls so that no errors are silenced. */
         logError: function(error) { if (error) console.error(error); },
+        /* This function gets the GET params of a URL: */
+        getGETParams: function() {
+            /* If there's no question mark in our URL, return {}: */
+            var qIndex = window.location.href.indexOf("?");
+            if (qIndex == -1) return {};
+            /* Get the part of the URL with the GET params: */
+            var paramURL = window.location.href.substring(qIndex+1, window.location.href.length);
+            /* Get rid of the hashtag if there's a hashtag: */
+            var hIndex = paramURL.indexOf("#");
+            if (hIndex != -1) paramURL = paramURL.substring(0, hIndex);
+            
+            /* Get the different param snippets: */
+            var paramSnippets = paramURL.split("&");
+            /* Our GET parameters: */
+            var params = {};
+            /* Add a param for each paramSnippet: */
+            for (var i = 0; i < paramSnippets.length; i++) {
+                /* Split the paramSnippet on the equal sign: */
+                var paramParts = paramSnippets[i].split("=");
+                /* If there's no equal sign, let the value equal "": */
+                if (paramParts.length == 1) params[paramParts[0]] = "";
+                /* Otherwise, set params normally: */
+                else params[paramParts[0]] = paramParts[1];
+            }
+            /* Finally, return params: */
+            return params;
+        },
         /* This function gets the authentication object. */
         getFirebaseAuth: function() {
             /* Connect to our Firebase app. */
@@ -120,7 +147,7 @@ window.Contest_Judging_System = (function() {
             fbRef.once("value", function(data) {
                 /* Don't call callback until we're done checking all curContests! */
                 /* Check if we have all of the data for all curContests every second: */
-                var checkDone = setTimeout(function() {
+                var checkDone = setInterval(function() {
                     /* If we do: */
                     if (Object.keys(callbackData).length === fbRefData.length) {
                         /* Stop checking if we're done: */
@@ -156,7 +183,7 @@ window.Contest_Judging_System = (function() {
             }
 
             /* Check every second if we're done: */
-            var checkDone = setTimeout(function() {
+            var checkDone = setInterval(function() {
                 /* If we're done: */
                 if (Object.keys(callbackData).length === props.length) {
                     /* Stop checking if we're done: */
@@ -169,7 +196,7 @@ window.Contest_Judging_System = (function() {
         /* Load a specific contest entry, based on ID */
         loadEntry: function(contestId, entryId, permLevel, callback) {
             /* Connect to Firebase: */
-            var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/contests/"+contestId+"/entries/"+entryId.replace("#", ""));           
+            var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/contests/"+contestId+"/entries/"+entryId);
             /* This is what we're going to pass through callback: */
             var callbackData = {};
             /* These are the property names that callbackData needs to have: */
@@ -192,7 +219,7 @@ window.Contest_Judging_System = (function() {
             }
 
             /* Check every second if we're done: */
-            var checkDone = setTimeout(function() {
+            var checkDone = setInterval(function() {
                 /* If we're done: */
                 if (Object.keys(callbackData).length === props.length) {
                     /* Stop checking if we're done: */
@@ -230,32 +257,28 @@ window.Contest_Judging_System = (function() {
                 while (pickedKeys.length < numEntries) {
                     /* Pick a random index */
                     var randIndex = Math.floor( Math.random() * entriesKeys.length );
-
                     /* Get the key from the index that we picked */
                     var pickedKey = entriesKeys[randIndex];
-
-                    /* If we haven't already picked that key... */
-                    if (pickedKeys.indexOf(pickedKey) === -1) {
-                        /* ...pick it. */
-                        pickedKeys.push(pickedKey);
-                        /* Function wrapper to save pickedKey: */
-                        (function(pickedKey) {
-                            /* Set pickedEntries[pickedKey] to the entry data: */
-                            Contest_Judging_System.loadEntry(contestId, pickedKey, permLevel, function(entryData) {
-                                if (!includeJudged) {
-                                    if (entryData.scores.rubric.hasOwnProperty("judgesWhoVoted")) {
-                                        if (entryData.scores.rubric.judgesWhoVoted.indexOf(uid) !== -1) {
-                                            console.log("This entry has already been judged.");
-                                            pickedKeys.pop();
-                                            return;
-                                        }
-                                    }
-                                }
-                                console.log("This entry hasn't been judged.");
-                                pickedEntries[pickedKey] = entryData;
-                            });
-                        })(pickedKey);
-                    }
+                    
+                    /* ...pick it. */
+                    pickedKeys.push(pickedKey);
+                    /* Get rid of it from entriesKeys: */
+                    entriesKeys.splice(entriesKeys.indexOf(pickedKey), 1);
+                    /* Function wrapper to save pickedKey: */
+                    (function(pickedKey) {
+                        /* Set pickedEntries[pickedKey] to the entry data: */
+                        Contest_Judging_System.loadEntry(contestId, pickedKey, permLevel, function(entryData) {
+                            /* Do not include this entry if we don't want judged entries and it's already been judged: */
+                            if (!includeJudged && entryData.hasOwnProperty("scores") && entryData.scores.rubric.hasOwnProperty("judgesWhoVoted") && entryData.scores.rubric.judgesWhoVoted.indexOf(uid) !== -1) {
+                                console.log("This entry has already been judged.");
+                                /* Decrement numEntries since we're not going to include this entry as we've already judged it: */
+                                numEntries--;
+                                return;
+                            }
+                            console.log("This entry hasn't been judged.");
+                            pickedEntries[pickedKey] = entryData;
+                        });
+                    })(pickedKey);
                 }
                     
                 /* Tell the below setInterval() that we're done when we're done. */
@@ -264,6 +287,7 @@ window.Contest_Judging_System = (function() {
 
             /* Check if we're done every second and when we are, call the callback and stop checking if we're done. */
             var finishedInterval = setInterval(function() {
+                console.log(Object.keys(pickedEntries).length, numEntries);
                 if (done && Object.keys(pickedEntries).length === numEntries) {
                     clearInterval(finishedInterval);
                     callback(contestData, pickedEntries);
