@@ -12,7 +12,7 @@
 	<body>
 		<div id="loading">
             <h1 class="huge">
-                Performing authentication checks. Please wait...
+                Loading data. Please wait...
             </h1>
             <h1><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span></h1>
         </div>
@@ -20,14 +20,15 @@
 			<div class="jumbotron">
 				<h3 id="welcomeMessage">Welcome to the leaderboard, {{name}}.</h3>
 			</div>
-			<table id="testTable" class="display">
-				<thead>
-					<tr>
-						<td>Entry Name</td>
-						<td>Level</td>
-						<td>Clean Code</td>
-					</tr>
-				</thead>
+			<div class="dataLoadMsg">
+				<h3>Be patient, young one, we're loading your data.</h3>
+				<h3><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span></h3>
+			</div>
+			<table id="leaderboardTable" class="display hideWhileDataLoad">
+			    <thead>
+			    	<tr></tr>
+			    </thead>
+			    <tbody></tbody>
 			</table>
 		</div>
 

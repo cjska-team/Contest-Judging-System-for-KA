@@ -42,8 +42,13 @@ summary * {
 .contest img, .entry img {
     border: 1px dashed #000;
 }
+
+.contest .media .media-left .btn {
+    margin: 5px auto 5px auto;
+}
+
 /*Give the links to the entries 5px of vertical margin and full width*/
-.viewEntries {
+.viewEntries,  {
     margin: 5px auto 5px auto;
     width: 100%;
 }
