@@ -130,7 +130,7 @@ function finishRequest(contests) {
                 mediaLeftDiv.appendChild(viewEntriesBtn);
             }
             mediaLeftDiv.appendChild(viewAllEntriesBtn);
-            mediaLeftDiv.appendChild(viewLeaderboardBtn);=
+            mediaLeftDiv.appendChild(viewLeaderboardBtn);
 
             /* Put heading inside body */
             mediaHeading.appendChild(mediaSmall);
