@@ -63,7 +63,7 @@ function finishRequest(contests) {
         var viewAllEntriesBtn = document.createElement("a");
         viewAllEntriesBtn.className = "btn btn-sm btn-primary center-block";
         viewAllEntriesBtn.textContent = "View all " + curr.entryCount + " Entries";
-        viewAllEntriesBtn.href = "contest.html?contest=" + curr.id + "&entries=all";
+        viewAllEntriesBtn.href = "contest.html?contest=" + curr.id + "&entries=all&includeJudged";
 
         /* Create the div containing the body of contest info */
         var mediaBody = document.createElement("div");
