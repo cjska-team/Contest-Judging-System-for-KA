@@ -1,5 +1,5 @@
 /***
- * This file will contain all the scripts required for display entries to judges.
+ * This file will contain all the scripts required for display a list of entries to a contest for judges.
 ***/
 
 /* Get the GET params: */

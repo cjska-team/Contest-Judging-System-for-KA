@@ -1,12 +1,13 @@
+/* Get the GET params: */
+var getParams = Contest_Judging_System.getGETParams();
 /* If it doesn't look like there's a contest ID in the URL, show an alert, and go back one page. */
-if (window.location.search.indexOf("?contest") === -1) {
+if (!getParams.contest) {
 	alert("Contest ID not found!");
-
 	window.history.back();
 }
 
 /* If it doesn't look like there's an entry ID in the URL, show an alert, and go back one page. */
-if (window.location.search.indexOf("&entry=") === -1) {
+if (!getParams.entry) {
 	alert("Entry ID not found!");
 
 	window.history.back();
@@ -17,12 +18,9 @@ var selectedBtn = {};
 /* The score for this entry */
 var scoreData = {};
 
-/* Locate the contest ID in the URL, and store it for later use. */
-var contestId = window.location.href.split("?contest=")[1].split("&")[0];
-
-/* Locate the entry ID in the URL, and store it for later use. */
-var entryId = window.location.href.split("&entry=")[1];
-if (entryId.indexOf("#") > -1) entryId = entryId.substring(0, entryId.indexOf("#"));
+/* Get the GET params: */
+var contestId = getParams.contest;
+var entryId = getParams.entry;
 
 /* The dimensions of the program */
 var dimens = {
