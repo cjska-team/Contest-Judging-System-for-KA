@@ -25,7 +25,7 @@ window.Contest_Judging_System = (function() {
         /* Puts the script injection function inside of this namespace. */
         include: includeFunc,
         /* This function takes an error and logs it into the console. We pass this into Firebase calls so that no errors are silenced. */
-        logError: function(error) { console.error(error); },
+        logError: function(error) { if (error) console.error(error); },
         /* This function gets the authentication object. */
         getFirebaseAuth: function() {
             /* Connect to our Firebase app. */
@@ -600,37 +600,43 @@ window.Contest_Judging_System = (function() {
                             var name = programData.translatedTitle;
                             var img = programData.imagePath;
                             var description = programData.description;
-                            var rubrics = snapshot.child(id).rubrics === undefined ? { } : snapshot.child(id).rubrics;
+                            var rubrics = snapshot.child(id).rubrics === undefined ? { } : snapshot.child(id).child("rubrics").val();
+                            console.log(JSON.stringify(rubrics));
 
                             for (var i in contestRubrics) {
                                 if (!rubrics.hasOwnProperty(i)) {
                                     rubrics[i] = contestRubrics[i];
                                 }
                             }
+                            for (var i = 0; i < contestRubrics.Order.length; i++) if (rubrics.Order.indexOf(contestRubrics.Order[i]) == -1) rubrics.Order.push(contestRubrics.Order[i]);
+                            console.log(JSON.stringify(rubrics));
 
                             console.log(snapshot.child(id).child("entries"));
 
-                            var contestExists = !snapshot.hasChild(id);
+                            var contestExists = snapshot.hasChild(id);
                             var newFbData = {
                                 id: id,
                                 name: name,
                                 img: img,
                                 desc: description,
-                                rubrics: rubrics,
-                                entries: snapshot.child(id).entries === null ? { } : snapshot.child(id).child("entries").val(),
-                                entryKeys: snapshot.child(id).entryKeys === null ? { } : snapshot.child(id).child("entryKeys").val()
+                                rubrics: rubrics
                             };
                             if (!contestExists) {
-                                fbContestKeysRef.child(id).set(true);
                                 newFbData.cannotDestroy = true;
+                                fbContestKeysRef.child(id).set(true, function(err) {
+                                    if (err) Contest_Judging_System.logError(err);
+                                    else updateFirebase();
+                                });
+                            } else updateFirebase();
+
+                            function updateFirebase() {
+                                console.log(JSON.stringify(newFbData));
+                                fbContestRef.child(id).update(newFbData, function(err) {
+                                    if (err) Contest_Judging_System.logError(err);
+                                    else callback(window.location.href.replace("/admin/new_contest.html", "/contest.html?contest=" + contestId + "&entries=30"));
+                                });
                             }
-
-                            console.log(newFbData);
-
-                            fbContestRef.child(id).update(newFbData);
-
-                            callback(window.location.href.replace("/admin/new_contest.html", "/contest.html?contest=" + contestId + "&entries=30"));
-                        });
+                        }, Contest_Judging_System.logError);
                     }
                 });
             }
