@@ -2,6 +2,10 @@
 #loading {
 	text-align: center;
 }
+#dataLoading {
+    text-align: center;
+    display: none;
+}
 /*Everything inside <summary>s should be inline so the summary doesn't go into multiple lines*/
 summary * {
     display: inline;
