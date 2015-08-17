@@ -1,16 +1,18 @@
+/* Get the GET params: */
+var getParams = Contest_Judging_System.getGETParams();
 /* If we don't find the contest parameter in the URL, tell the user to specify one, and navigate one page back in their history. */
-if (window.location.search.indexOf("?contest=") === -1) {
+if (!getParams.contest) {
 	alert("Please specify a Contest ID!");
-
 	window.history.back();
 }
 
-/* Find the contest ID that was specified in the URL */
-var contestId = window.location.href.split("?contest=")[1].split("&")[0];
+/* Get the contest ID: */
+var contestId = getParams.contest;
 
 /* Log the Contest ID that we found, to the console. */
 console.log("Contest ID found! " + contestId);
 
+/* The gloabl user data and entry data: */
 var global_userData = { };
 var global_entryData = { };
 
@@ -19,54 +21,22 @@ function loadLeaderboard(data) {
 }
 
 function loadData() {
-	Contest_Judging_System.loadContest(contestId, function(contestData) {
-		console.log("Contest Loaded!");
-		console.log(contestData);
+    /* This function loads the contest data and the data for all of the entries: */
 
-		for (var i in contestData.entryKeys) {
-			console.log("Attempting to load an entry. " + i);
-			var thisRoundData;
-			(function(local_contestId, local_entryId, local_permLevel) {
-				var returnData;
-
-				Contest_Judging_System.loadEntry(local_contestId, local_entryId.toString(), local_permLevel, function(entryData) {
-					returnData = entryData;
-				});
-
-				var returnWait = setInterval(function() {
-					/* TODO: Get rid of the following array */
-					var expectedProperties = ["id", "name", "scores", "thumb"];
-					for (var i = 0; i < expectedProperties.length; i++) {
-						if (returnData !== undefined && !returnData.hasOwnProperty(expectedProperties[i])) {
-							return;
-						}
-					}
-
-					clearInterval(returnWait);
-					thisRoundData = returnData;
-					console.log(returnData);
-				}, 1000);
-			})(contestId, i, global_userData.permLevel);
-			global_entryData[i] = thisRoundData;
-		}
-
-		var loadLeaderboardWait = setInterval(function() {
-			for (var i in contestData.entryKeys) {
-				if (!global_entryData.hasOwnProperty(i)) {
-					return;
-				}
-			}
-
-			clearInterval(loadLeaderboardWait);
-			loadLeaderboard(global_entryData);
-		}, 1000);
+    Contest_Judging_System.get_N_Entries(KA_API.misc.allData, contestId, global_userData.permLevel, fbAuth.uid, true, function(contestData, entryData) {
+        /* Set global_entryData and call loadLeaderboard(): */
+        global_entryData = entryData;
+        loadLeaderboard(global_entryData);
 	});
 }
 
 /* Connect to Firebase: */
 var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
+/* The Firebase auth data: */
+var fbAuth;
 /* When the auth state changes (and on pageload): */
-fbRef.onAuth(function(fbAuth) {
+fbRef.onAuth(function(fbAuthLocal) {
+    fbAuth = fbAuthLocal;
     /* Get the user data if they're logged in: */
     if (fbAuth) {
         Contest_Judging_System.getUserData(fbAuth.uid, function(userData) {
