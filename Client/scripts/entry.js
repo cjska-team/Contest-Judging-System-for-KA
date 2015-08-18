@@ -313,6 +313,10 @@ $(".viewOnKA").on("click", function() {
 	}
 });
 
+$(".restartProgram").on("click", function() {
+    programIframe.src = programIframe.src;
+});
+
 $("#submitBtn").on("click", function() {
 	/* Tell the user to fill out all criteria if they haven't filled out everything. */
 	console.log(scoreData);
