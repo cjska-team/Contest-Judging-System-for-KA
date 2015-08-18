@@ -16,6 +16,8 @@ if (!getParams.entry) {
 var selectedBtn = {};
 /* The score for this entry */
 var scoreData = {};
+/* This Bool is true iff the user has judged the entry: */
+var judgedEntry = false;
 
 /* Get the GET params: */
 var contestId = getParams.contest;
@@ -85,7 +87,12 @@ var userID, permLevel;
 var rubrics, entryData;
 
 function updateScoreData() {
-	/* This function updates currentScoreDiv. */
+	/* This function updates currentScoreDiv and submitBtn. */
+    /* Change the text of submitBtn to "Vote submitted!" if they already submitted a vote: */
+    if (entryData.scores.rubric.hasOwnProperty("judgesWhoVoted") && entryData.scores.rubric.judgesWhoVoted.indexOf(fbAuth.uid) != -1) {
+        submitBtn.text("Vote submitted!");
+    }
+    
 	/* Empty currentScoreDiv except for the first element (the heading): */
 	while (currentScoreDiv.childNodes.length > 1) {
         currentScoreDiv.removeChild(currentScoreDiv.childNodes[currentScoreDiv.childNodes.length-1]);
@@ -276,8 +283,12 @@ function loadEntry() {
 
 /* Connect to Firebase: */
 var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
+/* The Firebase auth data: */
+var fbAuth;
 /* On authentication change... */
-fbRef.onAuth(function(fbAuth) {
+fbRef.onAuth(function(fbAuthLocal) {
+    /* Set fbAuth: */
+    fbAuth = fbAuthLocal;
     /* Get the user data if they're logged in: */
     if (fbAuth) {
         Contest_Judging_System.getUserData(fbAuth.uid, function(userData) {
@@ -313,25 +324,35 @@ $(".viewOnKA").on("click", function() {
 	}
 });
 
+/* Restart the program when restart program buttons are clicked: */
 $(".restartProgram").on("click", function() {
     programIframe.src = programIframe.src;
 });
 
-$("#submitBtn").on("click", function() {
-	/* Tell the user to fill out all criteria if they haven't filled out everything. */
-	console.log(scoreData);
-
+/* The submit button: */
+var submitBtn = $("#submitBtn");
+/* Attempt to judge the entry if the submit button is clicked. */
+submitBtn.on("click", function() {
 	/* Judge the entry if they have a permLevel of at least 4. */
-	if (entryData.hasOwnProperty("scores")) {
-        $(this).prop("disabled", "disabled");
-        $(this).text("Submitting vote...");
-        Contest_Judging_System.judgeEntry(contestId, entryId, scoreData, permLevel, function(scoreData) {
-		    /* Update the score data when done: */
-		    entryData.scores.rubric = scoreData;
-		    updateScoreData();
-
-            $(this).text("Vote submitted!");
-	    });
+	if (entryData.hasOwnProperty("scores")) {    
+        /* Tell the user they've already judged this entry if they've already judged this entry: */
+        if (entryData.scores.rubric.hasOwnProperty("judgesWhoVoted") && entryData.scores.rubric.judgesWhoVoted.indexOf(fbAuth.uid) != -1) {
+            alert("You've already judged this entry!");
+        }
+        /* Otherwise, judge the entry if they haven't judged the entry: */
+        else {
+            /* Disable the button: */
+            submitBtn.prop("disabled", true);
+            submitBtn.text("Submitting vote...");
+            /* Judge the entry: */
+            Contest_Judging_System.judgeEntry(contestId, entryId, scoreData, permLevel, function(scoreData) {
+                /* Update the score data when done: */
+                entryData.scores.rubric = scoreData;
+                updateScoreData();
+                /* Also, when done, enable submitBtn again: */
+                submitBtn.prop("disabled", false);
+            });
+        }
     }
     /* Make sure permLevel has been set: */
     else if (!permLevel) {
