@@ -39,8 +39,8 @@ console.log("Contest found!");
 console.log("Contest ID: " + contestId);
 console.log("We're going to load " + (numberOfEntries === null ? "all" : numberOfEntries) + " entries!");
 
-/* Hide elements that we've marked with the class "hideWhileLoad". */
-$(".hideWhileLoad").css("display", "none");
+/* The loading and hideWhileLoad elements: */
+var loading = $("#loading"), hideWhileLoad = $(".hideWhileLoad");
 
 /* Our Firebase user data */
 var global_userData = {};
@@ -51,8 +51,8 @@ function loadEntries() {
         entriesList.removeChild(entriesList.childNodes[0]);
     }
     /* Hide and show what we need to while loading: */
-    $("#loading").css("display", "block");
-    $(".hideWhileLoad").css("display", "none");
+    loading.css("display", "block");
+    hideWhileLoad.css("display", "none");
     /* Randomly pick n entries, and then display them on the page. */
     Contest_Judging_System.get_N_Entries((numberOfEntries === null ? KA_API.misc.allData : numberOfEntries), contestId, global_userData.permLevel, global_userData.uid, includeJudged, function(contest, entries) {
         /* Setup the page */
@@ -177,8 +177,8 @@ function loadEntries() {
                 /* If we're done, stop checking if we're done: */
                 clearInterval(checkDone);
                 /* Hide the loading div and show items that were hidden during loading. */
-                $("#loading").css("display", "none");
-                $(".hideWhileLoad").css("display", "block");
+                loading.css("display", "none");
+                hideWhileLoad.css("display", "block");
             }
         }, 1000);
     });

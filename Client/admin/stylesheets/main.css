@@ -1,12 +1,8 @@
 /* Hide the content of the Web site by default. */
-.hideWhileAuthCheck {
+.hideWhileAuthCheck, .hideWhileDataLoad {
     display: none;
 }
-
-.hideWhileDataLoad {
-	display: none;
-}
-
+/* Make loading messages centered: */
 .dataLoadMsg {
 	text-align: center;
 }

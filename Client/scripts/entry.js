@@ -9,7 +9,6 @@ if (!getParams.contest) {
 /* If it doesn't look like there's an entry ID in the URL, show an alert, and go back one page. */
 if (!getParams.entry) {
 	alert("Entry ID not found!");
-
 	window.history.back();
 }
 
