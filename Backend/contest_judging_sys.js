@@ -25,17 +25,21 @@ window.Contest_Judging_System = (function() {
         /* Puts the script injection function inside of this namespace. */
         include: includeFunc,
         /* This function takes an error and logs it into the console. We pass this into Firebase calls so that no errors are silenced. */
-        logError: function(error) { if (error) console.error(error); },
+        logError: function(error) { if (error) { console.error(error); } },
         /* This function gets the GET params of a URL: */
         getGETParams: function() {
             /* If there's no question mark in our URL, return {}: */
             var qIndex = window.location.href.indexOf("?");
-            if (qIndex == -1) return {};
+            if (qIndex === -1) {
+                return {};
+            }
             /* Get the part of the URL with the GET params: */
             var paramURL = window.location.href.substring(qIndex+1, window.location.href.length);
             /* Get rid of the hashtag if there's a hashtag: */
             var hIndex = paramURL.indexOf("#");
-            if (hIndex != -1) paramURL = paramURL.substring(0, hIndex);
+            if (hIndex !== -1) {
+                paramURL = paramURL.substring(0, hIndex);
+            }
             
             /* Get the different param snippets: */
             var paramSnippets = paramURL.split("&");
@@ -46,9 +50,13 @@ window.Contest_Judging_System = (function() {
                 /* Split the paramSnippet on the equal sign: */
                 var paramParts = paramSnippets[i].split("=");
                 /* If there's no equal sign, let the value equal "": */
-                if (paramParts.length == 1) params[paramParts[0]] = "";
+                if (paramParts.length === 1) {
+                    params[paramParts[0]] = "";
+                }
                 /* Otherwise, set params normally: */
-                else params[paramParts[0]] = paramParts[1];
+                else {
+                    params[paramParts[0]] = paramParts[1];
+                }
             }
             /* Finally, return params: */
             return params;
@@ -122,7 +130,9 @@ window.Contest_Judging_System = (function() {
                                  rubrics[k] = contestData.rubrics[k];
                              } else {
                                  /* Merge the .Order arrays: */
-                                 for (var i = 0; i < contestData.rubrics.Order.length; i++) rubrics.Order.push(contestData.rubrics.Order[i]);
+                                 for (var i = 0; i < contestData.rubrics.Order.length; i++) {
+                                    rubrics.Order.push(contestData.rubrics.Order[i]);
+                                }
                              }
                          }
                      }
@@ -668,21 +678,21 @@ window.Contest_Judging_System = (function() {
                             newFbData.cannotDestroy = true;
                             fbContestKeysRef.child(id).set(true, function(err) {
                                 /* Log errors: */
-                                if (err) Contest_Judging_System.logError(err);
+                                if (err) { Contest_Judging_System.logError(err); }
                                 /* When we're done, update fbContestRef: */
-                                else updateFirebase();
+                                else { updateFirebase(); }
                             });
                         }
                         /* Otherwise, go straight to updating fbContestRef: */
-                        else updateFirebase();
+                        else { updateFirebase(); }
 
                         function updateFirebase() {
                             /* This function updates fbContestRef: */
                             fbContestRef.child(id).update(newFbData, function(err) {
                                 /* Log errors: */
-                                if (err) Contest_Judging_System.logError(err);
+                                if (err) { Contest_Judging_System.logError(err); }
                                 /* Once we're done, call the callback with a link to the new contest judging page: */
-                                else callback(window.location.href.replace("/admin/new_contest.html", "/contest.html?contest=" + contestId + "&entries=30"));
+                                else { callback(window.location.href.replace("/admin/new_contest.html", "/contest.html?contest=" + contestId + "&entries=30")); }
                             });
                         }
                         /* Log errors: */
