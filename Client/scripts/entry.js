@@ -323,10 +323,14 @@ $("#submitBtn").on("click", function() {
 
 	/* Judge the entry if they have a permLevel of at least 4. */
 	if (entryData.hasOwnProperty("scores")) {
+        $(this).prop("disabled", "disabled");
+        $(this).text("Submitting vote...");
         Contest_Judging_System.judgeEntry(contestId, entryId, scoreData, permLevel, function(scoreData) {
 		    /* Update the score data when done: */
 		    entryData.scores.rubric = scoreData;
 		    updateScoreData();
+
+            $(this).text("Vote submitted!");
 	    });
     }
     /* Make sure permLevel has been set: */
