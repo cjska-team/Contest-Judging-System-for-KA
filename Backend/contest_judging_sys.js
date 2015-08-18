@@ -25,7 +25,7 @@ window.Contest_Judging_System = (function() {
         /* Puts the script injection function inside of this namespace. */
         include: includeFunc,
         /* This function takes an error and logs it into the console. We pass this into Firebase calls so that no errors are silenced. */
-        logError: function(error) { if (error) console.error(error); },
+        logError: function(error) { if (error) { console.error(error); } },
         /* This function gets the GET params of a URL: */
         getGETParams: function() {
             /* If there's no question mark in our URL, return {}: */
@@ -678,21 +678,21 @@ window.Contest_Judging_System = (function() {
                             newFbData.cannotDestroy = true;
                             fbContestKeysRef.child(id).set(true, function(err) {
                                 /* Log errors: */
-                                if (err) Contest_Judging_System.logError(err);
+                                if (err) { Contest_Judging_System.logError(err); }
                                 /* When we're done, update fbContestRef: */
-                                else updateFirebase();
+                                else { updateFirebase(); }
                             });
                         }
                         /* Otherwise, go straight to updating fbContestRef: */
-                        else updateFirebase();
+                        else { updateFirebase(); }
 
                         function updateFirebase() {
                             /* This function updates fbContestRef: */
                             fbContestRef.child(id).update(newFbData, function(err) {
                                 /* Log errors: */
-                                if (err) Contest_Judging_System.logError(err);
+                                if (err) { Contest_Judging_System.logError(err); }
                                 /* Once we're done, call the callback with a link to the new contest judging page: */
-                                else callback(window.location.href.replace("/admin/new_contest.html", "/contest.html?contest=" + contestId + "&entries=30"));
+                                else { callback(window.location.href.replace("/admin/new_contest.html", "/contest.html?contest=" + contestId + "&entries=30")); }
                             });
                         }
                         /* Log errors: */
