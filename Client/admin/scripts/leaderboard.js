@@ -12,8 +12,7 @@ var contestId = getParams.contest;
 /* Log the Contest ID that we found, to the console. */
 console.log("Contest ID found! " + contestId);
 
-/* The gloabl user data and entry data: */
-var global_userData = { };
+/* The gloabl entry data: */
 var global_entryData = { };
 
 function loadLeaderboard(contestData, entryData) {
@@ -86,7 +85,8 @@ function loadLeaderboard(contestData, entryData) {
 function loadData() {
     /* This function loads the contest data and the data for all of the entries: */
 
-    Contest_Judging_System.get_N_Entries(KA_API.misc.allData, contestId, global_userData.permLevel, fbAuth.uid, true, function(contestData, entryData) {
+    /* The uid can be null because includeJudged is true. */
+    Contest_Judging_System.get_N_Entries(KA_API.misc.allData, contestId, userData.permLevel, null, true, function(contestData, entryData) {
         /* Set global_entryData and call loadLeaderboard(): */
         global_entryData = entryData;
         loadLeaderboard(contestData, entryData);
@@ -94,24 +94,12 @@ function loadData() {
 	});
 }
 
-/* Connect to Firebase: */
-var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
-/* The Firebase auth data: */
-var fbAuth;
-/* When the auth state changes (and on pageload): */
-fbRef.onAuth(function(fbAuthLocal) {
-    fbAuth = fbAuthLocal;
-    /* Get the user data if they're logged in: */
-    if (fbAuth) {
-        Contest_Judging_System.getUserData(fbAuth.uid, function(userData) {
-            global_userData = userData;
-            global_userData.uid = fbAuth.uid;
-            /* Load the entries when done: */
-            loadData();
-        });
+/* Check if the user data has been retrieved every second: */
+var userDataRetrieved = setInterval(function() {
+    if (userData) {
+        /* If we have the user data, stop checking: */
+        clearInterval(userDataRetrieved);
+        /* Load the data: */
+        loadData();
     }
-    /* Otherwise, just load the entries with default data: */
-    else {
-        window.location.assign(window.location.replace("/admin/leaderboard.html?contest=" + contestId, ""));
-    }
-});
+}, 1000);

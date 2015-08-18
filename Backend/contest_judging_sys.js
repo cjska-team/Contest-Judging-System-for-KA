@@ -53,6 +53,32 @@ window.Contest_Judging_System = (function() {
             /* Finally, return params: */
             return params;
         },
+        /* Cookie functions provided by w3schools */
+        getCookie: function(cookie) {
+            /* Get the cookie with name cookie (return "" if non-existent) */
+            var name = cookie + "=";
+            /* Check all of the cookies and try to find the one containing name. */
+            var cookieList = document.cookie.split(';');
+            for (var i = 0; i < cookieList.length; i++) {
+                var curCookie = cookieList[i];
+                while (curCookie[0] === ' ') {
+                    curCookie = curCookie.substring(1);
+                }
+                /* If we've found the right cookie, return its value. */
+                if (curCookie.indexOf(name) === 0) {
+                    return curCookie.substring(name.length, curCookie.length);
+                }
+            }
+            /* Otherwise, if the cookie doesn't exist, return "" */
+            return "";
+        },
+        setCookie: function(cookie, value) {
+            /* Set a cookie with name cookie and value cookie that will expire 30 days from now. */
+            var d = new Date();
+            d.setTime(d.getTime() + (30*24*60*60*1000));
+            var expires = "expires="+d.toUTCString();
+            document.cookie = cookie + "=" + value + "; " + expires;
+        },
         /* This function gets the authentication object. */
         getFirebaseAuth: function() {
             /* Connect to our Firebase app. */
@@ -432,32 +458,6 @@ window.Contest_Judging_System = (function() {
                     callback(kaData);
                 }
             }, 1000);
-        },
-        /* Cookie functions provided by w3schools */
-        getCookie: function(cookie) {
-            /* Get the cookie with name cookie (return "" if non-existent) */
-            var name = cookie + "=";
-            /* Check all of the cookies and try to find the one containing name. */
-            var cookieList = document.cookie.split(';');
-            for (var i = 0; i < cookieList.length; i++) {
-                var curCookie = cookieList[i];
-                while (curCookie[0] === ' ') {
-                    curCookie = curCookie.substring(1);
-                }
-                /* If we've found the right cookie, return its value. */
-                if (curCookie.indexOf(name) === 0) {
-                    return curCookie.substring(name.length, curCookie.length);
-                }
-            }
-            /* Otherwise, if the cookie doesn't exist, return "" */
-            return "";
-        },
-        setCookie: function(cookie, value) {
-            /* Set a cookie with name cookie and value cookie that will expire 30 days from now. */
-            var d = new Date();
-            d.setTime(d.getTime() + (30*24*60*60*1000));
-            var expires = "expires="+d.toUTCString();
-            document.cookie = cookie + "=" + value + "; " + expires;
         },
         /* This function logs the user in and then calls the callback with the Firebase auth data: */
         logUserIn: function(type, callback) {
