@@ -53,7 +53,8 @@ else {
             console.log("Authenticated!");
 
             /* Welcome the user to the admin dashboard. */
-            document.getElementById("welcomeMessage").textContent = document.getElementById("welcomeMessage").textContent.replace("{{name}}", userData.name);
+            var welcomeMessage = document.getElementById("welcomeMessage");
+            welcomeMessage.textContent = welcomeMessage.textContent.replace("{{name}}", userData.name);
        }
     });
 }
