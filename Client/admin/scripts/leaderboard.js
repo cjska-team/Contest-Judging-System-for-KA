@@ -56,14 +56,13 @@ function loadLeaderboard(contestData, entryData) {
             /* For each rubric: */
             for (var i = 0; i < rubrics.Order.length; i++) {
                 /* The score for this rubric is the average, unless it hasn't been graded yet, in which case it's the minimum: */
-                var score = entryData[k].scores.rubric.hasOwnProperty(rubrics.Order[i]) ? entryData[k].scores.rubric[rubrics.Order[i]].avg : rubrics.Order[i].min;
+                var score = entryData[k].scores.rubric.hasOwnProperty(rubrics.Order[i]) ? entryData[k].scores.rubric[rubrics.Order[i]].avg : rubrics[rubrics.Order[i]].min;
                 /* Increment summedScore by score: */
                 summedScore += score;
                 /* If this is a keys rubric, set the scores using score and the keys property: */
                 if (rubrics[rubrics.Order[i]].hasOwnProperty("keys")) {
                     objToAdd[rubrics.Order[i].replace(/_/gi, " ")] = "("+score+") "+rubrics[rubrics.Order[i]].keys[score];
                 }
-                /* Otherwise, just set the scores using score: */
                 else {
                     objToAdd[rubrics.Order[i].replace(/_/gi, " ")] = score;
                 }
