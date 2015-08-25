@@ -151,14 +151,17 @@ function loadEntries() {
                             infoDiv.appendChild(scoreHeading);
                             infoDiv.appendChild(scoreList);
                             mediaBody.appendChild(infoDiv);
-                            /* Tell entriesDone that we're done: */
+                            /* Tell entriesDone that we're done and call checkDone: */
                             entriesDone[i] = true;
+                            checkDone();
                         });
                     })(mediaBody, curr, i);
                 }
                 /* Otherwise, if the user can't read the scores, then tell entriesDone that we're done: */
                 else {
                     entriesDone[i] = true;
+                    /* Also, call checkDone just in case: */
+                    checkDone();
                 }
 
                 /* Append everything */
@@ -171,16 +174,14 @@ function loadEntries() {
             }
         }
 
-        /* Check every second to see if we're done: */
-        var checkDone = setInterval(function() {
+        function checkDone() {
+            /* This function checks if we're done and if we are, executes what needs to be done when we're done. */
             if (Object.keys(entries).length === Object.keys(entriesDone).length) {
-                /* If we're done, stop checking if we're done: */
-                clearInterval(checkDone);
                 /* Hide the loading div and show items that were hidden during loading. */
                 loading.css("display", "none");
                 hideWhileLoad.css("display", "block");
             }
-        }, 1000);
+        }
     });
 }
 

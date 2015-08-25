@@ -172,26 +172,14 @@ window.Contest_Judging_System = (function() {
                             /* If we've got all the props, update callbackData. */
                             if (Object.keys(curContestData).length === props.length) {
                                 callbackData[key] = curContestData;
+                                /* If we're done, call the callback: */
+                                if (Object.keys(callbackData).length === fbRefData.length) {
+                                    callback(callbackData);
+                                }
                             }
                         }, Contest_Judging_System.logError);
                     })(i);
                 }
-                /* Log errors: */
-            }, Contest_Judging_System.logError);
-            
-            /* Once we're done querying fbRef: */
-            fbRef.once("value", function(data) {
-                /* Don't call callback until we're done checking all curContests! */
-                /* Check if we have all of the data for all curContests every second: */
-                var checkDone = setInterval(function() {
-                    /* If we do: */
-                    if (Object.keys(callbackData).length === fbRefData.length) {
-                        /* Stop checking if we're done: */
-                        clearInterval(checkDone);
-                        /* Call the callback with callbackData: */
-                        callback(callbackData);
-                    }
-                }, 1000);
                 /* Log errors: */
             }, Contest_Judging_System.logError);
         },
@@ -213,21 +201,14 @@ window.Contest_Judging_System = (function() {
                     contestRef.child(props[i]).once("value", function(snapshot) {
                         /* Set the data once we've got it. */
                         callbackData[props[i]] = snapshot.val();
+                        /* If we're done, call the callback: */
+                        if (Object.keys(callbackData).length === props.length) {
+                            callback(callbackData);
+                        }
                         /* Log errors: */
                     }, Contest_Judging_System.logError);
                 })(i);
             }
-
-            /* Check every second if we're done: */
-            var checkDone = setInterval(function() {
-                /* If we're done: */
-                if (Object.keys(callbackData).length === props.length) {
-                    /* Stop checking if we're done: */
-                    clearTimeout(checkDone);
-                    /* Call the callback: */
-                    callback(callbackData);
-                }
-            }, 1000);
         },
         /* Load a specific contest entry, based on ID */
         loadEntry: function(contestId, entryId, permLevel, callback) {
@@ -249,27 +230,18 @@ window.Contest_Judging_System = (function() {
                     fbRef.child(props[i]).once("value", function(snapshot) {
                         /* Set the data once we've got it. */
                         callbackData[props[i]] = snapshot.val();
+                        /* If we're done, call the callback: */
+                        if (Object.keys(callbackData).length === props.length) {
+                            callback(callbackData);
+                        }
                         /* Log errors: */
                     }, Contest_Judging_System.logError);
                 })(i);
             }
-
-            /* Check every second if we're done: */
-            var checkDone = setInterval(function() {
-                /* If we're done: */
-                if (Object.keys(callbackData).length === props.length) {
-                    /* Stop checking if we're done: */
-                    clearTimeout(checkDone);
-                    /* Call the callback: */
-                    callback(callbackData);
-                }
-            }, 1000);
         },
         /* Gets N random entries (where N is the number of contests to get) and passes them along with the contest data of contestId into a callback. */
         get_N_Entries: function(n, contestId, permLevel, uid, includeJudged, callback) {
             console.log(uid);
-            /* This bool is true iff we're done picking the n entries. */
-            var done = false;
             /* This is the contest data: */
             var contestData;
             /* This JSON object stores each of the entries we've picked out to display to the judge */
@@ -311,24 +283,17 @@ window.Contest_Judging_System = (function() {
                                 numEntries--;
                                 return;
                             }
-                            console.log("This entry hasn't been judged.");
+                            if (!includeJudged) console.log("This entry hasn't been judged.");
+                            /* Add the entry into pickedEntries: */
                             pickedEntries[pickedKey] = entryData;
+                            /* If we're done, call the callback: */
+                            if (Object.keys(pickedEntries).length === numEntries) {
+                                callback(contestData, pickedEntries);
+                            }
                         });
                     })(pickedKey);
                 }
-                    
-                /* Tell the below setInterval() that we're done when we're done. */
-                done = true;
             });
-
-            /* Check if we're done every second and when we are, call the callback and stop checking if we're done. */
-            var finishedInterval = setInterval(function() {
-                console.log(Object.keys(pickedEntries).length, numEntries);
-                if (done && Object.keys(pickedEntries).length === numEntries) {
-                    clearInterval(finishedInterval);
-                    callback(contestData, pickedEntries);
-                }
-            }, 1000);
         },
         /* Get 'n' of the top entries for the specified contest, and pass them into a callback function. */
         getTopEntries: function(howMany, contestId, callback) {
