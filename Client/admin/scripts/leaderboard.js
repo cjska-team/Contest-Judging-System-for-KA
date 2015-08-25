@@ -119,13 +119,11 @@ function loadData() {
         $("#loading").css("display", "none");
 	});
 }
-
-/* Check if the user data has been retrieved every second: */
-var userDataRetrieved = setInterval(function() {
-    if (userData) {
-        /* If we have the user data, stop checking: */
-        clearInterval(userDataRetrieved);
-        /* Load the data: */
-        loadData();
-    }
-}, 1000);
+/* If we have the user data, call loadData: */
+if (userData) {
+    loadData();
+}
+/* Otherwise, append it to userDataRetrievedCallbacks: */
+else {
+    userDataRetrievedCallbacks.push(loadData);
+}
