@@ -1,29 +1,48 @@
-/***
- * This file is where all the general purpose, reusable code should go!
-***/
 /* This function can be used to inject scripts into pages. It returns the created <script> element. */
 /* The reason we make it a global function even though it's in the below namespace is because outside JavaScript files might need to use this function after this function loads, but before the namespace is loaded. */
 window.includeFunc = function(path) {
+    /* Create a script tag */
     var scriptTag = document.createElement("script");
+
+    /* Set the new script tag's src attribute to the location of the script that we want to include */
     scriptTag.src = path;
+
+    /* Append the new script tag to the page. */
     document.body.appendChild(scriptTag);
+
+    /* Return the new script tag. */
     return scriptTag;
 };
 
+/* Function wrapper to create Contest_Judging_System */
 window.Contest_Judging_System = (function() {
-    /* Function wrapper to create Contest_Judging_System */
     
-    /* jQuery and Firebase are both dependencies for this project. If we don't have them, exit the function immediately. */
-    /* TODO: If a project dependency doesn't exist, go ahead an inject it. */
+    /* jQuery and Firebase are both dependencies for this project. If we don't have them, exit immediately. */
     if (!window.jQuery || !window.Firebase || !window.KA_API) {
         console.log("[Contest_Judging_System Namespace] Needs jQuery, Firebase, and KA_API");
         return;
     }
 
-    /* Everything from this namespace will be placed in the object that is returned. */
+    /* Return an object containing everything that we want in this namespace. */
     return {
-        /* Puts the script injection function inside of this namespace. */
         include: includeFunc,
+<<<<<<< HEAD
+        /***
+         * logError()
+         * Logs errors to the Javascript console.
+         * @author Noble Mushtak (2015)
+         * @param {Any} error: The error to log to the Javascript console. 
+        ***/
+        logError: function(error) {
+            console.error(error);
+        },
+        /***
+         * getFirebaseAuth()
+         * Fetches the authentication object from Firebase (if any), and returns it.
+         * @author Gigabyte Giant, Noble Mushtak (2015)
+         * @returns {Object} Firebase Authentication object (or null, if one doesn't exist)
+        ***/
+=======
         /* This function takes an error and logs it into the console. We pass this into Firebase calls so that no errors are silenced. */
         logError: function(error) { if (error) { console.error(error); } },
         /* This function gets the GET params of a URL: */
@@ -88,41 +107,72 @@ window.Contest_Judging_System = (function() {
             document.cookie = cookie + "=" + value + "; " + expires;
         },
         /* This function gets the authentication object. */
+>>>>>>> master
         getFirebaseAuth: function() {
-            /* Connect to our Firebase app. */
+            /* Declare a new instance of the Firebase object, used to reference our Firebase instance. */
             var firebaseRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
-            /* Return the authentication object: */
+            
+            /* Fetch, and return, the authentication object (or null, if there isn't one). */
             return firebaseRef.getAuth();
         },
-        /* This function gets the default rubric that we've defined in Firebase. */
+        /***
+         * getRubrics()
+         * Fetches all the default rubric items from Firebase.
+         * @author Gigabyte Giant, Noble Mushtak (2015)
+         * @param {Function} callback(rubrics): The callback function to invoke once the query is done.
+        ***/
         getRubrics: function(callback) {
-            /* Connect to our Firebase app. */
+            /* Declare a new instance of the Firebase object, used to reference our Firebase instance. */
             var firebaseRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
 
-            /* We're going to messing around with the data in our "rubrics" object. Let's go ahead and grab that "child". */
+            /* Declare a new variable, and store the "rubrics" child in it. */
             var fbRubrics = firebaseRef.child("rubrics");
 
-            /* This array will hold all of the Rubrics that we've defined in our array. */
+            /* Declare a new JSON object, that will be used to store all of our rubric items. */
             var rubrics = { };
 
-            /* Query all the data from Firebase, and push the JSON keys into our array. */
+            /* Query all the data from Firebase, and push the JSON keys into our object. */
             fbRubrics.orderByKey().on("child_added", function(responseData) {
                 rubrics[responseData.key()] = responseData.val();
-                /* Log errors: */
             }, Contest_Judging_System.logError);
 
-            /* Once all our data has been loaded from Firebase, invoke our callback. */
+            /* After all of the data has been recieved... */
             fbRubrics.once("value", function() {
+                /* ...invoke our callback. */
                 callback(rubrics);
-                /* Log errors: */
             }, Contest_Judging_System.logError);
         },
-        /* This function gets the rubrics for a specific contest: */
+        /***
+         * getRubricsForContest()
+         * Fetches all the rubric items for the specified contest.
+         * @author Gigabyte Giant, Noble Mushtak (2015)
+         * @param {String} contestId: The Khan Academy Scratchpad ID of the contest that we want to load rubric items for.
+         * @param {Function} callback(rubrics): The callback function to invoke once the query is done.
+        ***/
         getRubricsForContest: function(contestId, callback) {
-            /* Get the default rubrics: */
+            /* Fetch the default rubric items */
             Contest_Judging_System.getRubrics(function(rubrics) {
-                /* Now check for a custom rubrics: */
+                /* Fetch the custom rubric items */
                 Contest_Judging_System.loadContest(contestId, function(contestData) {
+<<<<<<< HEAD
+                    /* If custom rubric items exist, add them to the rubrics object. */
+                    if (contestData.rubrics !== null) {
+                        for (var k in contestData.rubrics) {
+                            /* If the current rubric item isn't our "Order" rubric, add it to the rubric object. */
+                            if (k !== "Order") {
+                                rubrics[k] = contestData.rubrics[k];
+                            } else {
+                                /* Loop through our "Order" rubric item, so we can specify the order in which we want to show the rubric items */
+                                for (var i = 0; i < contestData.rubrics.Order.length; i++) {
+                                    rubrics.Order.push(contestData.rubrics.Order[i]);
+                                }
+                            }
+                        }
+                    }
+                    
+                    /* Invoke the callback, and pass the "rubrics" object into it. */
+                    callback(rubrics);
+=======
                      /* If there is a custom rubrics, merge it with rubrics: */
                      if (contestData.rubrics !== null) {
                          for (var k in contestData.rubrics) {
@@ -138,38 +188,54 @@ window.Contest_Judging_System = (function() {
                      }
                      /* Pass rubrics through callback: */
                      callback(rubrics);
+>>>>>>> master
                 });
             });
         },
-        /* This function gets all the contests that we have stored on Firebase and passes them into a callback function. */
+        /***
+         * getStoredContests()
+         * Fetches all the contests that we have stored on Firebase, and passes them into a callback function.
+         * @author Gigabyte Giant, Noble Mushtak (2015)
+         * @param {Function} callback(contests): The callback function to invoke once the query is done.
+        ***/
         getStoredContests: function(callback) {
-            /* This is the object containing the paths to the contests within our Firebase database. */
-            var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/contestKeys/");
-            /* This is all of the contests: */
-            var contests = new Firebase("https://contest-judging-sys.firebaseio.com/contests/");
-            /* This is an object to hold all of the data from fbRef. */
-            var fbRefData = [];
-            /* This is the data we need to give to callback: */
+            /* Declare a new instance of the Firebase object, used to reference our Firebase instance. */
+            var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
+
+            /* Declare a new variable to hold the "contestKeys" child */
+            var contestKeys = fbRef.child("contestKeys");
+
+            /* Declare a new variable to hold the "contests" child */
+            var contests = fbRef.child("contests");
+
+            /* Declare an empty array, that'll be used to store all of the contest keys that we find */
+            var foundContestKeys = [];
+            
+            /* Declare an empty object, that'll be used to store all of the data that we want to pass into our callback */
             var callbackData = {};
-            /* These are the property names that callbackData[CONTEST-ID] needs to have: */
+
+            /* Declare an array that contains all of the properties that *must be loaded* before we invoke our callback  */
             var props = ["desc", "id", "img", "name", "entryCount"];
             
-            /* Get all of the contest data: */
-            fbRef.orderByKey().on("child_added", function(item) {
-                /* Push the data to fbRefData: */
+            /* Query the "contestKeys" child */
+            contestKeys.orderByKey().on("child_added", function(item) {
+                /* Insert the current key, into our "foundContestKeys" array. */
                 var key = item.key();
-                fbRefData.push(key);
-                /* Get the current contest: */
+                foundContestKeys.push(key);
+
+                /* Fetch the current contest from Firebase. */
                 var curContest = contests.child(key);
-                /* The data for this contest: */
+
+                /* Declare an empty object that'll hold all the data for the current contest */
                 var curContestData = {};
-                /* Get data for all props: */
+
+                /* Fetch the data for all of the required properties */
                 for (var i = 0; i < props.length; i++) {
-                    /* Save the value of i with a function wrapper. */
+                    /* Make sure we don't lose "i"s value. */
                     (function(i) {
                         curContest.child(props[i]).once("value", function(snapshot) {
                             curContestData[props[i]] = snapshot.val();
-                            /* If we've got all the props, update callbackData. */
+                            /* If we have all the required properties, add this contest to our "callbackData" object. */
                             if (Object.keys(curContestData).length === props.length) {
                                 callbackData[key] = curContestData;
                                 /* If we're done, call the callback: */
@@ -180,27 +246,80 @@ window.Contest_Judging_System = (function() {
                         }, Contest_Judging_System.logError);
                     })(i);
                 }
-                /* Log errors: */
             }, Contest_Judging_System.logError);
+<<<<<<< HEAD
+            
+<<<<<<< HEAD
+            /* Once the "contestKeys" query is done, check to make sure we have all the data, and invoke our callback. */
+            contestKeys.once("value", function(data) {
+                var checkDone = setTimeout(function() {
+                    if (Object.keys(callbackData).length === foundContestKeys.length) {
+=======
+            /* Once we're done querying fbRef: */
+            fbRef.once("value", function(data) {
+                /* Don't call callback until we're done checking all curContests! */
+                /* Check if we have all of the data for all curContests every second: */
+                var checkDone = setInterval(function() {
+                    /* If we do: */
+                    if (Object.keys(callbackData).length === fbRefData.length) {
+                        /* Stop checking if we're done: */
+>>>>>>> master
+                        clearInterval(checkDone);
+                        callback(callbackData);
+                    }
+                }, 1000);
+            }, Contest_Judging_System.logError);
+=======
+>>>>>>> 81b7c2d5e4ace0f407c4bb43aff180ce9ebfcfd9
         },
-        /* Loads a specific contest from Firebase. */
+        /***
+         * loadContest()
+         * Fetches the desired contest from Firebase, and passes it into a callback function.
+         * @author Gigabyte Giant, Noble Mushtak (2015)
+         * @param {String} contestId: The Khan Academy Scratchpad ID of the contest that we want to load.
+         * @param {Function} callback(contest): The callback function to invoke once the query is done.
+        ***/
         loadContest: function(contestId, callback) {
-            /* Connect to our Firebase app */
+            /* Declare a new instance of the Firebase object, used to reference our Firebase instance. */
             var firebaseRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
-            /* Since we're only going to be dealing with contests in this function, go ahead and create a reference to the "contests" "child". Then, choose the contestId child of that.*/
+            
+            /* Declare a new variable, and use it to store the "contests/<contestId>" child (where "<contestId>" is the ID of the contest that we want to load) from Firebase. */
             var contestRef = firebaseRef.child("contests").child(contestId);
-            /* This is what we're going to pass through callback: */
+
+            /* Declare an empty object that'll be used to hold all the data that we want to pass into our callback function. */
             var callbackData = {};
-            /* These are the property names that callbackData needs to have: */
+
+            /* Declare an array that contains all of the properties that *must be loaded* before we invoke our callback  */
             var props = ["desc", "id", "img", "name", "entryCount", "entryKeys", "rubrics"];
             
-            /* Get the data for all of the props: */
+            /* Fetch each of the required properties for this contest, from Firebase. */
             for (var i = 0; i < props.length; i++) {
-                /* Put this in a function wrapper to save the value of i: */
+                /* Make sure we don't lose "i"s value. */
                 (function(i) {
+                    /* Once this property has been loaded from Firebase, add it to our "callbackData" object. */
                     contestRef.child(props[i]).once("value", function(snapshot) {
-                        /* Set the data once we've got it. */
                         callbackData[props[i]] = snapshot.val();
+<<<<<<< HEAD
+                    }, Contest_Judging_System.logError);
+                })(i);
+            }
+
+<<<<<<< HEAD
+            /* Every second, run a check to see if we have all the data that we need, if we do, invoke our callback. */
+            var checkDone = setTimeout(function() {
+=======
+            /* Check every second if we're done: */
+            var checkDone = setInterval(function() {
+                /* If we're done: */
+>>>>>>> master
+                if (Object.keys(callbackData).length === props.length) {
+                    /* Stop checking if we're done: */
+                    clearTimeout(checkDone);
+                    /* Invoke our callback function, and pass our "callbackData" object into it. */
+                    callback(callbackData);
+                }
+            }, 1000);
+=======
                         /* If we're done, call the callback: */
                         if (Object.keys(callbackData).length === props.length) {
                             callback(callbackData);
@@ -209,27 +328,71 @@ window.Contest_Judging_System = (function() {
                     }, Contest_Judging_System.logError);
                 })(i);
             }
+>>>>>>> 81b7c2d5e4ace0f407c4bb43aff180ce9ebfcfd9
         },
-        /* Load a specific contest entry, based on ID */
+        /***
+         * loadEntry()
+         * Loads a specific entry to a specific contest, and passes it into a callback function.
+         * @author Gigabyte Giant, Noble Mushtak (2015)
+         * @param {String} contestId: The Khan Academy Scratchpad ID of the contest that we want to load an entry for.
+         * @param {String} entryId: The Khan Academy Scratchpad ID of the entry that we want to load.
+         * @param {Int} permLevel: The permissions level of the currently logged in user.
+         * @param {Function} callback(entry): The callback function to invoke once the query is done.
+        ***/
         loadEntry: function(contestId, entryId, permLevel, callback) {
+<<<<<<< HEAD
+            /* Declare a new instance of the Firebase object, used to reference our Firebase instance. */
+            var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contestId + "/entries/" + entryId.replace("#", ""));
+
+            /* Declare an empty object that'll be used to hold all the data that we want to pass into our callback */
+=======
             /* Connect to Firebase: */
             var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/contests/"+contestId+"/entries/"+entryId);
             /* This is what we're going to pass through callback: */
+>>>>>>> master
             var callbackData = {};
-            /* These are the property names that callbackData needs to have: */
+
+            /* Declare an array that contains all of the properties that *must be loaded* before we invoke our callback  */
             var props = ["id", "thumb", "name"];
+<<<<<<< HEAD
+            
+            /* If the currently logged in user has a "permLevel" that is allowed to read scores, add "scores" to our property list. */
+            if (permLevel >= 5) {
+=======
             /* Include the scores if they can read the scores: */
             if (permLevel >= 4) {
+>>>>>>> master
                 props.push("scores");
             }
             
-            /* Get the data for all of the props: */
+            /* Load the data for each of the required properties */
             for (var i = 0; i < props.length; i++) {
-                /* Put this in a function wrapper to save the value of i: */
+                /* Make sure we don't lose "i"s value. */
                 (function(i) {
+                    /* Once the current property has been loaded from Firebase, add it to our "callbackData" object */
                     fbRef.child(props[i]).once("value", function(snapshot) {
-                        /* Set the data once we've got it. */
                         callbackData[props[i]] = snapshot.val();
+<<<<<<< HEAD
+                    }, Contest_Judging_System.logError);
+                })(i);
+            }
+
+<<<<<<< HEAD
+            /* Every second, run a check to see if we have all the data that we need, if we do, invoke our callback. */
+            var checkDone = setTimeout(function() {
+=======
+            /* Check every second if we're done: */
+            var checkDone = setInterval(function() {
+                /* If we're done: */
+>>>>>>> master
+                if (Object.keys(callbackData).length === props.length) {
+                    /* Stop checking if we're done: */
+                    clearTimeout(checkDone);
+                    /* Invoke our callback function, and pass it our "callbackData" object */
+                    callback(callbackData);
+                }
+            }, 1000);
+=======
                         /* If we're done, call the callback: */
                         if (Object.keys(callbackData).length === props.length) {
                             callback(callbackData);
@@ -238,35 +401,76 @@ window.Contest_Judging_System = (function() {
                     }, Contest_Judging_System.logError);
                 })(i);
             }
+>>>>>>> 81b7c2d5e4ace0f407c4bb43aff180ce9ebfcfd9
         },
+<<<<<<< HEAD
+        /***
+         * get_N_Entries()
+         * Loads "n" random entries from Firebase, and passes them into a callback function.
+         * @author Gigabyte Giant, Noble Mushtak (2015)
+         * @param {Int} n: The number of entries we'd like to load
+         * @param {String} contestId: The Khan Academy Scratchpad ID of the contest that we want to load entries from.
+         * @param {Int} permLevel: The permissions level of the currently logged in user.
+         * @param {Function} callback(entries): The callback function to invoke once we've loaded all the entries that we can/need.
+        ***/
+        get_N_Entries: function(n, contestId, permLevel, callback) {
+            /* Declare a boolean variable that'll be used to determine whether or not we've loaded all the entries that we can/need. */
+=======
         /* Gets N random entries (where N is the number of contests to get) and passes them along with the contest data of contestId into a callback. */
         get_N_Entries: function(n, contestId, permLevel, uid, includeJudged, callback) {
             console.log(uid);
+<<<<<<< HEAD
+            /* This bool is true iff we're done picking the n entries. */
+>>>>>>> master
+            var done = false;
+
+            /* Declare an empty variable that'll eventually be used to store all of the data for the current contest. */
+=======
             /* This is the contest data: */
+>>>>>>> 81b7c2d5e4ace0f407c4bb43aff180ce9ebfcfd9
             var contestData;
-            /* This JSON object stores each of the entries we've picked out to display to the judge */
+
+            /* Declare an empty JSON object that'll be used to store all of the entries that we've loaded. */
             var pickedEntries = { };
 
-            /* This variable is used to store the number of entries for this contest. */
+            /* Declare an integer variable that'll be used to keep track of the number of entries that we've loaded. */
             var numEntries = 0;
 
+            /* Load the contest that has the ID of "contestId" */
             Contest_Judging_System.loadContest(contestId, function(contestDataLocal) {
-                /* Set contestData: */
+                /* Assign the data that we recieved from "Contest_Judging_System.loadContest", to our "contestData" object */
                 contestData = contestDataLocal;
-                /* Declare a variable to hold an array of keys for entries */
+
+                /* Declare an array of all the entry keys for this contest. */
                 var entriesKeys = Object.keys(contestData.entryKeys || { });
-                /* These are the number of entries we will turn. We will turn either n entries or all of the entriess if there are less than n. */
+
+                /* Determine how many entries we're going to load. We'll load "n", if there's enough, otherwise, we'll load all entries if there isn't at least "n" entries. */
                 numEntries = (entriesKeys.length < n) ? entriesKeys.length : n;
 
-                /* An array to store the keys that we've already picked */
+                /* Declare an empty array that'll be used to store the keys of each entry that we've already picked. */
                 var pickedKeys = [ ];
 
-                /* While we still need keys to return... */
+                /* If we still don't have enough entries, try and load more. */
                 while (pickedKeys.length < numEntries) {
                     /* Pick a random index */
                     var randIndex = Math.floor( Math.random() * entriesKeys.length );
                     /* Get the key from the index that we picked */
                     var pickedKey = entriesKeys[randIndex];
+<<<<<<< HEAD
+
+                    /* If we haven't already picked that key... */
+                    if (pickedKeys.indexOf(pickedKey) === -1) {
+                        /* ...pick it. */
+                        pickedKeys.push(pickedKey);
+                        /* Make sure we don't lose "pickedKey"s value. */
+                        (function(pickedKey) {
+                            /* Set pickedEntries[pickedKey] to the entry data: */
+                            Contest_Judging_System.loadEntry(contestId, pickedKey, permLevel, function(entryData) {
+                                pickedEntries[pickedKey] = entryData;
+                            });
+                        })(pickedKey);
+                    }
+=======
                     
                     /* ...pick it. */
                     pickedKeys.push(pickedKey);
@@ -292,21 +496,37 @@ window.Contest_Judging_System = (function() {
                             }
                         });
                     })(pickedKey);
+>>>>>>> master
                 }
+<<<<<<< HEAD
+                    
+                /* Tell our "finishedInterval" timeout, that we're done loading data. */
+                done = true;
             });
-        },
-        /* Get 'n' of the top entries for the specified contest, and pass them into a callback function. */
-        getTopEntries: function(howMany, contestId, callback) {
-            var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
-            var contestsRef = fbRef.child("contests");
-            var chosenContest = contestsRef.child(contestId);
-            var entriesRef = chosenContest.child(entries);
 
-            /* TODO (@GigabyteGiant): Finish this function */
+            /* Every second, run a check to see if we have all the data that we need, if we do, invoke our callback. */
+            var finishedInterval = setInterval(function() {
+                console.log(Object.keys(pickedEntries).length, numEntries);
+                if (done && Object.keys(pickedEntries).length === numEntries) {
+                    /* Stop checking to see if we're done. */
+                    clearInterval(finishedInterval);
+                    /* Invoke our callback, and pass it the data for the current contest, as well as the entries that we picked. */
+                    callback(contestData, pickedEntries);
+                }
+            }, 1000);
+=======
+            });
+>>>>>>> 81b7c2d5e4ace0f407c4bb43aff180ce9ebfcfd9
         },
+        /***
+         * sync()
+         * This function is used to make sure that Firebase has the latest data from Khan Academy.
+         * @author Gigabyte Giant (2015)
+         * @param {Function} callback(dataFromKA): The callback function that we want to invoke once we're done syncing the data.
+        ***/
         sync: function(callback) {
             /*
-             * sync() just fetches the latest data from Khan Academy and Firebase, and compares it. It is not run in the client, but in a secret bot on http://gigabytegiant.com, but not in this Git repo.
+             * sync() just fetches the latest data from Khan Academy and Firebase, and compares it. It is not run in the client, but in a secret bot on http://gigabytegiant.com. The bot's sourcecode is not publicly available.
              * We have two objects; kaData and fbData. We get the data using the KA_API and the above getStoredContests() method.
              * Once both requests have finished, we set fbData to kaData using the Firebase set() method.
              * Originally authored by Gigabyte Giant
@@ -434,17 +654,66 @@ window.Contest_Judging_System = (function() {
                 }
             }, 1000);
         },
+<<<<<<< HEAD
+        /***
+         * getCookie()
+         * Fetches the specified cookie from the browser, and returns it's value.
+         * @author w3schools
+         * @param {String} cookie: The name of the cookie that we want to load.
+        ***/
+        getCookie: function(cookie) {
+            /* Get the cookie with name cookie (return "" if non-existent) */
+            var name = cookie + "=";
+            /* Check all of the cookies and try to find the one containing name. */
+            var cookieList = document.cookie.split(';');
+            for (var i = 0; i < cookieList.length; i++) {
+                var curCookie = cookieList[i];
+                while (curCookie[0] === ' ') {
+                    curCookie = curCookie.substring(1);
+                }
+                /* If we've found the right cookie, return its value. */
+                if (curCookie.indexOf(name) === 0) {
+                    return curCookie.substring(name.length, curCookie.length);
+                }
+            }
+            /* Otherwise, if the cookie doesn't exist, return "" */
+            return "";
+        },
+        /***
+         * setCookie()
+         * Creates/updates a cookie with the desired name and value.
+         * @author w3schools
+         * @param {String} cookie: The name of the cookie to create/update
+         * @param {String} value: The value to set the cooke to.
+        ***/
+        setCookie: function(cookie, value) {
+            /* Set a cookie with name cookie and value cookie that will expire 30 days from now. */
+            var d = new Date();
+            d.setTime(d.getTime() + (30*24*60*60*1000));
+            var expires = "expires="+d.toUTCString();
+            document.cookie = cookie + "=" + value + "; " + expires;
+        },
+        /***
+         * logUserIn()
+         * [Attempts to] log a user in, and then invokes a callback function with the authentication data provided by Firebase.
+         * @author Gigabyte Giant, Noble Mushtak (2015)
+         * @param {String} type: The type of authentication method that we want to use. (Either "popup" or "redirect")
+         * @param {Function} callback(authData): The callback function to invoke once the user has been logged in.
+        ***/
+=======
         /* This function logs the user in and then calls the callback with the Firebase auth data: */
+>>>>>>> master
         logUserIn: function(type, callback) {
-            /* Connect to Firebase: */
+            /* Declare a new instance of the Firebase object, that'll be used to manipulate our Firebase instance. */
             var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
-            /* The login method: */
+            
+            /* A JSON object containing the possible login methods. */
             var loginMethod = {
                 "popup": "authWithOAuthPopup",
                 "redirect": "authWithOAuthRedirect"
             }[type];
-            /* Try to log the user in: */
 
+            /* Attempt to log the user in with Google. */
             fbRef[loginMethod]("google", function(error, authData) {
                 /* If a Firebase error occurs... */
                 if (error) {
@@ -478,6 +747,13 @@ window.Contest_Judging_System = (function() {
                 }, Contest_Judging_System.logError);
             }, { remember: "default" });
         },
+        /***
+         * getUserData()
+         * Fetches a users data from Firebase, and passes it into a callback function.
+         * @author Noble Mushtak (2015)
+         * @param {String} userID: The Google UID of the user to fetch data for
+         * @param {Function} callback(userData): The callback function to invoke once we've loaded the user's data.
+        ***/
         getUserData: function(userID, callback) {
             /* Get the data of the user with uid userID and then call the callback while passing the data through the callback: */
             /* Get the Firebase data */
@@ -504,9 +780,15 @@ window.Contest_Judging_System = (function() {
                 else {
                     callback(usersSnapshot.val()[userID]);
                 }
-                /* Log errors: */
             }, Contest_Judging_System.logError);
         },
+        /***
+         * logInAndGetUserData()
+         * Invokes two of our functions; one to log the user in, and the other to fetch the user's data.
+         * @author Noble Mushtak, Gigabyte Giant (2015)
+         * @param {String} type: The type of authentication method that we want to use. (Either "popup" or "redirect")
+         * @param {Function} callback: The callback function to invoke once we've logged the user in, and have recieved their data from Firebase.
+        ***/
         logInAndGetUserData: function(type, callback) {
             /* This function combines logging in and getting the user data so it logs in the user if they're not already logged in and passes the auth data and user data to the callback: */
             /* Get the Firebase auth data: */
@@ -527,11 +809,21 @@ window.Contest_Judging_System = (function() {
             /* Otherwise, just get the data: */
             else {
                 Contest_Judging_System.getUserData(fbAuth.uid, function(userData) {
-                    /* Call callback: */
+                    /* Invoke callback */
                     callback(fbAuth, userData);
                 });
             };
         },
+        /***
+         * judgeEntry()
+         * Judges the specified entry for a certain contest, which will update that entries score in Firebase.
+         * @author Gigabyte Giant (2015)
+         * @param {String} contest: The Khan Academy Scratchpad ID of the contest that we want to judge an entry from.
+         * @param {String} entry: The Khan Academy Scratchpad ID of the entry that we're going to judge.
+         * @param {Object} scoreData: A JSON object containing the scores submitted by this judge.
+         * @param {Int} permLevel: The permissions level of the currently logged in user.
+         * @param {Function} callback(newScoreObj): The callback function to invoke once the new scores have been submitted to Firebase.
+        ***/
         judgeEntry: function(contest, entry, scoreData, permLevel, callback) {
             /* This judges an entry entry of contest with scoreData from a judge with id as set in cookies. It then passes the new scores through callback. */
 
@@ -594,11 +886,55 @@ window.Contest_Judging_System = (function() {
                 });
             });
         },
+        /***
+         * createContest()
+         * Creates a new contest, and adds it to Firebase.
+         * @author Gigabyte Giant (2015)
+         * @param {String} contestId: The Khan Academy Scratchpad ID of the program that'll be used as the root for a contest.
+         * @param {Object} contestRubrics: All of the custom rubric items for this contest.
+         * @param {Function} callback: The callback function to invoke once we've added the new contest to Firebase.
+        ***/
         createContest: function(contestId, contestRubrics, callback) {
+<<<<<<< HEAD
+            /* Create a new instance of the Firebase object. This'll be used to manipulate our Firebase instance. */
+=======
             /* Get Firebase refs:: */
+>>>>>>> master
             var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
+
+            /* Declare a variable to store the "contests" child from Firebase */
             var fbContestRef = fbRef.child("contests");
+
+            /* Declare a variable to store the "contestKeys" child from Firebase. */
             var fbContestKeysRef = fbRef.child("contestKeys");
+<<<<<<< HEAD
+
+            /* Declare a variable to store the "<contestId>" child from Firebase (where "<contestId>" is the scratchpad ID that was passed into this function). */
+            var thisContest = fbContestRef.child(contestId);
+
+            /* Make sure the user is logged in, if they are, load the contest program, and finish creating the contest. */
+            if (Contest_Judging_System.getFirebaseAuth() !== null) {
+                var programQuery = $.ajax({
+                    type: "GET",
+                    url: KA_API.urls.scratchpadInfo(contestId),
+                    async: true,
+                    complete: function(response) {
+                        var programData = response.responseJSON;
+
+                        fbContestRef.once("value", function(snapshot) {
+                            var id = contestId;
+                            var name = programData.translatedTitle;
+                            var img = programData.imagePath;
+                            var description = programData.description;
+                            var rubrics = snapshot.child(id).rubrics === undefined ? { } : snapshot.child(id).rubrics;
+
+                            for (var i in contestRubrics) {
+                                if (!rubrics.hasOwnProperty(i)) {
+                                    rubrics[i] = contestRubrics[i];
+                                }
+                            }
+=======
+>>>>>>> master
 
             /* Send AJAX request to get info on contest: */
             var programQuery = $.ajax({
