@@ -1,22 +1,31 @@
-/* Get the GET params: */
+/* Extract the GET parameters from the URL, and assign them to a new variable. */
 var getParams = Contest_Judging_System.getGETParams();
-/* If we don't find the contest parameter in the URL, tell the user to specify one, and navigate one page back in their history. */
+
+/* If a contest ID doesn't exist in the URL, remind the user that they need to specify one, and navigate back one page. */
 if (!getParams.contest) {
 	alert("Please specify a Contest ID!");
 	window.history.back();
 }
 
-/* Get the contest ID: */
+/* Declare a new variable, and assign it's value to the contest ID that we found in the URL. */
 var contestId = getParams.contest;
 
-/* Log the Contest ID that we found, to the console. */
+/* For debugging purposes, let's go ahead and print the contest ID to the Javascript console. */
 console.log("Contest ID found! " + contestId);
 
-/* The gloabl entry data: */
+/* Declare an empty JSON object, which will be used to store the data for each entry. */
 var global_entryData = { };
+
 /* The DataTable object representing the leaderboard: */
 var leaderboardObj;
 
+/***
+ * loadLeaderboard()
+ * Sets up a DataTable, to be used as a leaderboard.
+ * @author Gigabyte Giant, Noble Mushtak (2015)
+ * @param {Object} contestData: An object containing all the data for the current contest.
+ * @param {Object} entryData: An object containing all the entrys' data for the current contest.
+***/
 function loadLeaderboard(contestData, entryData) {
     /* This function loads the leaderboard with the contest data and entry data: */
 
@@ -78,7 +87,7 @@ function loadLeaderboard(contestData, entryData) {
             columns: cols,
             data: tableDataList
         });
-        
+
         /* Get the hashtag of the link (if there is one): */
         var hashtagIndex = window.location.href.indexOf("#");
         if (hashtagIndex != -1) {
@@ -101,25 +110,31 @@ function loadLeaderboard(contestData, entryData) {
             /* Change the hashtag link based off the column sorted and whether or not it was ascending or descending: */
             window.location.href = "#SortingOrder:"+sortingArrows.index(this)+(this.className.indexOf("sorting_desc") == -1 ? "A" : "D");
         });
-        
+
         /* Hide the loading message and show the content: */
         $(".dataLoadMsg").css("display", "none");
         $(".hideWhileDataLoad").css("display", "block");
     });
 }
 
+/***
+ * loadData()
+ * Loads all the data that we need for the leaderboard, from Firebase.
+ * @author Gigabyte Giant, Noble Mushtak (2015)
+***/
 function loadData() {
-    /* This function loads the contest data and the data for all of the entries: */
-
     /* The uid can be null because includeJudged is true. */
     Contest_Judging_System.get_N_Entries(KA_API.misc.allData, contestId, userData.permLevel, null, true, function(contestData, entryData) {
         /* Set global_entryData and call loadLeaderboard(): */
         global_entryData = entryData;
+		/* Invoke the function that'll setup the leaderboard. */
         loadLeaderboard(contestData, entryData);
+		/* Hide the loading spinner */
         $("#loading").css("display", "none");
 	});
 }
-/* If we have the user data, call loadData: */
+
+/* If the user is logged in, go ahead and load the data that we need from Firebase. */
 if (userData) {
     loadData();
 }
