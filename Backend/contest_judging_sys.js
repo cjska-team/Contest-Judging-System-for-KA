@@ -160,9 +160,9 @@ window.Contest_Judging_System = (function() {
             }, Contest_Judging_System.logError);
             
             /* Once the "contestKeys" query is done, check to make sure we have all the data, and invoke our callback. */
-            contestKeys.child().once("value", function(data) {
+            contestKeys.once("value", function(data) {
                 var checkDone = setTimeout(function() {
-                    if (Object.keys(callbackData).length === fbRefData.length) {
+                    if (Object.keys(callbackData).length === foundContestKeys.length) {
                         clearInterval(checkDone);
                         callback(callbackData);
                     }
