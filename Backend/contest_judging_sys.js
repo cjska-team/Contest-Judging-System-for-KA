@@ -29,6 +29,7 @@ window.Contest_Judging_System = (function() {
 
     /* Return an object containing everything that we want in this namespace. */
     return {
+        Firebase: window.Firebase,
         include: includeFunc,
         /***
          * logError()
@@ -125,7 +126,7 @@ window.Contest_Judging_System = (function() {
         ***/
         getFirebaseAuth: function() {
             /* Declare a new instance of the Firebase object, used to reference our Firebase instance. */
-            var firebaseRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
+            var firebaseRef = new this.Firebase("https://contest-judging-sys.firebaseio.com/");
 
             /* Fetch, and return, the authentication object (or null, if there isn't one). */
             return firebaseRef.getAuth();
@@ -138,7 +139,7 @@ window.Contest_Judging_System = (function() {
         ***/
         getRubrics: function(callback) {
             /* Declare a new instance of the Firebase object, used to reference our Firebase instance. */
-            var firebaseRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
+            var firebaseRef = new this.Firebase("https://contest-judging-sys.firebaseio.com/");
 
             /* Declare a new variable, and store the "rubrics" child in it. */
             var fbRubrics = firebaseRef.child("rubrics");
@@ -197,7 +198,7 @@ window.Contest_Judging_System = (function() {
         ***/
         getStoredContests: function(callback) {
             /* Declare a new instance of the Firebase object, used to reference our Firebase instance. */
-            var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
+            var fbRef = new this.Firebase("https://contest-judging-sys.firebaseio.com/");
 
             /* Declare a new variable to hold the "contestKeys" child */
             var contestKeys = fbRef.child("contestKeys");
@@ -260,7 +261,7 @@ window.Contest_Judging_System = (function() {
         ***/
         loadContest: function(contestId, callback) {
             /* Declare a new instance of the Firebase object, used to reference our Firebase instance. */
-            var firebaseRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
+            var firebaseRef = new this.Firebase("https://contest-judging-sys.firebaseio.com/");
 
             /* Declare a new variable, and use it to store the "contests/<contestId>" child (where "<contestId>" is the ID of the contest that we want to load) from Firebase. */
             var contestRef = firebaseRef.child("contests").child(contestId);
@@ -303,7 +304,7 @@ window.Contest_Judging_System = (function() {
         ***/
         loadEntry: function(contestId, entryId, permLevel, callback) {
             /* Declare a new instance of the Firebase object, used to reference our Firebase instance. */
-            var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contestId + "/entries/" + entryId.replace("#", ""));
+            var fbRef = new this.Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contestId + "/entries/" + entryId.replace("#", ""));
 
             /* Declare an empty object that'll be used to hold all the data that we want to pass into our callback */
             var callbackData = {};
@@ -441,7 +442,7 @@ window.Contest_Judging_System = (function() {
             });
 
             /* Create a new reference to Firebase to use later on when pushing contests to Firebase. */
-            var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
+            var fbRef = new this.Firebase("https://contest-judging-sys.firebaseio.com/");
             var contestsFBRef = fbRef.child("contests");
 
             /* Every second, we check if both requests have been completed and if they have, we stop checking if both requests have been completed and set fbRef to kaData using the Firebase set() method. */
@@ -549,7 +550,7 @@ window.Contest_Judging_System = (function() {
         ***/
         logUserIn: function(type, callback) {
             /* Connect to Firebase: */
-            var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
+            var fbRef = new this.Firebase("https://contest-judging-sys.firebaseio.com");
             /* The login method: */
             var loginMethod = {
                 "popup": "authWithOAuthPopup",
@@ -600,7 +601,7 @@ window.Contest_Judging_System = (function() {
         getUserData: function(userID, callback) {
             /* Get the data of the user with uid userID and then call the callback while passing the data through the callback: */
             /* Get the Firebase data */
-            var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
+            var fbRef = new this.Firebase("https://contest-judging-sys.firebaseio.com");
             var users = fbRef.child("users");
 
             /* Get the user info: */
@@ -672,7 +673,7 @@ window.Contest_Judging_System = (function() {
             /* This judges an entry entry of contest with scoreData from a judge with id as set in cookies. It then passes the new scores through callback. */
 
             /* Get Firebase data */
-            var fbContestRef = new Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contest);
+            var fbContestRef = new this.Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contest);
             /* All entries of this contest */
             var entries = fbContestRef.child("entries");
 
@@ -715,7 +716,7 @@ window.Contest_Judging_System = (function() {
                         }
 
                         /* Set the new scores to newScoreObj */
-                        var thisEntry = new Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contest + "/entries/" + entry + "/scores/");
+                        var thisEntry = new this.Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contest + "/entries/" + entry + "/scores/");
                         /* Log errors with .logError: */
                         thisEntry.child("rubric").set(newScoreObj, Contest_Judging_System.logError);
                         /* Tell the user that it worked! */
@@ -740,7 +741,7 @@ window.Contest_Judging_System = (function() {
         ***/
         createContest: function(contestId, contestRubrics, callback) {
             /* Get Firebase refs:: */
-            var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
+            var fbRef = new this.Firebase("https://contest-judging-sys.firebaseio.com/");
             var fbContestRef = fbRef.child("contests");
             var fbContestKeysRef = fbRef.child("contestKeys");
 
