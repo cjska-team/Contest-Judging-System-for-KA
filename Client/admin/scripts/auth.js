@@ -5,6 +5,8 @@
  */
 /* The data we have on the current user. */
 var userData;
+/* The functions we're going to call when we have the user data: */
+var userDataRetrievedCallbacks = [];
 
 function goBack() {
     /* This goes back to the URL the user came from or, if they didn't come from another URL or they came from the admin interface, goes back to defaultURL: */
@@ -53,7 +55,10 @@ else {
             console.log("Authenticated!");
 
             /* Welcome the user to the admin dashboard. */
-            document.getElementById("welcomeMessage").textContent = document.getElementById("welcomeMessage").textContent.replace("{{name}}", userData.name);
+            var welcomeMessage = document.getElementById("welcomeMessage");
+            welcomeMessage.textContent = welcomeMessage.textContent.replace("{{name}}", userData.name);
        }
+       /* Now that we have the user data, call all of the functions in userDataRetrievedCallbacks: */
+       for (var i = 0; i < userDataRetrievedCallbacks.length; i++) userDataRetrievedCallbacks[i]();
     });
 }

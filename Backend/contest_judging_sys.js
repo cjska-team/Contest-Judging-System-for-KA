@@ -238,11 +238,16 @@ window.Contest_Judging_System = (function() {
                             /* If we have all the required properties, add this contest to our "callbackData" object. */
                             if (Object.keys(curContestData).length === props.length) {
                                 callbackData[key] = curContestData;
+                                /* If we're done, call the callback: */
+                                if (Object.keys(callbackData).length === fbRefData.length) {
+                                    callback(callbackData);
+                                }
                             }
                         }, Contest_Judging_System.logError);
                     })(i);
                 }
             }, Contest_Judging_System.logError);
+<<<<<<< HEAD
             
 <<<<<<< HEAD
             /* Once the "contestKeys" query is done, check to make sure we have all the data, and invoke our callback. */
@@ -264,6 +269,8 @@ window.Contest_Judging_System = (function() {
                     }
                 }, 1000);
             }, Contest_Judging_System.logError);
+=======
+>>>>>>> 81b7c2d5e4ace0f407c4bb43aff180ce9ebfcfd9
         },
         /***
          * loadContest()
@@ -292,6 +299,7 @@ window.Contest_Judging_System = (function() {
                     /* Once this property has been loaded from Firebase, add it to our "callbackData" object. */
                     contestRef.child(props[i]).once("value", function(snapshot) {
                         callbackData[props[i]] = snapshot.val();
+<<<<<<< HEAD
                     }, Contest_Judging_System.logError);
                 })(i);
             }
@@ -311,6 +319,16 @@ window.Contest_Judging_System = (function() {
                     callback(callbackData);
                 }
             }, 1000);
+=======
+                        /* If we're done, call the callback: */
+                        if (Object.keys(callbackData).length === props.length) {
+                            callback(callbackData);
+                        }
+                        /* Log errors: */
+                    }, Contest_Judging_System.logError);
+                })(i);
+            }
+>>>>>>> 81b7c2d5e4ace0f407c4bb43aff180ce9ebfcfd9
         },
         /***
          * loadEntry()
@@ -354,6 +372,7 @@ window.Contest_Judging_System = (function() {
                     /* Once the current property has been loaded from Firebase, add it to our "callbackData" object */
                     fbRef.child(props[i]).once("value", function(snapshot) {
                         callbackData[props[i]] = snapshot.val();
+<<<<<<< HEAD
                     }, Contest_Judging_System.logError);
                 })(i);
             }
@@ -373,6 +392,16 @@ window.Contest_Judging_System = (function() {
                     callback(callbackData);
                 }
             }, 1000);
+=======
+                        /* If we're done, call the callback: */
+                        if (Object.keys(callbackData).length === props.length) {
+                            callback(callbackData);
+                        }
+                        /* Log errors: */
+                    }, Contest_Judging_System.logError);
+                })(i);
+            }
+>>>>>>> 81b7c2d5e4ace0f407c4bb43aff180ce9ebfcfd9
         },
 <<<<<<< HEAD
         /***
@@ -390,11 +419,15 @@ window.Contest_Judging_System = (function() {
         /* Gets N random entries (where N is the number of contests to get) and passes them along with the contest data of contestId into a callback. */
         get_N_Entries: function(n, contestId, permLevel, uid, includeJudged, callback) {
             console.log(uid);
+<<<<<<< HEAD
             /* This bool is true iff we're done picking the n entries. */
 >>>>>>> master
             var done = false;
 
             /* Declare an empty variable that'll eventually be used to store all of the data for the current contest. */
+=======
+            /* This is the contest data: */
+>>>>>>> 81b7c2d5e4ace0f407c4bb43aff180ce9ebfcfd9
             var contestData;
 
             /* Declare an empty JSON object that'll be used to store all of the entries that we've loaded. */
@@ -454,12 +487,18 @@ window.Contest_Judging_System = (function() {
                                 numEntries--;
                                 return;
                             }
-                            console.log("This entry hasn't been judged.");
+                            if (!includeJudged) console.log("This entry hasn't been judged.");
+                            /* Add the entry into pickedEntries: */
                             pickedEntries[pickedKey] = entryData;
+                            /* If we're done, call the callback: */
+                            if (Object.keys(pickedEntries).length === numEntries) {
+                                callback(contestData, pickedEntries);
+                            }
                         });
                     })(pickedKey);
 >>>>>>> master
                 }
+<<<<<<< HEAD
                     
                 /* Tell our "finishedInterval" timeout, that we're done loading data. */
                 done = true;
@@ -475,6 +514,9 @@ window.Contest_Judging_System = (function() {
                     callback(contestData, pickedEntries);
                 }
             }, 1000);
+=======
+            });
+>>>>>>> 81b7c2d5e4ace0f407c4bb43aff180ce9ebfcfd9
         },
         /***
          * sync()

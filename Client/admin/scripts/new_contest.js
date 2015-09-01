@@ -111,7 +111,7 @@ document.querySelector("#addrubric").addEventListener("click", function(event) {
     }
 
     /* Use this for the actual JSON property of the rubric so there's no whitespace in the property name. */
-    var jsonProp = document.forms.new_contest.rubric_name.value.split(" ").join("_").split("\t").join("_");
+    var jsonProp = document.forms.new_contest.rubric_name.value.replace(/\s/gi, "_");
     /* Make sure that the user didn't already use this rubric name: */
     if (rubrics.hasOwnProperty(jsonProp)) {
         alert("Please don't reuse rubric names. You already used this rubric name, so why don't you make another one? Thanks!");

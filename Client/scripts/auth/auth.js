@@ -4,6 +4,8 @@
 /* The login button: */
 var loginButton = $(".login");
 var logoutButton = $(".logout");
+/* The stuff that needs authentication to be shown: */
+var hideWhileNotAuthed = $(".hideWhileNotAuthed")
 
 /* Connect to Firebase: */
 var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
@@ -14,7 +16,7 @@ fbRef.onAuth(function(authData) {
         loginButton.css("display", "block");
         logoutButton.css("display", "none");
         /* Also, hide the stuff needing authentication: */
-        $(".hideWhileNotAuthed").css("display", "none");
+        hideWhileNotAuthed.css("display", "none");
     } else {
         /* Get the user data to add them to Firebase. We're not actually going to do anything in the callback. */
         Contest_Judging_System.getUserData(authData.uid, function(authData, userData) {});
@@ -22,7 +24,7 @@ fbRef.onAuth(function(authData) {
         loginButton.css("display", "none");
         logoutButton.css("display", "block");
         /* Also, show the stuff needing authentication: */
-        $(".hideWhileNotAuthed").css("display", "block");
+        hideWhileNotAuthed.css("display", "block");
     }
 });
 
@@ -35,5 +37,5 @@ loginButton.on("click", function() {
 /* When the user clicks the logout button, log them out: */
 /* (Don't pass in fbRef.unauth() itself in so MouseEvent will not be passed into fbRef.unauth().) */
 logoutButton.on("click", function() {
-    fbRef.unauth()
+    fbRef.unauth();
 });
