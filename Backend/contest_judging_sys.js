@@ -19,7 +19,7 @@ window.includeFunc = function(path) {
 
 /* Function wrapper to create Contest_Judging_System */
 window.Contest_Judging_System = (function() {
-    
+
     /* jQuery and Firebase are both dependencies for this project. If we don't have them, exit the function immediately. */
     /* TODO: If a project dependency doesn't exist, go ahead an inject it. */
     if (!window.jQuery || !window.Firebase || !window.KA_API) {
@@ -29,18 +29,22 @@ window.Contest_Judging_System = (function() {
 
     /* Return an object containing everything that we want in this namespace. */
     return {
-        /* Puts the script injection function inside of this namespace. */
         include: includeFunc,
         /***
          * logError()
          * Logs errors to the Javascript console.
          * @author Noble Mushtak (2015)
-         * @param {Any} error: The error to log to the Javascript console. 
+         * @param {Any} error: The error to log to the Javascript console.
         ***/
         logError: function(error) {
             console.error(error);
         },
-        /* This function gets the GET params of a URL: */
+        /***
+         * getGETParams()
+         * Extracts the GET params from the URL.
+         * @author Noble Mushtak (2015)
+         * @returns {Object} params: An object containing all the GET parameters and their values.
+        ***/
         getGETParams: function() {
             /* If there's no question mark in our URL, return {}: */
             var qIndex = window.location.href.indexOf("?");
@@ -54,7 +58,7 @@ window.Contest_Judging_System = (function() {
             if (hIndex !== -1) {
                 paramURL = paramURL.substring(0, hIndex);
             }
-            
+
             /* Get the different param snippets: */
             var paramSnippets = paramURL.split("&");
             /* Our GET parameters: */
@@ -122,7 +126,7 @@ window.Contest_Judging_System = (function() {
         getFirebaseAuth: function() {
             /* Declare a new instance of the Firebase object, used to reference our Firebase instance. */
             var firebaseRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
-            
+
             /* Fetch, and return, the authentication object (or null, if there isn't one). */
             return firebaseRef.getAuth();
         },
@@ -179,7 +183,7 @@ window.Contest_Judging_System = (function() {
                             }
                         }
                     }
-                    
+
                     /* Invoke the callback, and pass the "rubrics" object into it. */
                     callback(rubrics);
                 });
@@ -203,13 +207,13 @@ window.Contest_Judging_System = (function() {
 
             /* Declare an empty array, that'll be used to store all of the contest keys that we find */
             var foundContestKeys = [];
-            
+
             /* Declare an empty object, that'll be used to store all of the data that we want to pass into our callback */
             var callbackData = {};
 
             /* Declare an array that contains all of the properties that *must be loaded* before we invoke our callback  */
             var props = ["desc", "id", "img", "name", "entryCount"];
-            
+
             /* Query the "contestKeys" child */
             contestKeys.orderByKey().on("child_added", function(item) {
                 /* Insert the current key, into our "foundContestKeys" array. */
@@ -236,7 +240,7 @@ window.Contest_Judging_System = (function() {
                     })(i);
                 }
             }, Contest_Judging_System.logError);
-            
+
             /* Once the "contestKeys" query is done, check to make sure we have all the data, and invoke our callback. */
             contestKeys.once("value", function(data) {
                 var checkDone = setTimeout(function() {
@@ -257,7 +261,7 @@ window.Contest_Judging_System = (function() {
         loadContest: function(contestId, callback) {
             /* Declare a new instance of the Firebase object, used to reference our Firebase instance. */
             var firebaseRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
-            
+
             /* Declare a new variable, and use it to store the "contests/<contestId>" child (where "<contestId>" is the ID of the contest that we want to load) from Firebase. */
             var contestRef = firebaseRef.child("contests").child(contestId);
 
@@ -266,7 +270,7 @@ window.Contest_Judging_System = (function() {
 
             /* Declare an array that contains all of the properties that *must be loaded* before we invoke our callback  */
             var props = ["desc", "id", "img", "name", "entryCount", "entryKeys", "rubrics"];
-            
+
             /* Fetch each of the required properties for this contest, from Firebase. */
             for (var i = 0; i < props.length; i++) {
                 /* Make sure we don't lose "i"s value. */
@@ -306,12 +310,12 @@ window.Contest_Judging_System = (function() {
 
             /* Declare an array that contains all of the properties that *must be loaded* before we invoke our callback  */
             var props = ["id", "thumb", "name"];
-            
+
             /* If the currently logged in user has a "permLevel" that is allowed to read scores, add "scores" to our property list. */
             if (permLevel >= 5) {
                 props.push("scores");
             }
-            
+
             /* Load the data for each of the required properties */
             for (var i = 0; i < props.length; i++) {
                 /* Make sure we don't lose "i"s value. */
@@ -372,7 +376,7 @@ window.Contest_Judging_System = (function() {
                     var randIndex = Math.floor( Math.random() * entriesKeys.length );
                     /* Get the key from the index that we picked */
                     var pickedKey = entriesKeys[randIndex];
-                    
+
                     /* ...pick it. */
                     pickedKeys.push(pickedKey);
                     /* Get rid of it from entriesKeys: */
@@ -418,7 +422,7 @@ window.Contest_Judging_System = (function() {
                 firebase: false,
                 khanacademy: false
             };
-            
+
             /* Our two objects of data */
             var kaData;
             var fbData;
@@ -774,7 +778,7 @@ window.Contest_Judging_System = (function() {
                             desc: description,
                             rubrics: rubrics
                         };
-                        
+
                         /* Check if the contest exists  */
                         var contestExists = snapshot.hasChild(id);
                         /* If the contest doesn't exist: */
