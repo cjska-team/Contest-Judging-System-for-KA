@@ -8,16 +8,19 @@ var userData;
 /* The functions we're going to call when we have the user data: */
 var userDataRetrievedCallbacks = [];
 
+/***
+ * goBack()
+ * Points the browser to the last page they visited, if one exists, otherwise, it takes them to "defaultURL".
+ * @author Noble Mushtak (2015)
+***/
 function goBack() {
-    /* This goes back to the URL the user came from or, if they didn't come from another URL or they came from the admin interface, goes back to defaultURL: */
-
     /* Get the portion of the URL that includes the admin interface: */
     var adminURL = "/Client/admin";
     /* Find where adminURL is in window.location.href: */
     var findAdminURL = window.location.href.indexOf(adminURL);
     /* Make findAdminURL the end of this portion, not the beginning: */
     findAdminURL += adminURL.length;
-    
+
     /* If there's history to go back to and it's not the admin interface, go back: */
     if (document.referrer && document.referrer.substring(0, findAdminURL) != window.location.href.substring(0, findAdminURL)) {
         window.location.assign(document.referrer);
@@ -59,6 +62,8 @@ else {
             welcomeMessage.textContent = welcomeMessage.textContent.replace("{{name}}", userData.name);
        }
        /* Now that we have the user data, call all of the functions in userDataRetrievedCallbacks: */
-       for (var i = 0; i < userDataRetrievedCallbacks.length; i++) userDataRetrievedCallbacks[i]();
+       for (var i = 0; i < userDataRetrievedCallbacks.length; i++) {
+           userDataRetrievedCallbacks[i]();
+       }
     });
 }
