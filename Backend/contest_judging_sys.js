@@ -26,6 +26,7 @@ window.Contest_Judging_System = (function() {
     /* Return an object containing everything that we want in this namespace. */
     return {
         include: includeFunc,
+<<<<<<< HEAD
         /***
          * logError()
          * Logs errors to the Javascript console.
@@ -41,6 +42,72 @@ window.Contest_Judging_System = (function() {
          * @author Gigabyte Giant, Noble Mushtak (2015)
          * @returns {Object} Firebase Authentication object (or null, if one doesn't exist)
         ***/
+=======
+        /* This function takes an error and logs it into the console. We pass this into Firebase calls so that no errors are silenced. */
+        logError: function(error) { if (error) { console.error(error); } },
+        /* This function gets the GET params of a URL: */
+        getGETParams: function() {
+            /* If there's no question mark in our URL, return {}: */
+            var qIndex = window.location.href.indexOf("?");
+            if (qIndex === -1) {
+                return {};
+            }
+            /* Get the part of the URL with the GET params: */
+            var paramURL = window.location.href.substring(qIndex+1, window.location.href.length);
+            /* Get rid of the hashtag if there's a hashtag: */
+            var hIndex = paramURL.indexOf("#");
+            if (hIndex !== -1) {
+                paramURL = paramURL.substring(0, hIndex);
+            }
+            
+            /* Get the different param snippets: */
+            var paramSnippets = paramURL.split("&");
+            /* Our GET parameters: */
+            var params = {};
+            /* Add a param for each paramSnippet: */
+            for (var i = 0; i < paramSnippets.length; i++) {
+                /* Split the paramSnippet on the equal sign: */
+                var paramParts = paramSnippets[i].split("=");
+                /* If there's no equal sign, let the value equal "": */
+                if (paramParts.length === 1) {
+                    params[paramParts[0]] = "";
+                }
+                /* Otherwise, set params normally: */
+                else {
+                    params[paramParts[0]] = paramParts[1];
+                }
+            }
+            /* Finally, return params: */
+            return params;
+        },
+        /* Cookie functions provided by w3schools */
+        getCookie: function(cookie) {
+            /* Get the cookie with name cookie (return "" if non-existent) */
+            var name = cookie + "=";
+            /* Check all of the cookies and try to find the one containing name. */
+            var cookieList = document.cookie.split(';');
+            for (var i = 0; i < cookieList.length; i++) {
+                var curCookie = cookieList[i];
+                while (curCookie[0] === ' ') {
+                    curCookie = curCookie.substring(1);
+                }
+                /* If we've found the right cookie, return its value. */
+                if (curCookie.indexOf(name) === 0) {
+                    return curCookie.substring(name.length, curCookie.length);
+                }
+            }
+            /* Otherwise, if the cookie doesn't exist, return "" */
+            return "";
+        },
+        setCookie: function(cookie, value) {
+            /* Set a cookie with name cookie and value cookie that will expire 30 days from now. */
+            var d = new Date();
+            d.setTime(d.getTime() + (30*24*60*60*1000));
+            var expires = "expires="+d.toUTCString();
+            document.cookie = cookie + "=" + value + "; " + expires;
+        },
+        /* This function gets the authentication object. */
+>>>>>>> master
         getFirebaseAuth: function() {
             /* Declare a new instance of the Firebase object, used to reference our Firebase instance. */
             var firebaseRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
@@ -87,6 +154,7 @@ window.Contest_Judging_System = (function() {
             Contest_Judging_System.getRubrics(function(rubrics) {
                 /* Fetch the custom rubric items */
                 Contest_Judging_System.loadContest(contestId, function(contestData) {
+<<<<<<< HEAD
                     /* If custom rubric items exist, add them to the rubrics object. */
                     if (contestData.rubrics !== null) {
                         for (var k in contestData.rubrics) {
@@ -104,6 +172,23 @@ window.Contest_Judging_System = (function() {
                     
                     /* Invoke the callback, and pass the "rubrics" object into it. */
                     callback(rubrics);
+=======
+                     /* If there is a custom rubrics, merge it with rubrics: */
+                     if (contestData.rubrics !== null) {
+                         for (var k in contestData.rubrics) {
+                             if (k !== "Order") {
+                                 rubrics[k] = contestData.rubrics[k];
+                             } else {
+                                 /* Merge the .Order arrays: */
+                                 for (var i = 0; i < contestData.rubrics.Order.length; i++) {
+                                    rubrics.Order.push(contestData.rubrics.Order[i]);
+                                }
+                             }
+                         }
+                     }
+                     /* Pass rubrics through callback: */
+                     callback(rubrics);
+>>>>>>> master
                 });
             });
         },
@@ -159,10 +244,21 @@ window.Contest_Judging_System = (function() {
                 }
             }, Contest_Judging_System.logError);
             
+<<<<<<< HEAD
             /* Once the "contestKeys" query is done, check to make sure we have all the data, and invoke our callback. */
             contestKeys.once("value", function(data) {
                 var checkDone = setTimeout(function() {
                     if (Object.keys(callbackData).length === foundContestKeys.length) {
+=======
+            /* Once we're done querying fbRef: */
+            fbRef.once("value", function(data) {
+                /* Don't call callback until we're done checking all curContests! */
+                /* Check if we have all of the data for all curContests every second: */
+                var checkDone = setInterval(function() {
+                    /* If we do: */
+                    if (Object.keys(callbackData).length === fbRefData.length) {
+                        /* Stop checking if we're done: */
+>>>>>>> master
                         clearInterval(checkDone);
                         callback(callbackData);
                     }
@@ -200,8 +296,14 @@ window.Contest_Judging_System = (function() {
                 })(i);
             }
 
+<<<<<<< HEAD
             /* Every second, run a check to see if we have all the data that we need, if we do, invoke our callback. */
             var checkDone = setTimeout(function() {
+=======
+            /* Check every second if we're done: */
+            var checkDone = setInterval(function() {
+                /* If we're done: */
+>>>>>>> master
                 if (Object.keys(callbackData).length === props.length) {
                     /* Stop checking if we're done: */
                     clearTimeout(checkDone);
@@ -220,17 +322,28 @@ window.Contest_Judging_System = (function() {
          * @param {Function} callback(entry): The callback function to invoke once the query is done.
         ***/
         loadEntry: function(contestId, entryId, permLevel, callback) {
+<<<<<<< HEAD
             /* Declare a new instance of the Firebase object, used to reference our Firebase instance. */
             var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contestId + "/entries/" + entryId.replace("#", ""));
 
             /* Declare an empty object that'll be used to hold all the data that we want to pass into our callback */
+=======
+            /* Connect to Firebase: */
+            var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/contests/"+contestId+"/entries/"+entryId);
+            /* This is what we're going to pass through callback: */
+>>>>>>> master
             var callbackData = {};
 
             /* Declare an array that contains all of the properties that *must be loaded* before we invoke our callback  */
             var props = ["id", "thumb", "name"];
+<<<<<<< HEAD
             
             /* If the currently logged in user has a "permLevel" that is allowed to read scores, add "scores" to our property list. */
             if (permLevel >= 5) {
+=======
+            /* Include the scores if they can read the scores: */
+            if (permLevel >= 4) {
+>>>>>>> master
                 props.push("scores");
             }
             
@@ -245,8 +358,14 @@ window.Contest_Judging_System = (function() {
                 })(i);
             }
 
+<<<<<<< HEAD
             /* Every second, run a check to see if we have all the data that we need, if we do, invoke our callback. */
             var checkDone = setTimeout(function() {
+=======
+            /* Check every second if we're done: */
+            var checkDone = setInterval(function() {
+                /* If we're done: */
+>>>>>>> master
                 if (Object.keys(callbackData).length === props.length) {
                     /* Stop checking if we're done: */
                     clearTimeout(checkDone);
@@ -255,6 +374,7 @@ window.Contest_Judging_System = (function() {
                 }
             }, 1000);
         },
+<<<<<<< HEAD
         /***
          * get_N_Entries()
          * Loads "n" random entries from Firebase, and passes them into a callback function.
@@ -266,6 +386,12 @@ window.Contest_Judging_System = (function() {
         ***/
         get_N_Entries: function(n, contestId, permLevel, callback) {
             /* Declare a boolean variable that'll be used to determine whether or not we've loaded all the entries that we can/need. */
+=======
+        /* Gets N random entries (where N is the number of contests to get) and passes them along with the contest data of contestId into a callback. */
+        get_N_Entries: function(n, contestId, permLevel, uid, includeJudged, callback) {
+            console.log(uid);
+            /* This bool is true iff we're done picking the n entries. */
+>>>>>>> master
             var done = false;
 
             /* Declare an empty variable that'll eventually be used to store all of the data for the current contest. */
@@ -295,9 +421,9 @@ window.Contest_Judging_System = (function() {
                 while (pickedKeys.length < numEntries) {
                     /* Pick a random index */
                     var randIndex = Math.floor( Math.random() * entriesKeys.length );
-
                     /* Get the key from the index that we picked */
                     var pickedKey = entriesKeys[randIndex];
+<<<<<<< HEAD
 
                     /* If we haven't already picked that key... */
                     if (pickedKeys.indexOf(pickedKey) === -1) {
@@ -311,6 +437,28 @@ window.Contest_Judging_System = (function() {
                             });
                         })(pickedKey);
                     }
+=======
+                    
+                    /* ...pick it. */
+                    pickedKeys.push(pickedKey);
+                    /* Get rid of it from entriesKeys: */
+                    entriesKeys.splice(entriesKeys.indexOf(pickedKey), 1);
+                    /* Function wrapper to save pickedKey: */
+                    (function(pickedKey) {
+                        /* Set pickedEntries[pickedKey] to the entry data: */
+                        Contest_Judging_System.loadEntry(contestId, pickedKey, permLevel, function(entryData) {
+                            /* Do not include this entry if we don't want judged entries and it's already been judged: */
+                            if (!includeJudged && entryData.hasOwnProperty("scores") && entryData.scores.rubric.hasOwnProperty("judgesWhoVoted") && entryData.scores.rubric.judgesWhoVoted.indexOf(uid) !== -1) {
+                                console.log("This entry has already been judged.");
+                                /* Decrement numEntries since we're not going to include this entry as we've already judged it: */
+                                numEntries--;
+                                return;
+                            }
+                            console.log("This entry hasn't been judged.");
+                            pickedEntries[pickedKey] = entryData;
+                        });
+                    })(pickedKey);
+>>>>>>> master
                 }
                     
                 /* Tell our "finishedInterval" timeout, that we're done loading data. */
@@ -319,6 +467,7 @@ window.Contest_Judging_System = (function() {
 
             /* Every second, run a check to see if we have all the data that we need, if we do, invoke our callback. */
             var finishedInterval = setInterval(function() {
+                console.log(Object.keys(pickedEntries).length, numEntries);
                 if (done && Object.keys(pickedEntries).length === numEntries) {
                     /* Stop checking to see if we're done. */
                     clearInterval(finishedInterval);
@@ -463,6 +612,7 @@ window.Contest_Judging_System = (function() {
                 }
             }, 1000);
         },
+<<<<<<< HEAD
         /***
          * getCookie()
          * Fetches the specified cookie from the browser, and returns it's value.
@@ -508,6 +658,9 @@ window.Contest_Judging_System = (function() {
          * @param {String} type: The type of authentication method that we want to use. (Either "popup" or "redirect")
          * @param {Function} callback(authData): The callback function to invoke once the user has been logged in.
         ***/
+=======
+        /* This function logs the user in and then calls the callback with the Firebase auth data: */
+>>>>>>> master
         logUserIn: function(type, callback) {
             /* Declare a new instance of the Firebase object, that'll be used to manipulate our Firebase instance. */
             var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
@@ -540,7 +693,8 @@ window.Contest_Judging_System = (function() {
                         usersRef.child(authData.uid).set({
                             name: authData.google.displayName,
                             permLevel: 1
-                        });
+                            /* Log errors: */
+                        }, Contest_Judging_System.logError);
                         /* Also, log a message to the console. */
                         console.log("Added new user to Firebase. Name: " + authData.google.displayName + " Permission Level: 1");
                     }
@@ -575,7 +729,8 @@ window.Contest_Judging_System = (function() {
                         name: fbAuth.google.displayName,
                         permLevel: 1
                     };
-                    users.child(userID).set(userData);
+                    /* Log errors with .logError: */
+                    users.child(userID).set(userData, Contest_Judging_System.logError);
                     /* Call the callback */
                     callback(userData);
                 }
@@ -675,7 +830,8 @@ window.Contest_Judging_System = (function() {
 
                         /* Set the new scores to newScoreObj */
                         var thisEntry = new Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contest + "/entries/" + entry + "/scores/");
-                        thisEntry.child("rubric").set(newScoreObj);
+                        /* Log errors with .logError: */
+                        thisEntry.child("rubric").set(newScoreObj, Contest_Judging_System.logError);
                         /* Tell the user that it worked! */
                         alert("This entry has been judged. Hooray!");
                         /* Pass newScoreObj through callback: */
@@ -697,7 +853,11 @@ window.Contest_Judging_System = (function() {
          * @param {Function} callback: The callback function to invoke once we've added the new contest to Firebase.
         ***/
         createContest: function(contestId, contestRubrics, callback) {
+<<<<<<< HEAD
             /* Create a new instance of the Firebase object. This'll be used to manipulate our Firebase instance. */
+=======
+            /* Get Firebase refs:: */
+>>>>>>> master
             var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
 
             /* Declare a variable to store the "contests" child from Firebase */
@@ -705,6 +865,7 @@ window.Contest_Judging_System = (function() {
 
             /* Declare a variable to store the "contestKeys" child from Firebase. */
             var fbContestKeysRef = fbRef.child("contestKeys");
+<<<<<<< HEAD
 
             /* Declare a variable to store the "<contestId>" child from Firebase (where "<contestId>" is the scratchpad ID that was passed into this function). */
             var thisContest = fbContestRef.child(contestId);
@@ -730,33 +891,73 @@ window.Contest_Judging_System = (function() {
                                     rubrics[i] = contestRubrics[i];
                                 }
                             }
+=======
+>>>>>>> master
 
-                            console.log(snapshot.child(id).child("entries"));
+            /* Send AJAX request to get info on contest: */
+            var programQuery = $.ajax({
+                type: "GET",
+                url: KA_API.urls.scratchpadInfo(contestId),
+                async: true,
+                complete: function(response) {
+                    var programData = response.responseJSON;
 
-                            var contestExists = !snapshot.hasChild(id);
-                            var newFbData = {
-                                id: id,
-                                name: name,
-                                img: img,
-                                desc: description,
-                                rubrics: rubrics,
-                                entries: snapshot.child(id).entries === null ? { } : snapshot.child(id).child("entries").val(),
-                                entryKeys: snapshot.child(id).entryKeys === null ? { } : snapshot.child(id).child("entryKeys").val()
-                            };
-                            if (!contestExists) {
-                                fbContestKeysRef.child(id).set(true);
-                                newFbData.cannotDestroy = true;
+                    /* Connect to Firebase: */
+                    fbContestRef.once("value", function(snapshot) {
+                        /* Get the program info: */
+                        var id = contestId;
+                        var name = programData.translatedTitle;
+                        var img = programData.imagePath;
+                        var description = programData.description;
+                        var rubrics = snapshot.child(id).hasChild("rubrics") ? snapshot.child(id).child("rubrics").val() : {};
+
+                        /* Merge rubrics and contestRubrics: */
+                        for (var i in contestRubrics) {
+                            if (!rubrics.hasOwnProperty(i)) {
+                                rubrics[i] = contestRubrics[i];
                             }
+                        }
+                        /* Merge rubrics.Order and contestRubrics.Order: */
+                        for (var i = 0; i < contestRubrics.Order.length; i++) if (rubrics.Order.indexOf(contestRubrics.Order[i]) == -1) rubrics.Order.push(contestRubrics.Order[i]);
 
-                            console.log(newFbData);
+                        /* Get the new Firebase data: */
+                        var newFbData = {
+                            id: id,
+                            name: name,
+                            img: img,
+                            desc: description,
+                            rubrics: rubrics
+                        };
+                        
+                        /* Check if the contest exists  */
+                        var contestExists = snapshot.hasChild(id);
+                        /* If the contest doesn't exist: */
+                        if (!contestExists) {
+                            /* If it doesn't exist, add it to fbContestKeys and set .cannotDestroy to true: */
+                            newFbData.cannotDestroy = true;
+                            fbContestKeysRef.child(id).set(true, function(err) {
+                                /* Log errors: */
+                                if (err) { Contest_Judging_System.logError(err); }
+                                /* When we're done, update fbContestRef: */
+                                else { updateFirebase(); }
+                            });
+                        }
+                        /* Otherwise, go straight to updating fbContestRef: */
+                        else { updateFirebase(); }
 
-                            fbContestRef.child(id).update(newFbData);
-
-                            callback(window.location.href.replace("/admin/new_contest.html", "/contest.html?contest=" + contestId + "&entries=30"));
-                        });
-                    }
-                });
-            }
+                        function updateFirebase() {
+                            /* This function updates fbContestRef: */
+                            fbContestRef.child(id).update(newFbData, function(err) {
+                                /* Log errors: */
+                                if (err) { Contest_Judging_System.logError(err); }
+                                /* Once we're done, call the callback with a link to the new contest judging page: */
+                                else { callback(window.location.href.replace("/admin/new_contest.html", "/contest.html?contest=" + contestId + "&entries=30")); }
+                            });
+                        }
+                        /* Log errors: */
+                    }, Contest_Judging_System.logError);
+                }
+            });
         }
     };
 })();

@@ -1,14 +1,14 @@
+/* Get the GET params: */
+var getParams = Contest_Judging_System.getGETParams();
 /* If it doesn't look like there's a contest ID in the URL, show an alert, and go back one page. */
-if (window.location.search.indexOf("?contest") === -1) {
+if (!getParams.contest) {
 	alert("Contest ID not found!");
-
 	window.history.back();
 }
 
 /* If it doesn't look like there's an entry ID in the URL, show an alert, and go back one page. */
-if (window.location.search.indexOf("&entry=") === -1) {
+if (!getParams.entry) {
 	alert("Entry ID not found!");
-
 	window.history.back();
 }
 
@@ -17,12 +17,9 @@ var selectedBtn = {};
 /* The score for this entry */
 var scoreData = {};
 
-/* Locate the contest ID in the URL, and store it for later use. */
-var contestId = window.location.href.split("?contest=")[1].split("&")[0];
-
-/* Locate the entry ID in the URL, and store it for later use. */
-var entryId = window.location.href.split("&entry=")[1];
-if (entryId.indexOf("#") > -1) entryId = entryId.substring(0, entryId.indexOf("#"));
+/* Get the GET params: */
+var contestId = getParams.contest;
+var entryId = getParams.entry;
 
 /* The dimensions of the program */
 var dimens = {
@@ -69,7 +66,7 @@ function judgingButtonClick(k, kLower) {
 	return function(event) {
 		var id = event.target.id;
 		/* Unselect previously selected button */
-		if (selectedBtn[k] != null && selectedBtn[k] != id) {
+		if (selectedBtn[k] !== null && selectedBtn[k] !== id) {
 			$("#"+selectedBtn[k]).removeClass("btn-success").addClass("btn-default");
 		}
 		/* Set selectedBtn[k] and scoreData[k] */
@@ -77,7 +74,7 @@ function judgingButtonClick(k, kLower) {
 		scoreData[k] = parseInt(selectedBtn[k].replace(kLower+"SelectButton", ""), 10);
 		/* Select the selected button */
 		$("#"+id).removeClass("btn-default").addClass("btn-success");
-	}
+	};
 }
 
 /* The <iframe> for this program */
@@ -90,7 +87,9 @@ var rubrics, entryData;
 function updateScoreData() {
 	/* This function updates currentScoreDiv. */
 	/* Empty currentScoreDiv except for the first element (the heading): */
-	while (currentScoreDiv.childNodes.length > 1) currentScoreDiv.removeChild(currentScoreDiv.childNodes[currentScoreDiv.childNodes.length-1]);
+	while (currentScoreDiv.childNodes.length > 1) {
+        currentScoreDiv.removeChild(currentScoreDiv.childNodes[currentScoreDiv.childNodes.length-1]);
+    }
 	/* Go through rubrics in the intended order: */
 	for (var _i = 0; _i < rubrics.Order.length; _i++) {
 		/* Current Property: */
@@ -102,12 +101,12 @@ function updateScoreData() {
         /* If there are discrete options to this rubric: */
         if (rubrics[k].hasOwnProperty("keys")) {
             /* Set the textContent using .keys: */
-            curRubric.textContent = rubricName+": " +rubrics[k].keys[Math.round(entryData.scores.rubric[k] === undefined ? 1 : entryData.scores.rubric[k].avg)];
+            curRubric.textContent = rubricName+": " +rubrics[k].keys[Math.round(entryData.scores.rubric.hasOwnProperty(k) ? entryData.scores.rubric[k].avg : rubrics[k].min)];
         }
         /* Otherwise, the rubric is numerical. */
         else {
             /* Set the current score using numbers */
-            curRubric.textContent = rubricName+": "+Math.round(entryData.scores.rubric[k] === undefined ? 1 : entryData.scores.rubric[k].avg)+" out of "+rubrics[k].max;
+            curRubric.textContent = rubricName+": "+Math.round(entryData.scores.rubric.hasOwnProperty(k) ? entryData.scores.rubric[k].avg : rubrics[k].min)+" out of "+rubrics[k].max;
         }
         /* Append curRubric to currentScoreDiv: */
         currentScoreDiv.appendChild(curRubric);
@@ -144,15 +143,21 @@ function loadEntry() {
             console.log(JSON.stringify(rubrics));
 
             /* If the user can see the scores, update the scores: */
-            if (entryData.hasOwnProperty("scores")) updateScoreData();
+            if (entryData.hasOwnProperty("scores")) {
+                updateScoreData();
+            }
             /* Otherwise, hide the scores: */
-            else currentScoreDiv.style.display = "none";
+            else {
+                currentScoreDiv.style.display = "none";
+            }
 
             /* If the user can see the scores... */
             if (entryData.hasOwnProperty("scores")) {
                 document.querySelector(".judgeOnly").style.display = "block";
                 /* Empty rubricsDiv: */
-                while (rubricsDiv.childNodes.length) rubricsDiv.removeChild(rubricsDiv.childNodes[0]);
+                while (rubricsDiv.childNodes.length) {
+                    rubricsDiv.removeChild(rubricsDiv.childNodes[0]);
+                }
                 /* ...Go through the rubrics in the order that we want: */
                 for (var _i = 0; _i < rubrics.Order.length; _i++) {
                     /* Current Property: */
@@ -191,7 +196,7 @@ function loadEntry() {
                             curSelectButton.type = "button";
                             curSelectButton.id = (kLower+"SelectButton"+i.toString());
                             /* Intitialize selectedBtn[k] to the id of the minimum: */
-                            if (i == rubrics[k].min) {
+                            if (i === rubrics[k].min) {
                                 selectedBtn[k] = curSelectButton.id;
                                 /* Also, select the button: */
                                 curSelectButton.className = "btn btn-sm btn-success";
@@ -251,10 +256,16 @@ function loadEntry() {
                     /* Add this judging tools to the rubrics div */
                     rubricsDiv.appendChild(curGroup);
                 }
-            } else document.querySelector(".judgeOnly").style.display = "none";
+            } else {
+                /* Not sure if this is intended or not, but this will only hide the first element of class "judgeOnly"
+                    that it finds, not all of them. */
+                document.querySelector(".judgeOnly").style.display = "none";
+            }
 
             /* Append our program iframe to the "program-preview" div if it's no there already. */
-            if (!programPreview.childNodes.length) programPreview.appendChild(programIframe);
+            if (!programPreview.childNodes.length) {
+                programPreview.appendChild(programIframe);
+            }
 
             /* Set the widths of our sliders to 30% */
             $(".judgingSlider").width("30%");
@@ -297,9 +308,13 @@ $(".viewOnKA").on("click", function() {
 	/* Prompt the user with a message warning them about information that could potentially bias them. */
 	var promptMsg = prompt("By visiting the following page, you're exposing yourself to information that could bias your judging. If you agree to not let information you see on Khan Academy bias your judging, please type \"I agree\" in the box below to show that you read this message. Otherwise, close this prompt.");
 	/* If the user types 'I agree' in the prompt, open the entry on Khan Academy. */
-	if (promptMsg != null && promptMsg.toLowerCase().indexOf("i agree") > -1) {
+	if (promptMsg !== null && promptMsg.toLowerCase().indexOf("i agree") > -1) {
 		window.open("https://www.khanacademy.org/computer-programming/entry/" + entryId);
 	}
+});
+
+$(".restartProgram").on("click", function() {
+    programIframe.src = programIframe.src;
 });
 
 $("#submitBtn").on("click", function() {
@@ -307,14 +322,24 @@ $("#submitBtn").on("click", function() {
 	console.log(scoreData);
 
 	/* Judge the entry if they have a permLevel of at least 4. */
-	if (entryData.hasOwnProperty("scores")) Contest_Judging_System.judgeEntry(contestId, entryId, scoreData, permLevel, function(scoreData) {
-		/* Update the score data when done: */
-		entryData.scores.rubric = scoreData;
-		updateScoreData();
-	});
+	if (entryData.hasOwnProperty("scores")) {
+        $(this).prop("disabled", "disabled");
+        $(this).text("Submitting vote...");
+        Contest_Judging_System.judgeEntry(contestId, entryId, scoreData, permLevel, function(scoreData) {
+		    /* Update the score data when done: */
+		    entryData.scores.rubric = scoreData;
+		    updateScoreData();
+
+            $(this).text("Vote submitted!");
+	    });
+    }
     /* Make sure permLevel has been set: */
-    else if (!permLevel) alert("You haven't logged in yet!");
-    else alert("You aren't in the allowed judges list!");
+    else if (!permLevel) {
+        alert("You haven't logged in yet!");
+    }
+    else {
+        alert("You aren't in the allowed judges list!");
+    }
 });
 
 /* When we click the "Set Dimensions" button, set the dimensions of the program. */

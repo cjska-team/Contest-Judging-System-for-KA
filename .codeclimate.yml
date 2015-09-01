@@ -1,8 +1,8 @@
 # Save as .codeclimate.yml (note leading .) in project root directory
 languages:
-  Ruby: false
+  Ruby: true
   JavaScript: true
-  PHP: false
-  Python: false
+  PHP: true
+  Python: true
 # exclude_paths:
 # - "foo/bar.rb"

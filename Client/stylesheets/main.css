@@ -2,6 +2,15 @@
 #loading {
 	text-align: center;
 }
+/*Give the #dataLoading centered text and make it invisible by default:*/
+#dataLoading {
+    text-align: center;
+    display: none;
+}
+/* Hide .hideWhileLoad by default: */
+.hideWhileLoad {
+    display: none;
+}
 /*Everything inside <summary>s should be inline so the summary doesn't go into multiple lines*/
 summary * {
     display: inline;
@@ -38,24 +47,17 @@ summary * {
 .contest img, .entry img {
     border: 1px dashed #000;
 }
-/*Give the links to the entries 5px of vertical margin and full width*/
-.viewEntries {
+/*Give the links to the contests/leaderboards and entries 5px of vertical margin and full width*/
+.contest .media .media-left .btn, .viewEntries {
     margin: 5px auto 5px auto;
     width: 100%;
 }
-/* Make the login button and more contests button invisible by default. */
-.login, #more-contests {
+/* Make the login, logout, more contests, and .judgeOnly button invisible by default. */
+.login, #more-contests, .logout, .judgeOnly {
     display: none;
 }
 /* Make the #more-contests take up the same width as its parent and give it some vertical space. */
 #more-contests {
     width: 100%;
     margin: 1em 0;
-}
-
-.logout {
-    display: none;
-}
-.judgeOnly {
-    display: none;
 }

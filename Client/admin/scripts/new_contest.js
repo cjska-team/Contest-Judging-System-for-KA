@@ -222,7 +222,10 @@ document.querySelector("#submitcontest").addEventListener("click", function(even
 
     console.log(rubrics);
 
-    /* If everything is OK, then alert to the user that they can't submit contests yet. */
+    /* Warn the user of how long this might take and disable the Submit Contest button: */
+    event.currentTarget.setAttribute("disabled", "true");
+    alert("Please hold! This might take a while.");
+    /* If everything is OK, create the contest. */
     Contest_Judging_System.createContest(programID, rubrics, function(href) {
         alert("Contest created! Navigating to the contest page on KACJS.");
         window.location.assign(href);
