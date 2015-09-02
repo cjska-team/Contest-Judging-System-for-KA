@@ -321,7 +321,7 @@ $(".toggleCode").on("click", function() {
 
 $(".viewOnKA").on("click", function() {
 	/* Prompt the user with a message warning them about information that could potentially bias them. */
-	var promptMsg = prompt("By visiting the following page, you're exposing yourself to information that could bias your judging. If you agree to not let information you see on Khan Academy bias your judging, please type \"I agree\" in the box below to show that you read this message. Otherwise, close this prompt.");
+	var promptMsg = window.prompt("By visiting the following page, you're exposing yourself to information that could bias your judging. If you agree to not let information you see on Khan Academy bias your judging, please type \"I agree\" in the box below to show that you read this message. Otherwise, close this prompt.");
 	/* If the user types 'I agree' in the prompt, open the entry on Khan Academy. */
 	if (promptMsg !== null && promptMsg.toLowerCase().indexOf("i agree") > -1) {
 		window.open("https://www.khanacademy.org/computer-programming/entry/" + entryId);
@@ -341,7 +341,7 @@ submitBtn.on("click", function() {
 	if (entryData.hasOwnProperty("scores")) {
         /* Tell the user they've already judged this entry if they've already judged this entry: */
         if (entryData.scores.rubric.hasOwnProperty("judgesWhoVoted") && entryData.scores.rubric.judgesWhoVoted.indexOf(fbAuth.uid) !== -1) {
-            alert("You've already judged this entry!");
+            window.alert("You've already judged this entry!");
         }
         /* Otherwise, judge the entry if they haven't judged the entry: */
         else {
@@ -360,10 +360,10 @@ submitBtn.on("click", function() {
     }
     /* Make sure permLevel has been set: */
     else if (!permLevel) {
-        alert("You haven't logged in yet!");
+        window.alert("You haven't logged in yet!");
     }
     else {
-        alert("You aren't in the allowed judges list!");
+        window.alert("You aren't in the allowed judges list!");
     }
 });
 
@@ -373,7 +373,7 @@ $("#setdimensions").on("click", function(event) {
 	event.preventDefault();
 	var width = parseInt(document.forms.dimensions.width.value), height = parseInt(document.forms.dimensions.height.value);
 	if (isNaN(width) || isNaN(height)) {
-		alert("Please enter in valid integers for the dimensions. Thanks!");
+		window.alert("Please enter in valid integers for the dimensions. Thanks!");
 		return;
 	}
 
