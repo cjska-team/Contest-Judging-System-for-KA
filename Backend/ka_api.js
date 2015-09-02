@@ -53,7 +53,7 @@ window.KA_API = (function() {
             var entries = {};
 
             /* Send AJAX request for getting all the entries to the desired contest */
-            var apiQuery = $.ajax({
+            $.ajax({
                 type: 'GET',
                 url: this.urls.spinoffs(contestID),
                 async: true,
@@ -136,7 +136,7 @@ window.KA_API = (function() {
             var allContests = {};
 
             /* Send AJAX request to get all the contests from Khan Academy */
-            var apiQuery = $.ajax({
+            $.ajax({
                 type: 'GET',
                 url: this.urls.spotlight,
                 async: true,
