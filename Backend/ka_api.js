@@ -60,7 +60,7 @@ window.KA_API = (function() {
                 complete: function(apiResponse) {
                     /* When the AJAX request finishes */
                     /* allPrograms is a list of all of the contest entries */
-                    var allPrograms = apiResponse.responseJSON.scratchpads
+                    var allPrograms = apiResponse.responseJSON.scratchpads;
 
                     /* Loop through allPrograms */
                     for (var i = 0; i < allPrograms.length; i++) {
