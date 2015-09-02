@@ -2,13 +2,13 @@
 var getParams = Contest_Judging_System.getGETParams();
 /* If it doesn't look like there's a contest ID in the URL, show an alert, and go back one page. */
 if (!getParams.contest) {
-	alert("Contest ID not found!");
+	window.alert("Contest ID not found!");
 	window.history.back();
 }
 
 /* If it doesn't look like there's an entry ID in the URL, show an alert, and go back one page. */
 if (!getParams.entry) {
-	alert("Entry ID not found!");
+	window.alert("Entry ID not found!");
 	window.history.back();
 }
 
@@ -89,7 +89,7 @@ var rubrics, entryData;
 function updateScoreData() {
 	/* This function updates currentScoreDiv and submitBtn. */
     /* Change the text of submitBtn to "Vote submitted!" if they already submitted a vote: */
-    if (entryData.scores.rubric.hasOwnProperty("judgesWhoVoted") && entryData.scores.rubric.judgesWhoVoted.indexOf(fbAuth.uid) != -1) {
+    if (entryData.scores.rubric.hasOwnProperty("judgesWhoVoted") && entryData.scores.rubric.judgesWhoVoted.indexOf(fbAuth.uid) !== -1) {
         submitBtn.text("Vote submitted!");
     }
 
@@ -242,7 +242,7 @@ function loadEntry() {
                         /* This is put in a function wrapper to save the value of curLabel, scoreData, rubricName, and k for the function inside the JSON object. */
                         (function(curLabel, scoreData, rubricName, k) {
                             /* Use noUiSlider to create slider */
-                            noUiSlider.create(curSlider, {
+                            window.noUiSlider.create(curSlider, {
                                 connect: "lower",
                                 start: rubrics[k].min,
                                 step: 1,
