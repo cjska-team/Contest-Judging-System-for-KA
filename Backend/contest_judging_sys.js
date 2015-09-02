@@ -65,9 +65,9 @@ window.Contest_Judging_System = (function() {
             /* Our GET parameters: */
             var params = {};
             /* Add a param for each paramSnippet: */
-            for (var i = 0; i < paramSnippets.length; i++) {
+            for (var pInd = 0; pInd < paramSnippets.length; pInd++) {
                 /* Split the paramSnippet on the equal sign: */
-                var paramParts = paramSnippets[i].split("=");
+                var paramParts = paramSnippets[pInd].split("=");
                 /* If there's no equal sign, let the value equal "": */
                 if (paramParts.length === 1) {
                     params[paramParts[0]] = "";
@@ -91,8 +91,8 @@ window.Contest_Judging_System = (function() {
             var name = cookie + "=";
             /* Check all of the cookies and try to find the one containing name. */
             var cookieList = document.cookie.split(';');
-            for (var i = 0; i < cookieList.length; i++) {
-                var curCookie = cookieList[i];
+            for (var cInd = 0; cInd < cookieList.length; cInd++) {
+                var curCookie = cookieList[cInd];
                 while (curCookie[0] === ' ') {
                     curCookie = curCookie.substring(1);
                 }
@@ -172,14 +172,14 @@ window.Contest_Judging_System = (function() {
                 window.Contest_Judging_System.loadContest(contestId, function(contestData) {
                     /* If custom rubric items exist, add them to the rubrics object. */
                     if (contestData.rubrics !== null) {
-                        for (var k in contestData.rubrics) {
+                        for (var crInd in contestData.rubrics) {
                             /* If the current rubric item isn't our "Order" rubric, add it to the rubric object. */
                             if (k !== "Order") {
-                                rubrics[k] = contestData.rubrics[k];
+                                rubrics[crInd] = contestData.rubrics[crInd];
                             } else {
                                 /* Loop through our "Order" rubric item, so we can specify the order in which we want to show the rubric items */
-                                for (var i = 0; i < contestData.rubrics.Order.length; i++) {
-                                    rubrics.Order.push(contestData.rubrics.Order[i]);
+                                for (var croInd = 0; croInd < contestData.rubrics.Order.length; croInd++) {
+                                    rubrics.Order.push(contestData.rubrics.Order[croInd]);
                                 }
                             }
                         }
@@ -228,7 +228,7 @@ window.Contest_Judging_System = (function() {
                 var curContestData = {};
 
                 /* Fetch the data for all of the required properties */
-                for (var i = 0; i < props.length; i++) {
+                for (var ckpropInd = 0; ckpropInd < props.length; ckpropInd++) {
                     /* Make sure we don't lose "i"s value. */
                     (function(i) {
                         curContest.child(props[i]).once("value", function(snapshot) {
@@ -238,7 +238,7 @@ window.Contest_Judging_System = (function() {
                                 callbackData[key] = curContestData;
                             }
                         }, this.logError);
-                    })(i);
+                    })(ckpropInd);
                 }
             }, this.logError);
 
@@ -273,14 +273,14 @@ window.Contest_Judging_System = (function() {
             var props = ["desc", "id", "img", "name", "entryCount", "entryKeys", "rubrics"];
 
             /* Fetch each of the required properties for this contest, from Firebase. */
-            for (var i = 0; i < props.length; i++) {
+            for (var cpropInd = 0; cpropInd < props.length; cpropInd++) {
                 /* Make sure we don't lose "i"s value. */
                 (function(i) {
                     /* Once this property has been loaded from Firebase, add it to our "callbackData" object. */
                     contestRef.child(props[i]).once("value", function(snapshot) {
                         callbackData[props[i]] = snapshot.val();
                     }, this.logError);
-                })(i);
+                })(cpropInd);
             }
 
             /* Every second, run a check to see if we have all the data that we need, if we do, invoke our callback. */
@@ -318,14 +318,14 @@ window.Contest_Judging_System = (function() {
             }
 
             /* Load the data for each of the required properties */
-            for (var i = 0; i < props.length; i++) {
+            for (var epropInd = 0; epropInd < props.length; epropInd++) {
                 /* Make sure we don't lose "i"s value. */
                 (function(i) {
                     /* Once the current property has been loaded from Firebase, add it to our "callbackData" object */
                     fbRef.child(props[i]).once("value", function(snapshot) {
                         callbackData[props[i]] = snapshot.val();
                     }, this.logError);
-                })(i);
+                })(epropInd);
             }
 
             /* Every second, run a check to see if we have all the data that we need, if we do, invoke our callback. */
@@ -459,23 +459,23 @@ window.Contest_Judging_System = (function() {
                     var entriesToRemove = { };
 
                     /* Loop through all the data we recieved from Khan Academy; and see if we already have it in Firebase. */
-                    for (var i in kaData) {
-                        if (!fbData.hasOwnProperty(i)) {
+                    for (var kdInd in kaData) {
+                        if (!fbData.hasOwnProperty(kdInd)) {
                             // Most likely a new contest; add it to Firebase!
-                            console.log("[sync] We found a new contest! Contest ID: " + i);
-                            toAddToFirebase[i] = kaData[i];
+                            console.log("[sync] We found a new contest! Contest ID: " + kdInd);
+                            toAddToFirebase[kdInd] = kaData[kdInd];
                         } else {
                             // We have this contest in Firebase; so now let's see if we have all the entries
-                            for (var j in kaData[i].entries) {
-                                if (!fbData[i].entries.hasOwnProperty(j)) {
+                            for (var kdentInd in kaData[kdInd].entries) {
+                                if (!fbData[kdInd].entries.hasOwnProperty(kdentInd)) {
                                     // New entry! Add to Firebase.
-                                    console.log("[sync] We found a new entry! Contest ID: " + i + ". Entry ID: " + j);
+                                    console.log("[sync] We found a new entry! Contest ID: " + kdInd + ". Entry ID: " + kdentInd);
                                     /* TODO */
-                                    if (!entriesToAdd.hasOwnProperty(i)) {
-                                        entriesToAdd[i] = [];
-                                        entriesToAdd[i].push( kaData[i].entries[j] );
+                                    if (!entriesToAdd.hasOwnProperty(kdInd)) {
+                                        entriesToAdd[kdInd] = [];
+                                        entriesToAdd[kdInd].push( kaData[kdInd].entries[kdentInd] );
                                     } else {
-                                        entriesToAdd[i].push( kaData[i].entries[j] );
+                                        entriesToAdd[kdInd].push( kaData[kdInd].entries[kdentInd] );
                                     }
                                 }
                             }
@@ -483,23 +483,23 @@ window.Contest_Judging_System = (function() {
                     }
 
                     /* Loop through all the data we recieved from Firebase; and see if it still exists on Khan Academy. */
-                    for (var i in fbData) {
-                        if (!kaData.hasOwnProperty(i)) {
+                    for (var fbInd in fbData) {
+                        if (!kaData.hasOwnProperty(fbInd)) {
                             // Contest removed. Delete from Firebase
-                            console.log("[sync] We found a contest that no longer exists. ID: " + i);
-                            toRemoveFromFirebase[i] = fbData[i];
+                            console.log("[sync] We found a contest that no longer exists. ID: " + fbInd);
+                            toRemoveFromFirebase[fbInd] = fbData[fbInd];
                         } else {
                             // Contest still exists. Now let's see if any entries have been removed.
-                            for (var j in fbData[i].entries) {
-                                if (!kaData[i].entries.hasOwnProperty(j)) {
+                            for (var fbentInd in fbData[fbInd].entries) {
+                                if (!kaData[fbInd].entries.hasOwnProperty(fbentInd)) {
                                     // Entry no longer exists on Khan Academy; delete from Firebase (or mark as archived).
-                                    console.log("[sync] We found an entry that doesn't exist anymore! Contest ID: " + i + ". Entry ID: " + j);
+                                    console.log("[sync] We found an entry that doesn't exist anymore! Contest ID: " + fbInd + ". Entry ID: " + fbentInd);
                                     /* TODO */
-                                    if (!entriesToRemove.hasOwnProperty(i)) {
-                                        entriesToRemove[i] = [];
-                                        entriesToRemove[i].push(j);
+                                    if (!entriesToRemove.hasOwnProperty(fbInd)) {
+                                        entriesToRemove[fbInd] = [];
+                                        entriesToRemove[fbInd].push(fbentInd);
                                     } else {
-                                        entriesToRemove[i].push(j);
+                                        entriesToRemove[fbInd].push(fbentInd);
                                     }
                                 }
                             }
@@ -507,34 +507,34 @@ window.Contest_Judging_System = (function() {
                     }
 
                     /* Add what we don't have; and remove what Khan Academy *doesn't* have. */
-                    for (var a in toAddToFirebase) {
+                    for (var cta in toAddToFirebase) {
                         // Add to Firebase!
-                        contestsFBRef.child(a).set(toAddToFirebase[a]);
-                        fbRef.child("contestKeys").child(a).set(true);
+                        contestsFBRef.child(a).set(toAddToFirebase[cta]);
+                        fbRef.child("contestKeys").child(cta).set(true);
                         // add to contest key list
                     }
-                    for (var r in toRemoveFromFirebase) {
+                    for (var ctr in toRemoveFromFirebase) {
                         // Remove from Firebase!
-                        contestsFBRef.child(r).set(null);
+                        contestsFBRef.child(ctr).set(null);
                         // remove from contest key list
-                        fbRef.child(contestKeys).child(r).set(null);
+                        fbRef.child("contestKeys").child(ctr).set(null);
                     }
-                    for (var ea in entriesToAdd) {
+                    for (var eta in entriesToAdd) {
                         /* Add all the new entries to Firebase */
-                        for (var i = 0; i < entriesToAdd[ea].length; i++) {
-                            console.log("[sync] Adding " + entriesToAdd[ea][i].id + " to Firebase.");
-                            contestsFBRef.child(ea).child("entries").child(entriesToAdd[ea][i].id).set(entriesToAdd[ea][i]);
+                        for (var eaInd = 0; eaInd < entriesToAdd[eta].length; eaInd++) {
+                            console.log("[sync] Adding " + entriesToAdd[eta][eaInd].id + " to Firebase.");
+                            contestsFBRef.child(eta).child("entries").child(entriesToAdd[eta][eaInd].id).set(entriesToAdd[eta][eaInd]);
                             // push to contest entry keys list
-                            contestsFBRef.child(ea).child("entryKeys").child(entriesToAdd[ea][i].id).set(true);
+                            contestsFBRef.child(eta).child("entryKeys").child(entriesToAdd[eta][eaInd].id).set(true);
                         }
                     }
-                    for (var er in entriesToRemove) {
+                    for (var etr in entriesToRemove) {
                         /* Remove all the old entries from Firebase */
-                        for (var i = 0; i < entriesToRemove[er].length; i++) {
-                            console.log("[sync] Removing " + entriesToRemove[er][i] + " from Firebase!");
-                            contestsFBRef.child(er).child("entries").child(entriesToRemove[er][i]).set(null);
+                        for (var erInd = 0; erInd < entriesToRemove[etr].length; erInd++) {
+                            console.log("[sync] Removing " + entriesToRemove[etr][erInd] + " from Firebase!");
+                            contestsFBRef.child(etr).child("entries").child(entriesToRemove[etr][erInd]).set(null);
                             // remove from the entry keys list
-                            contestsFBRef.child(er).child("entryKeys").child(entriesToRemove[er][i]).set(null);
+                            contestsFBRef.child(etr).child("entryKeys").child(entriesToRemove[etr][erInd]).set(null);
                         }
                     }
 
@@ -758,15 +758,15 @@ window.Contest_Judging_System = (function() {
                         var rubrics = snapshot.child(id).hasChild("rubrics") ? snapshot.child(id).child("rubrics").val() : {};
 
                         /* Merge rubrics and contestRubrics: */
-                        for (var i in contestRubrics) {
-                            if (!rubrics.hasOwnProperty(i)) {
-                                rubrics[i] = contestRubrics[i];
+                        for (var cR in contestRubrics) {
+                            if (!rubrics.hasOwnProperty(cR)) {
+                                rubrics[cR] = contestRubrics[cR];
                             }
                         }
                         /* Merge rubrics.Order and contestRubrics.Order: */
-                        for (var i = 0; i < contestRubrics.Order.length; i++) {
-                            if (rubrics.Order.indexOf(contestRubrics.Order[i]) === -1) {
-                                rubrics.Order.push(contestRubrics.Order[i]);
+                        for (var ccroInd = 0; ccroInd < contestRubrics.Order.length; ccroInd++) {
+                            if (rubrics.Order.indexOf(contestRubrics.Order[ccroInd]) === -1) {
+                                rubrics.Order.push(contestRubrics.Order[ccroInd]);
                             }
                         }
 
