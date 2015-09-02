@@ -173,13 +173,17 @@ window.Contest_Judging_System = (function() {
                     /* If custom rubric items exist, add them to the rubrics object. */
                     if (contestData.rubrics !== null) {
                         for (var crInd in contestData.rubrics) {
-                            /* If the current rubric item isn't our "Order" rubric, add it to the rubric object. */
-                            if (crInd !== "Order") {
-                                rubrics[crInd] = contestData.rubrics[crInd];
-                            } else {
-                                /* Loop through our "Order" rubric item, so we can specify the order in which we want to show the rubric items */
-                                for (var croInd = 0; croInd < contestData.rubrics.Order.length; croInd++) {
-                                    rubrics.Order.push(contestData.rubrics.Order[croInd]);
+                            /* Wrap the body of a for-in loop with an if-statement, to filter unwanted properties. */
+                            /* More info: https://jslinterrors.com/the-body-of-a-for-in-should-be-wrapped-in-an-if-statement */
+                            if (contestData.rubrics.hasOwnProperty(crInd)) {
+                                /* If the current rubric item isn't our "Order" rubric, add it to the rubric object. */
+                                if (crInd !== "Order") {
+                                    rubrics[crInd] = contestData.rubrics[crInd];
+                                } else {
+                                    /* Loop through our "Order" rubric item, so we can specify the order in which we want to show the rubric items */
+                                    for (var croInd = 0; croInd < contestData.rubrics.Order.length; croInd++) {
+                                        rubrics.Order.push(contestData.rubrics.Order[croInd]);
+                                    }
                                 }
                             }
                         }
@@ -460,22 +464,30 @@ window.Contest_Judging_System = (function() {
 
                     /* Loop through all the data we recieved from Khan Academy; and see if we already have it in Firebase. */
                     for (var kdInd in kaData) {
-                        if (!fbData.hasOwnProperty(kdInd)) {
-                            // Most likely a new contest; add it to Firebase!
-                            console.log("[sync] We found a new contest! Contest ID: " + kdInd);
-                            toAddToFirebase[kdInd] = kaData[kdInd];
-                        } else {
-                            // We have this contest in Firebase; so now let's see if we have all the entries
-                            for (var kdentInd in kaData[kdInd].entries) {
-                                if (!fbData[kdInd].entries.hasOwnProperty(kdentInd)) {
-                                    // New entry! Add to Firebase.
-                                    console.log("[sync] We found a new entry! Contest ID: " + kdInd + ". Entry ID: " + kdentInd);
-                                    /* TODO */
-                                    if (!entriesToAdd.hasOwnProperty(kdInd)) {
-                                        entriesToAdd[kdInd] = [];
-                                        entriesToAdd[kdInd].push( kaData[kdInd].entries[kdentInd] );
-                                    } else {
-                                        entriesToAdd[kdInd].push( kaData[kdInd].entries[kdentInd] );
+                        /* Wrap the body of a for-in loop with an if-statement, to filter unwanted properties. */
+                        /* More info: https://jslinterrors.com/the-body-of-a-for-in-should-be-wrapped-in-an-if-statement */
+                        if (kaData.hasOwnProperty(kdInd)) {
+                            if (!fbData.hasOwnProperty(kdInd)) {
+                                // Most likely a new contest; add it to Firebase!
+                                console.log("[sync] We found a new contest! Contest ID: " + kdInd);
+                                toAddToFirebase[kdInd] = kaData[kdInd];
+                            } else {
+                                // We have this contest in Firebase; so now let's see if we have all the entries
+                                for (var kdentInd in kaData[kdInd].entries) {
+                                    /* Wrap the body of a for-in loop with an if-statement, to filter unwanted properties. */
+                                    /* More info: https://jslinterrors.com/the-body-of-a-for-in-should-be-wrapped-in-an-if-statement */
+                                    if (kaData[kdInd].entries.hasOwnProperty(kdentInd)) {
+                                        if (!fbData[kdInd].entries.hasOwnProperty(kdentInd)) {
+                                            // New entry! Add to Firebase.
+                                            console.log("[sync] We found a new entry! Contest ID: " + kdInd + ". Entry ID: " + kdentInd);
+                                            /* TODO */
+                                            if (!entriesToAdd.hasOwnProperty(kdInd)) {
+                                                entriesToAdd[kdInd] = [];
+                                                entriesToAdd[kdInd].push( kaData[kdInd].entries[kdentInd] );
+                                            } else {
+                                                entriesToAdd[kdInd].push( kaData[kdInd].entries[kdentInd] );
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -484,22 +496,30 @@ window.Contest_Judging_System = (function() {
 
                     /* Loop through all the data we recieved from Firebase; and see if it still exists on Khan Academy. */
                     for (var fbInd in fbData) {
-                        if (!kaData.hasOwnProperty(fbInd)) {
-                            // Contest removed. Delete from Firebase
-                            console.log("[sync] We found a contest that no longer exists. ID: " + fbInd);
-                            toRemoveFromFirebase[fbInd] = fbData[fbInd];
-                        } else {
-                            // Contest still exists. Now let's see if any entries have been removed.
-                            for (var fbentInd in fbData[fbInd].entries) {
-                                if (!kaData[fbInd].entries.hasOwnProperty(fbentInd)) {
-                                    // Entry no longer exists on Khan Academy; delete from Firebase (or mark as archived).
-                                    console.log("[sync] We found an entry that doesn't exist anymore! Contest ID: " + fbInd + ". Entry ID: " + fbentInd);
-                                    /* TODO */
-                                    if (!entriesToRemove.hasOwnProperty(fbInd)) {
-                                        entriesToRemove[fbInd] = [];
-                                        entriesToRemove[fbInd].push(fbentInd);
-                                    } else {
-                                        entriesToRemove[fbInd].push(fbentInd);
+                        /* Wrap the body of a for-in loop with an if-statement, to filter unwanted properties. */
+                        /* More info: https://jslinterrors.com/the-body-of-a-for-in-should-be-wrapped-in-an-if-statement */
+                        if (fbData.hasOwnProperty(fbInd)) {
+                            if (!kaData.hasOwnProperty(fbInd)) {
+                                // Contest removed. Delete from Firebase
+                                console.log("[sync] We found a contest that no longer exists. ID: " + fbInd);
+                                toRemoveFromFirebase[fbInd] = fbData[fbInd];
+                            } else {
+                                // Contest still exists. Now let's see if any entries have been removed.
+                                for (var fbentInd in fbData[fbInd].entries) {
+                                    /* Wrap the body of a for-in loop with an if-statement, to filter unwanted properties. */
+                                    /* More info: https://jslinterrors.com/the-body-of-a-for-in-should-be-wrapped-in-an-if-statement */
+                                    if (fbData[fbInd].entries.hasOwnProperty(fbentInd)) {
+                                        if (!kaData[fbInd].entries.hasOwnProperty(fbentInd)) {
+                                            // Entry no longer exists on Khan Academy; delete from Firebase (or mark as archived).
+                                            console.log("[sync] We found an entry that doesn't exist anymore! Contest ID: " + fbInd + ". Entry ID: " + fbentInd);
+                                            /* TODO */
+                                            if (!entriesToRemove.hasOwnProperty(fbInd)) {
+                                                entriesToRemove[fbInd] = [];
+                                                entriesToRemove[fbInd].push(fbentInd);
+                                            } else {
+                                                entriesToRemove[fbInd].push(fbentInd);
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -508,33 +528,48 @@ window.Contest_Judging_System = (function() {
 
                     /* Add what we don't have; and remove what Khan Academy *doesn't* have. */
                     for (var cta in toAddToFirebase) {
-                        // Add to Firebase!
-                        contestsFBRef.child(a).set(toAddToFirebase[cta]);
-                        fbRef.child("contestKeys").child(cta).set(true);
-                        // add to contest key list
+                        /* Wrap the body of a for-in loop with an if-statement, to filter unwanted properties. */
+                        /* More info: https://jslinterrors.com/the-body-of-a-for-in-should-be-wrapped-in-an-if-statement */
+                        if (toAddToFirebase.hasOwnProperty(cta)) {
+                            /* Add to Firebase! */
+                            contestsFBRef.child(a).set(toAddToFirebase[cta]);
+                            fbRef.child("contestKeys").child(cta).set(true);
+                        }
                     }
                     for (var ctr in toRemoveFromFirebase) {
-                        // Remove from Firebase!
-                        contestsFBRef.child(ctr).set(null);
-                        // remove from contest key list
-                        fbRef.child("contestKeys").child(ctr).set(null);
+                        /* Wrap the body of a for-in loop with an if-statement, to filter unwanted properties. */
+                        /* More info: https://jslinterrors.com/the-body-of-a-for-in-should-be-wrapped-in-an-if-statement */
+                        if (toRemoveFromFirebase.hasOwnProperty(ctr)) {
+                            // Remove from Firebase!
+                            contestsFBRef.child(ctr).set(null);
+                            // remove from contest key list
+                            fbRef.child("contestKeys").child(ctr).set(null);
+                        }
                     }
                     for (var eta in entriesToAdd) {
-                        /* Add all the new entries to Firebase */
-                        for (var eaInd = 0; eaInd < entriesToAdd[eta].length; eaInd++) {
-                            console.log("[sync] Adding " + entriesToAdd[eta][eaInd].id + " to Firebase.");
-                            contestsFBRef.child(eta).child("entries").child(entriesToAdd[eta][eaInd].id).set(entriesToAdd[eta][eaInd]);
-                            // push to contest entry keys list
-                            contestsFBRef.child(eta).child("entryKeys").child(entriesToAdd[eta][eaInd].id).set(true);
+                        /* Wrap the body of a for-in loop with an if-statement, to filter unwanted properties. */
+                        /* More info: https://jslinterrors.com/the-body-of-a-for-in-should-be-wrapped-in-an-if-statement */
+                        if (entriesToAdd.hasOwnProperty(eta)) {
+                            /* Add all the new entries to Firebase */
+                            for (var eaInd = 0; eaInd < entriesToAdd[eta].length; eaInd++) {
+                                console.log("[sync] Adding " + entriesToAdd[eta][eaInd].id + " to Firebase.");
+                                contestsFBRef.child(eta).child("entries").child(entriesToAdd[eta][eaInd].id).set(entriesToAdd[eta][eaInd]);
+                                // push to contest entry keys list
+                                contestsFBRef.child(eta).child("entryKeys").child(entriesToAdd[eta][eaInd].id).set(true);
+                            }
                         }
                     }
                     for (var etr in entriesToRemove) {
-                        /* Remove all the old entries from Firebase */
-                        for (var erInd = 0; erInd < entriesToRemove[etr].length; erInd++) {
-                            console.log("[sync] Removing " + entriesToRemove[etr][erInd] + " from Firebase!");
-                            contestsFBRef.child(etr).child("entries").child(entriesToRemove[etr][erInd]).set(null);
-                            // remove from the entry keys list
-                            contestsFBRef.child(etr).child("entryKeys").child(entriesToRemove[etr][erInd]).set(null);
+                        /* Wrap the body of a for-in loop with an if-statement, to filter unwanted properties. */
+                        /* More info: https://jslinterrors.com/the-body-of-a-for-in-should-be-wrapped-in-an-if-statement */
+                        if (entriesToRemove.hasOwnProperty(etr)) {
+                            /* Remove all the old entries from Firebase */
+                            for (var erInd = 0; erInd < entriesToRemove[etr].length; erInd++) {
+                                console.log("[sync] Removing " + entriesToRemove[etr][erInd] + " from Firebase!");
+                                contestsFBRef.child(etr).child("entries").child(entriesToRemove[etr][erInd]).set(null);
+                                // remove from the entry keys list
+                                contestsFBRef.child(etr).child("entryKeys").child(entriesToRemove[etr][erInd]).set(null);
+                            }
                         }
                     }
 
@@ -759,8 +794,12 @@ window.Contest_Judging_System = (function() {
 
                         /* Merge rubrics and contestRubrics: */
                         for (var cR in contestRubrics) {
-                            if (!rubrics.hasOwnProperty(cR)) {
-                                rubrics[cR] = contestRubrics[cR];
+                            /* Wrap the body of a for-in loop with an if-statement, to filter unwanted properties. */
+                            /* More info: https://jslinterrors.com/the-body-of-a-for-in-should-be-wrapped-in-an-if-statement */
+                            if (contestRubrics.hasOwnProperty(cR)) {
+                                if (!rubrics.hasOwnProperty(cR)) {
+                                    rubrics[cR] = contestRubrics[cR];
+                                }
                             }
                         }
                         /* Merge rubrics.Order and contestRubrics.Order: */
