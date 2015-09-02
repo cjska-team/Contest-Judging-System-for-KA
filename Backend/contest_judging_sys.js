@@ -564,7 +564,7 @@ window.Contest_Judging_System = (function() {
                 /* If a Firebase error occurs... */
                 if (error) {
                     /* ...alert the user, and... */
-                    alert("An error occured. Please try again later.");
+                    window.alert("An error occured. Please try again later.");
                     /* ...log the error to the console, and... */
                     console.error(error);
                     /* ...exit the function. */
@@ -715,13 +715,13 @@ window.Contest_Judging_System = (function() {
                         /* Log errors with .logError: */
                         thisEntry.child("rubric").set(newScoreObj, this.logError);
                         /* Tell the user that it worked! */
-                        alert("This entry has been judged. Hooray!");
+                        window.alert("This entry has been judged. Hooray!");
                         /* Pass newScoreObj through callback: */
                         callback(newScoreObj);
                     }
                     /* If this judge has already judged this entry, tell them that they've already done so. */
                     else {
-                        alert("You've already judged this entry!");
+                        window.alert("You've already judged this entry!");
                     }
                 });
             });
