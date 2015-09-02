@@ -1,6 +1,7 @@
 /***
  * This file is where all the general purpose, reusable code should go!
 ***/
+/*jshint maxparams: 10 */
 /* This function can be used to inject scripts into pages. It returns the created <script> element. */
 /* The reason we make it a global function even though it's in the below namespace is because outside JavaScript files might need to use this function after this function loads, but before the namespace is loaded. */
 window.includeFunc = function(path) {
