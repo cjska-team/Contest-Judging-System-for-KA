@@ -143,4 +143,4 @@ function finishRequest(contests) {
 }
 
 /* Get all of the stored contests from the Firebase database and call finishRequest when done */
-Contest_Judging_System.getStoredContests(finishRequest);
+window.Contest_Judging_System.getStoredContests(finishRequest);
