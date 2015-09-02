@@ -746,7 +746,7 @@ window.Contest_Judging_System = (function() {
             var fbContestKeysRef = fbRef.child("contestKeys");
 
             /* Send AJAX request to get info on contest: */
-            var programQuery = $.ajax({
+            $.ajax({
                 type: "GET",
                 url: KA_API.urls.scratchpadInfo(contestId),
                 async: true,
