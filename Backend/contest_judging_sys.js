@@ -657,7 +657,7 @@ window.Contest_Judging_System = (function() {
                     /* Call callback: */
                     callback(fbAuth, userData);
                 });
-            };
+            }
         },
         /***
          * judgeEntry()
