@@ -674,8 +674,6 @@ window.Contest_Judging_System = (function() {
 
             /* Get Firebase data */
             var fbContestRef = new this.Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contest);
-            /* All entries of this contest */
-            var entries = fbContestRef.child("entries");
 
             /* Get the rubrics from Firebase: */
             this.getRubricsForContest(contest, function(contestRubrics) {
