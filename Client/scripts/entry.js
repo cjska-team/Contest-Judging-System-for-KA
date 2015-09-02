@@ -1,5 +1,5 @@
 /* Get the GET params: */
-var getParams = Contest_Judging_System.getGETParams();
+var getParams = window.Contest_Judging_System.getGETParams();
 /* If it doesn't look like there's a contest ID in the URL, show an alert, and go back one page. */
 if (!getParams.contest) {
 	window.alert("Contest ID not found!");
@@ -129,7 +129,7 @@ function loadEntry() {
     /* Set permLevel: */
     permLevel = global_userData.permLevel;
     /* Fetch the data for this contest entry, and then use the data to build up the current page. */
-    Contest_Judging_System.loadEntry(contestId, entryId, permLevel, function(entryDataLocal) {
+    window.Contest_Judging_System.loadEntry(contestId, entryId, permLevel, function(entryDataLocal) {
         console.log("Entered loadEntry callback!");
         /* Set entryData: */
         entryData = entryDataLocal;
@@ -148,7 +148,7 @@ function loadEntry() {
         }
 
         /* Wrap all this code in a callback to get the rubrics: */
-        Contest_Judging_System.getRubricsForContest(contestId, function(rubricsLocal) {
+        window.Contest_Judging_System.getRubricsForContest(contestId, function(rubricsLocal) {
             /* Get the rubrics: */
             rubrics = rubricsLocal;
             console.log(JSON.stringify(rubrics));
@@ -286,7 +286,7 @@ function loadEntry() {
 }
 
 /* Connect to Firebase: */
-var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com/");
+var fbRef = new window.Contest_Judging_System.Firebase("https://contest-judging-sys.firebaseio.com/");
 /* The Firebase auth data: */
 var fbAuth;
 /* On authentication change... */
@@ -295,7 +295,7 @@ fbRef.onAuth(function(fbAuthLocal) {
     fbAuth = fbAuthLocal;
     /* Get the user data if they're logged in: */
     if (fbAuth) {
-        Contest_Judging_System.getUserData(fbAuth.uid, function(userData) {
+        window.Contest_Judging_System.getUserData(fbAuth.uid, function(userData) {
             global_userData = userData;
             /* Load the entry when done: */
             loadEntry();
@@ -349,7 +349,7 @@ submitBtn.on("click", function() {
             submitBtn.prop("disabled", true);
             submitBtn.text("Submitting vote...");
             /* Judge the entry: */
-            Contest_Judging_System.judgeEntry(contestId, entryId, scoreData, permLevel, function(scoreData) {
+            window.Contest_Judging_System.judgeEntry(contestId, entryId, scoreData, permLevel, function(scoreData) {
                 /* Update the score data when done: */
                 entryData.scores.rubric = scoreData;
                 updateScoreData();
