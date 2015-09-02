@@ -16,8 +16,6 @@ if (!getParams.entry) {
 var selectedBtn = {};
 /* The score for this entry */
 var scoreData = {};
-/* This Bool is true iff the user has judged the entry: */
-var judgedEntry = false;
 
 /* Get the GET params: */
 var contestId = getParams.contest;
@@ -82,7 +80,7 @@ function judgingButtonClick(k, kLower) {
 /* The <iframe> for this program */
 var programIframe;
 /* The user ID and permission level of a user: */
-var userID, permLevel;
+var permLevel;
 /* The rubrics and entry data: */
 var rubrics, entryData;
 
@@ -213,7 +211,9 @@ function loadEntry() {
                                 curSelectButton.className = "btn btn-sm btn-success";
                             }
                             /* Otherwise, give the button a default look: */
-                            else curSelectButton.className = "btn btn-sm btn-default";
+                            else {
+								curSelectButton.className = "btn btn-sm btn-default";
+							}
                             /* Remember to set the text using rubrics[k].keys and to add a click event using judgingButtonClick() above. */
                             curSelectButton.textContent = rubrics[k].keys[i];
                             $(curSelectButton).click(judgingButtonClick(k, kLower));
@@ -221,8 +221,8 @@ function loadEntry() {
                         }
 
                         /* Append everything to whatever it needs to be appended to */
-                        for (var i = 0; i < curSelectBtns.length; i++){
-                            curSelectBtnGroup.appendChild(curSelectBtns[i]);
+                        for (var cbInd = 0; cbInd < curSelectBtns.length; cbInd++){
+                            curSelectBtnGroup.appendChild(curSelectBtns[cbInd]);
                         }
                         curSelect.appendChild(curSelectBtnGroup);
                         curGroup.appendChild(curLabel);
