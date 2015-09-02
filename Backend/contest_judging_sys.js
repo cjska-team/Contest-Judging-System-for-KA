@@ -174,7 +174,7 @@ window.Contest_Judging_System = (function() {
                     if (contestData.rubrics !== null) {
                         for (var crInd in contestData.rubrics) {
                             /* If the current rubric item isn't our "Order" rubric, add it to the rubric object. */
-                            if (k !== "Order") {
+                            if (crInd !== "Order") {
                                 rubrics[crInd] = contestData.rubrics[crInd];
                             } else {
                                 /* Loop through our "Order" rubric item, so we can specify the order in which we want to show the rubric items */
