@@ -167,6 +167,29 @@ function loadEntry() {
                 while (rubricsDiv.childNodes.length) {
                     rubricsDiv.removeChild(rubricsDiv.childNodes[0]);
                 }
+
+				/* Any local functions that we'll need to use to help prevent Javascript "gotchas" from surfacing */
+				var localRubricFunctions = {
+					"setupSlider": function(curLabel, scoreData, rubricName, k) {
+						/* Use noUiSlider to create slider */
+						window.noUiSlider.create(curSlider, {
+							connect: "lower",
+							start: rubrics[k].min,
+							step: 1,
+							range: {
+								min: rubrics[k].min,
+								max: rubrics[k].max
+							}
+						});
+						curSlider.noUiSlider.on("update", function(values, handle) {
+							/* Tell the score in curLabel when the slider changes. */
+							curLabel.textContent = rubricName + ": " + parseInt(values[handle]).toString();
+							/* Set scoreData */
+							scoreData[k] = parseInt(values[handle]);
+						});
+					}
+				};
+
                 /* ...Go through the rubrics in the order that we want: */
                 for (var _i = 0; _i < rubrics.Order.length; _i++) {
                     /* Current Property: */
@@ -239,28 +262,6 @@ function loadEntry() {
                         var curSlider = document.createElement("div");
                         curSlider.className = "judgingSlider";
                         curSlider.role = "slider";
-
-						/* Any local functions that we'll need to use to help prevent Javascript "gotchas" from surfacing */
-						var localRubricFunctions = {
-							"setupSlider": function(curLabel, scoreData, rubricName, k) {
-								/* Use noUiSlider to create slider */
-	                            window.noUiSlider.create(curSlider, {
-	                                connect: "lower",
-	                                start: rubrics[k].min,
-	                                step: 1,
-	                                range: {
-	                                    min: rubrics[k].min,
-	                                    max: rubrics[k].max
-	                                }
-	                            });
-	                            curSlider.noUiSlider.on("update", function(values, handle) {
-	                                /* Tell the score in curLabel when the slider changes. */
-	                                curLabel.textContent = rubricName + ": " + parseInt(values[handle]).toString();
-	                                /* Set scoreData */
-	                                scoreData[k] = parseInt(values[handle]);
-	                            });
-							}
-						};
 
 						/* Invoke our "setupSlider" function, this prevents JSLint from yelling at us, and it prevents function closure errors. */
 						localRubricFunctions.setupSlider(curLabel, scoreData, rubricName, k);
