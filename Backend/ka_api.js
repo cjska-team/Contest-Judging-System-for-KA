@@ -195,8 +195,12 @@ window.KA_API = (function() {
                 if (apiQueryDone) {
                     /* If the first AJAX request has finished, make sure all of the other AJAX requests have finished. If we find a contest without the entries property, we know their AJAX request has not finished, so we return. */
                     for (var i in allContests) {
-                        if (!allContests[i].hasOwnProperty("entries") || !allContests[i].hasOwnProperty("entryCount")){
-                            return;
+                        /* Wrap the body of a for-in loop with an if-statement, to filter unwanted properties. */
+                        /* More info: https://jslinterrors.com/the-body-of-a-for-in-should-be-wrapped-in-an-if-statement */
+                        if (allContests.hasOwnProperty(i)) {
+                            if (!allContests[i].hasOwnProperty("entries") || !allContests[i].hasOwnProperty("entryCount")){
+                                return;
+                            }
                         }
                     }
 
