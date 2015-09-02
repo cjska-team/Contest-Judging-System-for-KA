@@ -770,7 +770,7 @@ window.Contest_Judging_System = (function() {
                         }
                         /* Merge rubrics.Order and contestRubrics.Order: */
                         for (var i = 0; i < contestRubrics.Order.length; i++) {
-                            if (rubrics.Order.indexOf(contestRubrics.Order[i]) == -1) {
+                            if (rubrics.Order.indexOf(contestRubrics.Order[i]) === -1) {
                                 rubrics.Order.push(contestRubrics.Order[i]);
                             }
                         }
