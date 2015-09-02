@@ -393,7 +393,9 @@ window.Contest_Judging_System = (function() {
                                 numEntries--;
                                 return;
                             }
-                            if (!includeJudged) console.log("This entry hasn't been judged.");
+                            if (!includeJudged) {
+                                console.log("This entry hasn't been judged.");
+                            }
                             /* Add the entry into pickedEntries: */
                             pickedEntries[pickedKey] = entryData;
                             /* If we're done, call the callback: */
