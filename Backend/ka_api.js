@@ -63,18 +63,18 @@ window.KA_API = (function() {
                     var allPrograms = apiResponse.responseJSON.scratchpads;
 
                     /* Loop through allPrograms */
-                    for (var i = 0; i < allPrograms.length; i++) {
+                    for (var cepInd = 0; cepInd < allPrograms.length; cepInd++) {
                         /* Program ID for this spin-off */
-                        var id = allPrograms[i].url.split("/")[5];
+                        var id = allPrograms[cepInd].url.split("/")[5];
 
                         /* Add JSON object for this spin-off into entries */
                         entries[id] = {
                             /* Program ID */
                             id: id,
                             /* Program Title */
-                            name: allPrograms[i].translatedTitle,
+                            name: allPrograms[cepInd].translatedTitle,
                             /* Program Image */
-                            thumb: allPrograms[i].thumb,
+                            thumb: allPrograms[cepInd].thumb,
                             /* Program Scores */
                             scores: {
                                 rubric: {
@@ -178,14 +178,15 @@ window.KA_API = (function() {
                     };
 
                     /* Loop through allPrograms */
-                    for (var i = 0; i < allPrograms.length; i++) {
+                    for (var ccpInd = 0; ccpInd < allPrograms.length; ccpInd++) {
                         /* For now, let's only accept contests from pamela. Also, all contests must have "Contest" in their title. */
-                        if (allPrograms[i].authorNickname.match("pamela") !== null && allPrograms[i].translatedTitle.match("Contest") !== null) {
-                            var programID = allPrograms[i].url.split("/")[5];
+                        if (allPrograms[ccpInd].authorNickname.match("pamela") !== null &&
+                            allPrograms[ccpInd].translatedTitle.match("Contest") !== null) {
+                            var programID = allPrograms[ccpInd].url.split("/")[5];
                             /* Make an empty object in allContests to alert the setTimeout() function below that such an object has yet to be set. */
                             allContests[programID] = {};
 
-                            getContestsFunctions.fetchContest(programID, allPrograms[i], allContests);
+                            getContestsFunctions.fetchContest(programID, allPrograms[ccpInd], allContests);
 
                             /* Put this in a function wrapper so the parameters will be saved. */
                             // (function(programID, scratchpad, contests) {
@@ -229,11 +230,11 @@ window.KA_API = (function() {
             var finishTimeout = setInterval(function() {
                 if (apiQueryDone) {
                     /* If the first AJAX request has finished, make sure all of the other AJAX requests have finished. If we find a contest without the entries property, we know their AJAX request has not finished, so we return. */
-                    for (var i in allContests) {
+                    for (var c in allContests) {
                         /* Wrap the body of a for-in loop with an if-statement, to filter unwanted properties. */
                         /* More info: https://jslinterrors.com/the-body-of-a-for-in-should-be-wrapped-in-an-if-statement */
-                        if (allContests.hasOwnProperty(i)) {
-                            if (!allContests[i].hasOwnProperty("entries") || !allContests[i].hasOwnProperty("entryCount")){
+                        if (allContests.hasOwnProperty(c)) {
+                            if (!allContests[c].hasOwnProperty("entries") || !allContests[c].hasOwnProperty("entryCount")){
                                 return;
                             }
                         }
