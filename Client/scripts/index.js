@@ -39,7 +39,7 @@ function finishRequest(contests) {
         if (contests.hasOwnProperty(i)) {
             /* The JSON object corresponding to this contest. */
             var curr = contests[i];
-            
+
             /* When done with AJAX request */
             /* http://getbootstrap.com/components/#media-default */
 
@@ -73,22 +73,6 @@ function finishRequest(contests) {
             viewAllEntriesBtn.className = "btn btn-sm btn-primary center-block";
             viewAllEntriesBtn.textContent = "View all " + curr.entryCount + " Entries";
             viewAllEntriesBtn.href = "contest.html?contest=" + curr.id + "&entries=all&includeJudged";
-            
-            /* Create the div containing the body of contest info */
-            var mediaBody = document.createElement("div");
-            mediaBody.className = "media-body";
-            /* Create the div containing the contest heading */
-            var mediaHeading = document.createElement("h4");
-            mediaHeading.className = "media-heading";
-            mediaHeading.textContent = curr.name;
-            mediaHeading.innerHTML += " ";
-            var mediaSmall = document.createElement("span");
-            mediaSmall.className = "badge";
-            mediaSmall.textContent = curr.entryCount + " entries";
-            /* Create the div containing the contest details */
-            var detailsDiv = document.createElement("div");
-            detailsDiv.className = "details";
-            detailsDiv.innerHTML = curr.desc || "No description provided!";
 
             /* Put image inside link */
             imgLink.appendChild(mediaObject);
