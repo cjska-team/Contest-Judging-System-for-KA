@@ -30,7 +30,7 @@ window.Contest_Judging_System = (function() {
     /* Return an object containing everything that we want in this namespace. */
     return {
         Firebase: window.Firebase,
-        include: includeFunc,
+        include: window.includeFunc,
         /***
          * logError()
          * Logs errors to the Javascript console.
