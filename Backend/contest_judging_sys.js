@@ -169,7 +169,7 @@ window.Contest_Judging_System = (function() {
             /* Fetch the default rubric items */
             this.getRubrics(function(rubrics) {
                 /* Fetch the custom rubric items */
-                Contest_Judging_System.loadContest(contestId, function(contestData) {
+                window.Contest_Judging_System.loadContest(contestId, function(contestData) {
                     /* If custom rubric items exist, add them to the rubrics object. */
                     if (contestData.rubrics !== null) {
                         for (var k in contestData.rubrics) {
@@ -358,7 +358,7 @@ window.Contest_Judging_System = (function() {
             var numEntries = 0;
 
             /* Load the contest that has the ID of "contestId" */
-            Contest_Judging_System.loadContest(contestId, function(contestDataLocal) {
+            window.Contest_Judging_System.loadContest(contestId, function(contestDataLocal) {
                 /* Assign the data that we recieved from "Contest_Judging_System.loadContest", to our "contestData" object */
                 contestData = contestDataLocal;
 
@@ -385,7 +385,7 @@ window.Contest_Judging_System = (function() {
                     /* Function wrapper to save pickedKey: */
                     (function(pickedKey) {
                         /* Set pickedEntries[pickedKey] to the entry data: */
-                        Contest_Judging_System.loadEntry(contestId, pickedKey, permLevel, function(entryData) {
+                        window.Contest_Judging_System.loadEntry(contestId, pickedKey, permLevel, function(entryData) {
                             /* Do not include this entry if we don't want judged entries and it's already been judged: */
                             if (!includeJudged && entryData.hasOwnProperty("scores") && entryData.scores.rubric.hasOwnProperty("judgesWhoVoted") && entryData.scores.rubric.judgesWhoVoted.indexOf(uid) !== -1) {
                                 console.log("This entry has already been judged.");
