@@ -105,15 +105,18 @@ function updateScoreData() {
         var curRubric = document.createElement("p");
 
 		var displayMessage = rubricName + ": ";
+
+		var rubricValue = Math.round(entryData.scores.rubric.hasOwnProperty(k) ? entryData.scores.rubric[k].avg : rubrics[k].min);
+
         /* If there are discrete options to this rubric: */
         if (rubrics[k].hasOwnProperty("keys")) {
             /* Set the textContent using .keys: */
-            displayMessage += rubrics[k].keys[Math.round(entryData.scores.rubric.hasOwnProperty(k) ? entryData.scores.rubric[k].avg : rubrics[k].min)];
+            displayMessage += rubrics[k].keys[rubricValue];
         }
         /* Otherwise, the rubric is numerical. */
         else {
             /* Set the current score using numbers */
-            displayMessage += Math.round(entryData.scores.rubric.hasOwnProperty(k) ? entryData.scores.rubric[k].avg : rubrics[k].min) + " out of " + rubrics[k].max;
+            displayMessage += rubricValue + " out of " + rubrics[k].max;
         }
 		curRubric.textContent = displayMessage;
 
