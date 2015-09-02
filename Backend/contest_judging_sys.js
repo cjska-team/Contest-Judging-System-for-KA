@@ -532,7 +532,7 @@ window.Contest_Judging_System = (function() {
                         /* More info: https://jslinterrors.com/the-body-of-a-for-in-should-be-wrapped-in-an-if-statement */
                         if (toAddToFirebase.hasOwnProperty(cta)) {
                             /* Add to Firebase! */
-                            contestsFBRef.child(a).set(toAddToFirebase[cta]);
+                            contestsFBRef.child(cta).set(toAddToFirebase[cta]);
                             fbRef.child("contestKeys").child(cta).set(true);
                         }
                     }
