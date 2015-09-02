@@ -231,18 +231,34 @@ window.Contest_Judging_System = (function() {
                 /* Declare an empty object that'll hold all the data for the current contest */
                 var curContestData = {};
 
-                /* Fetch the data for all of the required properties */
-                for (var ckpropInd = 0; ckpropInd < props.length; ckpropInd++) {
-                    /* Make sure we don't lose "i"s value. */
-                    (function(i) {
-                        curContest.child(props[i]).once("value", function(snapshot) {
-                            curContestData[props[i]] = snapshot.val();
+                /* Any local functions that we'll need to use to help prevent Javascript "gotchas" from surfacing */
+                var getStoredContestsFunctions = {
+                    "fetchContestProperties": function(propInd) {
+                        curContest.child(props[propInd]).once("value", function(snapshot) {
+                            curContestData[props[propInd]] = snapshot.val();
                             /* If we have all the required properties, add this contest to our "callbackData" object. */
                             if (Object.keys(curContestData).length === props.length) {
                                 callbackData[key] = curContestData;
                             }
-                        }, this.logError);
-                    })(ckpropInd);
+                        }, window.Contest_Judging_System.logError);
+                    }
+                };
+
+                /* Fetch the data for all of the required properties */
+                for (var ckpropInd = 0; ckpropInd < props.length; ckpropInd++) {
+                    /* Invoke our "fetchContestProperties" function, this prevents JSLint from yelling at us, and it prevents function closure errors. */
+                    getStoredContestsFunctions.fetchContestProperties(ckpropInd);
+
+                    /* Make sure we don't lose "i"s value. */
+                    // (function(i) {
+                    //     curContest.child(props[i]).once("value", function(snapshot) {
+                    //         curContestData[props[i]] = snapshot.val();
+                    //         /* If we have all the required properties, add this contest to our "callbackData" object. */
+                    //         if (Object.keys(curContestData).length === props.length) {
+                    //             callbackData[key] = curContestData;
+                    //         }
+                    //     }, this.logError);
+                    // })(ckpropInd);
                 }
             }, this.logError);
 
@@ -276,15 +292,28 @@ window.Contest_Judging_System = (function() {
             /* Declare an array that contains all of the properties that *must be loaded* before we invoke our callback  */
             var props = ["desc", "id", "img", "name", "entryCount", "entryKeys", "rubrics"];
 
+            /* Any local functions that we'll need to use to help prevent Javascript "gotchas" from surfacing */
+            var loadContestFunctions = {
+                "fetchContestProperties": function(propInd) {
+                    /* Once this property has been loaded from Firebase, add it to our "callbackData" object. */
+                    contestRef.child(props[propInd]).once("value", function(snapshot) {
+                        callbackData[props[propInd]] = snapshot.val();
+                    }, this.logError);
+                }
+            };
+
             /* Fetch each of the required properties for this contest, from Firebase. */
             for (var cpropInd = 0; cpropInd < props.length; cpropInd++) {
+                /* Invoke our "fetchContestProperties" function, this prevents JSLint from yelling at us, and it prevents function closure errors. */
+                loadContestFunctions.fetchContestProperties(cpropInd);
+
                 /* Make sure we don't lose "i"s value. */
-                (function(i) {
-                    /* Once this property has been loaded from Firebase, add it to our "callbackData" object. */
-                    contestRef.child(props[i]).once("value", function(snapshot) {
-                        callbackData[props[i]] = snapshot.val();
-                    }, this.logError);
-                })(cpropInd);
+                // (function(i) {
+                //     /* Once this property has been loaded from Firebase, add it to our "callbackData" object. */
+                //     contestRef.child(props[i]).once("value", function(snapshot) {
+                //         callbackData[props[i]] = snapshot.val();
+                //     }, this.logError);
+                // })(cpropInd);
             }
 
             /* Every second, run a check to see if we have all the data that we need, if we do, invoke our callback. */
@@ -321,15 +350,28 @@ window.Contest_Judging_System = (function() {
                 props.push("scores");
             }
 
+            /* Any local functions that we'll need to use to help prevent Javascript "gotchas" from surfacing */
+            var loadEntryFunctions = {
+                "fetchEntryProperties": function(propInd) {
+                    /* Once the current property has been loaded from Firebase, add it to our "callbackData" object */
+                    fbRef.child(props[propInd]).once("value", function(snapshot) {
+                        callbackData[props[propInd]] = snapshot.val();
+                    }, this.logError);
+                }
+            };
+
             /* Load the data for each of the required properties */
             for (var epropInd = 0; epropInd < props.length; epropInd++) {
+                /* Invoke our "fetchEntryProperties" function, this prevents JSLint from yelling at us, and it prevents function closure errors. */
+                loadEntryFunctions.fetchEntryProperties(epropInd);
+
                 /* Make sure we don't lose "i"s value. */
-                (function(i) {
-                    /* Once the current property has been loaded from Firebase, add it to our "callbackData" object */
-                    fbRef.child(props[i]).once("value", function(snapshot) {
-                        callbackData[props[i]] = snapshot.val();
-                    }, this.logError);
-                })(epropInd);
+                // (function(i) {
+                //     /* Once the current property has been loaded from Firebase, add it to our "callbackData" object */
+                //     fbRef.child(props[i]).once("value", function(snapshot) {
+                //         callbackData[props[i]] = snapshot.val();
+                //     }, this.logError);
+                // })(epropInd);
             }
 
             /* Every second, run a check to see if we have all the data that we need, if we do, invoke our callback. */
