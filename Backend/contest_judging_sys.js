@@ -243,7 +243,7 @@ window.Contest_Judging_System = (function() {
             }, this.logError);
 
             /* Once the "contestKeys" query is done, check to make sure we have all the data, and invoke our callback. */
-            contestKeys.once("value", function(data) {
+            contestKeys.once("value", function() {
                 var checkDone = setTimeout(function() {
                     if (Object.keys(callbackData).length === foundContestKeys.length) {
                         clearInterval(checkDone);
