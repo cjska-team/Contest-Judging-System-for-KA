@@ -431,7 +431,7 @@ window.Contest_Judging_System = (function() {
             var fbData;
 
             /* Get all of the contests from Khan Academy */
-            KA_API.getContests(function(response) {
+            window.KA_API.getContests(function(response) {
                 /* When done, set kaData to the contests and set completed.khanacademy to true. */
                 kaData = response;
                 completed.khanacademy = true;
@@ -743,7 +743,7 @@ window.Contest_Judging_System = (function() {
             /* Send AJAX request to get info on contest: */
             $.ajax({
                 type: "GET",
-                url: KA_API.urls.scratchpadInfo(contestId),
+                url: window.KA_API.urls.scratchpadInfo(contestId),
                 async: true,
                 complete: function(response) {
                     var programData = response.responseJSON;
