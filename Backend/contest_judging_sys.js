@@ -670,11 +670,6 @@ window.Contest_Judging_System = (function() {
          * @param {Function} callback(newScoreObj): The callback function to invoke once the new scores have been submitted to Firebase.
         ***/
         judgeEntry: function(contest, entry, scoreData, permLevel, callback) {
-            /* This judges an entry entry of contest with scoreData from a judge with id as set in cookies. It then passes the new scores through callback. */
-
-            /* Get Firebase data */
-            var fbContestRef = new this.Firebase("https://contest-judging-sys.firebaseio.com/contests/" + contest);
-
             /* Get the rubrics from Firebase: */
             this.getRubricsForContest(contest, function(contestRubrics) {
                 /* Load the Firebase data of this entry of this contest and then... */
