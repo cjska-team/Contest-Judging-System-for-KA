@@ -32,7 +32,7 @@ var dimens = {
 document.forms.dimensions.width.value = dimens.width;
 document.forms.dimensions.height.value = dimens.height;
 /* The base URL for the program preview Iframe. */
-var baseURL = "https://www.khanacademy.org/computer-programming/entry/{ENTRYID}/embedded?buttons=no&editor=yes&author=no&embed=yes&width="+dimens.width+"&height="+dimens.height;
+var baseURL = "https://www.khanacademy.org/computer-programming/entry/{ENTRYID}/embedded?buttons=no&editor=yes&author=no&embed=yes&width=" + dimens.width + "&height=" + dimens.height;
 
 /* A couple elements that we'll be using later on */
 var programPreview = document.querySelector(".program-preview");
@@ -59,7 +59,7 @@ $.ajax({
 		/* Calculate the number of lines of code in this entry. */
 		linesOfCode = response.responseJSON.revision.code.split("\n").length;
 		/* Insert it into where it should be in the document. */
-		document.querySelector("#program-info").textContent = linesOfCode+" lines of code";
+		document.querySelector("#program-info").textContent = linesOfCode + " lines of code";
 	}
 });
 
@@ -73,9 +73,9 @@ function judgingButtonClick(k, kLower) {
 		}
 		/* Set selectedBtn[k] and scoreData[k] */
 		selectedBtn[k] = id;
-		scoreData[k] = parseInt(selectedBtn[k].replace(kLower+"SelectButton", ""), 10);
+		scoreData[k] = parseInt(selectedBtn[k].replace(kLower + "SelectButton", ""), 10);
 		/* Select the selected button */
-		$("#"+id).removeClass("btn-default").addClass("btn-success");
+		$("#" + id).removeClass("btn-default").addClass("btn-success");
 	};
 }
 
@@ -92,10 +92,10 @@ function updateScoreData() {
     if (entryData.scores.rubric.hasOwnProperty("judgesWhoVoted") && entryData.scores.rubric.judgesWhoVoted.indexOf(fbAuth.uid) != -1) {
         submitBtn.text("Vote submitted!");
     }
-    
+
 	/* Empty currentScoreDiv except for the first element (the heading): */
 	while (currentScoreDiv.childNodes.length > 1) {
-        currentScoreDiv.removeChild(currentScoreDiv.childNodes[currentScoreDiv.childNodes.length-1]);
+        currentScoreDiv.removeChild(currentScoreDiv.childNodes[currentScoreDiv.childNodes.length - 1]);
     }
 	/* Go through rubrics in the intended order: */
 	for (var _i = 0; _i < rubrics.Order.length; _i++) {
@@ -105,16 +105,20 @@ function updateScoreData() {
         var rubricName = k.replace(/_/gi, " ");
         /* The current score in this rubric */
         var curRubric = document.createElement("p");
+
+		var displayMessage = rubricName + ": ";
         /* If there are discrete options to this rubric: */
         if (rubrics[k].hasOwnProperty("keys")) {
             /* Set the textContent using .keys: */
-            curRubric.textContent = rubricName+": " +rubrics[k].keys[Math.round(entryData.scores.rubric.hasOwnProperty(k) ? entryData.scores.rubric[k].avg : rubrics[k].min)];
+            displayMessage += rubrics[k].keys[Math.round(entryData.scores.rubric.hasOwnProperty(k) ? entryData.scores.rubric[k].avg : rubrics[k].min)];
         }
         /* Otherwise, the rubric is numerical. */
         else {
             /* Set the current score using numbers */
-            curRubric.textContent = rubricName+": "+Math.round(entryData.scores.rubric.hasOwnProperty(k) ? entryData.scores.rubric[k].avg : rubrics[k].min)+" out of "+rubrics[k].max;
+            displayMessage += Math.round(entryData.scores.rubric.hasOwnProperty(k) ? entryData.scores.rubric[k].avg : rubrics[k].min) + " out of " + rubrics[k].max;
         }
+		curRubric.textContent = displayMessage;
+
         /* Append curRubric to currentScoreDiv: */
         currentScoreDiv.appendChild(curRubric);
 	}
@@ -175,17 +179,17 @@ function loadEntry() {
                     var kLower = k.toLowerCase();
                     /* The container for all elems of this rubric */
                     var curGroup = document.createElement("div");
-                    curGroup.id = kLower+"_group";
+                    curGroup.id = kLower + "_group";
                     /* Create label for this rubric */
                     var curLabel = document.createElement("label");
                     curLabel.htmlFor = kLower;
-                    curLabel.textContent = rubricName+": ";
+                    curLabel.textContent = rubricName + ": ";
 
                     /* If there are discrete options to this rubric: */
                     if (rubrics[k].hasOwnProperty("keys")) {
                         /* Container for curSelectBtnGroup */
                         var curSelect = document.createElement("div");
-                        curSelect.id = kLower+"-btn-toolbar";
+                        curSelect.id = kLower + "-btn-toolbar";
                         curSelect.className = "btn-toolbar";
 
                         /* Container for curSelectBtns */
@@ -201,7 +205,7 @@ function loadEntry() {
                         for (var i = rubrics[k].min; i <= rubrics[k].max; i++){
                             var curSelectButton = document.createElement("button");
                             curSelectButton.type = "button";
-                            curSelectButton.id = (kLower+"SelectButton"+i.toString());
+                            curSelectButton.id = (kLower + "SelectButton" + i.toString());
                             /* Intitialize selectedBtn[k] to the id of the minimum: */
                             if (i === rubrics[k].min) {
                                 selectedBtn[k] = curSelectButton.id;
@@ -249,7 +253,7 @@ function loadEntry() {
                             });
                             curSlider.noUiSlider.on("update", function(values, handle) {
                                 /* Tell the score in curLabel when the slider changes. */
-                                curLabel.textContent = rubricName+": "+parseInt(values[handle]).toString();
+                                curLabel.textContent = rubricName + ": " + parseInt(values[handle]).toString();
                                 /* Set scoreData */
                                 scoreData[k] = parseInt(values[handle]);
                             });
@@ -334,9 +338,9 @@ var submitBtn = $("#submitBtn");
 /* Attempt to judge the entry if the submit button is clicked. */
 submitBtn.on("click", function() {
 	/* Judge the entry if they have a permLevel of at least 4. */
-	if (entryData.hasOwnProperty("scores")) {    
+	if (entryData.hasOwnProperty("scores")) {
         /* Tell the user they've already judged this entry if they've already judged this entry: */
-        if (entryData.scores.rubric.hasOwnProperty("judgesWhoVoted") && entryData.scores.rubric.judgesWhoVoted.indexOf(fbAuth.uid) != -1) {
+        if (entryData.scores.rubric.hasOwnProperty("judgesWhoVoted") && entryData.scores.rubric.judgesWhoVoted.indexOf(fbAuth.uid) !== -1) {
             alert("You've already judged this entry!");
         }
         /* Otherwise, judge the entry if they haven't judged the entry: */
@@ -374,8 +378,8 @@ $("#setdimensions").on("click", function(event) {
 	}
 
 	/* Edit the src attribute to set the width and height attributes */
-	console.log(programIframe.src.replace("width="+dimens.width, "width="+width).replace("height="+dimens.height, "height="+height));
-	programIframe.src = programIframe.src.replace("width="+dimens.width, "width="+width).replace("height="+dimens.height, "height="+height);
+	console.log(programIframe.src.replace("width=" + dimens.width, "width=" + width).replace("height=" + dimens.height, "height=" + height));
+	programIframe.src = programIframe.src.replace("width=" + dimens.width, "width=" + width).replace("height=" + dimens.height, "height=" + height);
 
 	/* Set dimens */
 	dimens = {
@@ -386,4 +390,4 @@ $("#setdimensions").on("click", function(event) {
 	programIframe.height = dimens.height;
 	programPreview.style.height = "auto";
 	console.log(dimens.height, programIframe.style.height);
-}); 
+});
