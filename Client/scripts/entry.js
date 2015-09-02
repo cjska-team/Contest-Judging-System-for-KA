@@ -239,25 +239,51 @@ function loadEntry() {
                         var curSlider = document.createElement("div");
                         curSlider.className = "judgingSlider";
                         curSlider.role = "slider";
+
+						/* Any local functions that we'll need to use to help prevent Javascript "gotchas" from surfacing */
+						var localRubricFunctions = {
+							"setupSlider": function(curLabel, scoreData, rubricName, k) {
+								/* Use noUiSlider to create slider */
+	                            window.noUiSlider.create(curSlider, {
+	                                connect: "lower",
+	                                start: rubrics[k].min,
+	                                step: 1,
+	                                range: {
+	                                    min: rubrics[k].min,
+	                                    max: rubrics[k].max
+	                                }
+	                            });
+	                            curSlider.noUiSlider.on("update", function(values, handle) {
+	                                /* Tell the score in curLabel when the slider changes. */
+	                                curLabel.textContent = rubricName + ": " + parseInt(values[handle]).toString();
+	                                /* Set scoreData */
+	                                scoreData[k] = parseInt(values[handle]);
+	                            });
+							}
+						};
+
+						/* Invoke our "setupSlider" function, this prevents JSLint from yelling at us, and it prevents function closure errors. */
+						localRubricFunctions.setupSlider(curLabel, scoreData, rubricName, k);
+
                         /* This is put in a function wrapper to save the value of curLabel, scoreData, rubricName, and k for the function inside the JSON object. */
-                        (function(curLabel, scoreData, rubricName, k) {
-                            /* Use noUiSlider to create slider */
-                            window.noUiSlider.create(curSlider, {
-                                connect: "lower",
-                                start: rubrics[k].min,
-                                step: 1,
-                                range: {
-                                    min: rubrics[k].min,
-                                    max: rubrics[k].max
-                                }
-                            });
-                            curSlider.noUiSlider.on("update", function(values, handle) {
-                                /* Tell the score in curLabel when the slider changes. */
-                                curLabel.textContent = rubricName + ": " + parseInt(values[handle]).toString();
-                                /* Set scoreData */
-                                scoreData[k] = parseInt(values[handle]);
-                            });
-                        })(curLabel, scoreData, rubricName, k);
+                        // (function(curLabel, scoreData, rubricName, k) {
+                        //     /* Use noUiSlider to create slider */
+                        //     window.noUiSlider.create(curSlider, {
+                        //         connect: "lower",
+                        //         start: rubrics[k].min,
+                        //         step: 1,
+                        //         range: {
+                        //             min: rubrics[k].min,
+                        //             max: rubrics[k].max
+                        //         }
+                        //     });
+                        //     curSlider.noUiSlider.on("update", function(values, handle) {
+                        //         /* Tell the score in curLabel when the slider changes. */
+                        //         curLabel.textContent = rubricName + ": " + parseInt(values[handle]).toString();
+                        //         /* Set scoreData */
+                        //         scoreData[k] = parseInt(values[handle]);
+                        //     });
+                        // })(curLabel, scoreData, rubricName, k);
 
                         /* Append everything to whatever it needs to be appended to */
                         curGroup.appendChild(curLabel);
