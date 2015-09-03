@@ -67,7 +67,7 @@ function judgingButtonClick(k, kLower) {
 		var id = event.target.id;
 		/* Unselect previously selected button */
 		if (selectedBtn[k] !== null && selectedBtn[k] !== id) {
-			$("#"+selectedBtn[k]).removeClass("btn-success").addClass("btn-default");
+			$("#" + selectedBtn[k]).removeClass("btn-success").addClass("btn-default");
 		}
 		/* Set selectedBtn[k] and scoreData[k] */
 		selectedBtn[k] = id;
