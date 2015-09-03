@@ -92,7 +92,7 @@ function updateScoreData() {
     if (entryData.scores.rubric.hasOwnProperty("judgesWhoVoted") && entryData.scores.rubric.judgesWhoVoted.indexOf(fbAuth.uid) != -1) {
         submitBtn.text("Vote submitted!");
     }
-    
+
 	/* Empty currentScoreDiv except for the first element (the heading): */
 	while (currentScoreDiv.childNodes.length > 1) {
         currentScoreDiv.removeChild(currentScoreDiv.childNodes[currentScoreDiv.childNodes.length-1]);
@@ -179,7 +179,14 @@ function loadEntry() {
                     /* Create label for this rubric */
                     var curLabel = document.createElement("label");
                     curLabel.htmlFor = kLower;
-                    curLabel.textContent = rubricName+": ";
+                    curLabel.textContent = rubricName + ": ";
+
+					var descElem;
+
+					if (rubrics[k].hasOwnProperty("desc")) {
+						descElem = document.createElement("small");
+						descElem.textContent = "(" + rubrics[k].desc + ")";
+					}
 
                     /* If there are discrete options to this rubric: */
                     if (rubrics[k].hasOwnProperty("keys")) {
@@ -222,6 +229,9 @@ function loadEntry() {
                         }
                         curSelect.appendChild(curSelectBtnGroup);
                         curGroup.appendChild(curLabel);
+						if (descElem !== undefined) {
+							curGroup.appendChild(descElem);
+						}
                         curGroup.appendChild(curSelect);
                     }
                     /* Otherwise, the rubric is numerical. */
@@ -257,6 +267,9 @@ function loadEntry() {
 
                         /* Append everything to whatever it needs to be appended to */
                         curGroup.appendChild(curLabel);
+						if (descElem !== undefined) {
+							curGroup.appendChild(descElem);
+						}
                         curGroup.appendChild(curSlider);
                     }
 
@@ -334,7 +347,7 @@ var submitBtn = $("#submitBtn");
 /* Attempt to judge the entry if the submit button is clicked. */
 submitBtn.on("click", function() {
 	/* Judge the entry if they have a permLevel of at least 4. */
-	if (entryData.hasOwnProperty("scores")) {    
+	if (entryData.hasOwnProperty("scores")) {
         /* Tell the user they've already judged this entry if they've already judged this entry: */
         if (entryData.scores.rubric.hasOwnProperty("judgesWhoVoted") && entryData.scores.rubric.judgesWhoVoted.indexOf(fbAuth.uid) != -1) {
             alert("You've already judged this entry!");
@@ -386,4 +399,4 @@ $("#setdimensions").on("click", function(event) {
 	programIframe.height = dimens.height;
 	programPreview.style.height = "auto";
 	console.log(dimens.height, programIframe.style.height);
-}); 
+});
