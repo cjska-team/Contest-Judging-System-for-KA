@@ -127,7 +127,7 @@ function loadLeaderboard(contestData, entryData) {
 ***/
 function loadData() {
     /* The uid can be null because includeJudged is true. */
-    window.Contest_Judging_System.get_N_Entries(KA_API.misc.allData, contestId, userData.permLevel, null, true, function(contestData, entryData) {
+    window.Contest_Judging_System.get_N_Entries(window.KA_API.misc.allData, contestId, userData.permLevel, null, true, function(contestData, entryData) {
         /* Set global_entryData and call loadLeaderboard(): */
         global_entryData = entryData;
 		/* Invoke the function that'll setup the leaderboard. */
