@@ -186,7 +186,7 @@ function loadEntries() {
 }
 
 /* Connect to Firebase: */
-var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
+var fbRef = new window.Contest_Judging_System.Firebase("https://contest-judging-sys.firebaseio.com");
 /* When the auth state changes (and on pageload): */
 fbRef.onAuth(function(fbAuth) {
     /* Get the user data if they're logged in: */
