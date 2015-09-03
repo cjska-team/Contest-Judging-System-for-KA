@@ -1,5 +1,5 @@
 /* Extract the GET parameters from the URL, and assign them to a new variable. */
-var getParams = Contest_Judging_System.getGETParams();
+var getParams = window.Contest_Judging_System.getGETParams();
 
 /* If a contest ID doesn't exist in the URL, remind the user that they need to specify one, and navigate back one page. */
 if (!getParams.contest) {
