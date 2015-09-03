@@ -187,38 +187,6 @@ window.KA_API = (function() {
                             allContests[programID] = {};
 
                             getContestsFunctions.fetchContest(programID, allPrograms[ccpInd], allContests);
-
-                            /* Put this in a function wrapper so the parameters will be saved. */
-                            // (function(programID, scratchpad, contests) {
-                            //     $.ajax({
-                            //         type: 'GET',
-                            //         url: KA_API.urls.scratchpadInfo(programID),
-                            //         async: true,
-                            //         complete: function(scratchpadData) {
-                            //             /* Add in a JSON object for this contest into contests */
-                            //             contests[programID] = {
-                            //                 /* Program ID */
-                            //                 id: programID,
-                            //                 /* Program Title */
-                            //                 name: scratchpad.translatedTitle,
-                            //                 /* Program Icon */
-                            //                 img: scratchpad.thumb,
-                            //                 /* Contest Description */
-                            //                 desc: scratchpadData.responseJSON.description
-                            //             };
-                            //
-                            //             /* Fetch the contest entries for this contest and when done, set the entries property within the above JSON object. */
-                            //             window.KA_API.getContestEntries(contests[programID].id, function(entries) {
-                            //                 contests[programID].entries = entries;
-                            //             });
-                            //
-                            //             window.KA_API.numberOfEntriesInContest(contests[programID].id, function(count) {
-                            //                 contests[programID].entryCount = count;
-                            //             });
-                            //         }
-                            //     });
-                            // })(programID, allPrograms[i], allContests);
-                            /* Pass in the parameters to this function as above. */
                         }
                     }
                     /* Once we're done with the AJAX request, set apiQueryDone to true. */

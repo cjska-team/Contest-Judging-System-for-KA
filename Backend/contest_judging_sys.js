@@ -249,17 +249,6 @@ window.Contest_Judging_System = (function() {
                 for (var ckpropInd = 0; ckpropInd < props.length; ckpropInd++) {
                     /* Invoke our "fetchContestProperties" function, this prevents JSLint from yelling at us, and it prevents function closure errors. */
                     getStoredContestsFunctions.fetchContestProperties(ckpropInd);
-
-                    /* Make sure we don't lose "i"s value. */
-                    // (function(i) {
-                    //     curContest.child(props[i]).once("value", function(snapshot) {
-                    //         curContestData[props[i]] = snapshot.val();
-                    //         /* If we have all the required properties, add this contest to our "callbackData" object. */
-                    //         if (Object.keys(curContestData).length === props.length) {
-                    //             callbackData[key] = curContestData;
-                    //         }
-                    //     }, this.logError);
-                    // })(ckpropInd);
                 }
             }, this.logError);
 
@@ -307,14 +296,6 @@ window.Contest_Judging_System = (function() {
             for (var cpropInd = 0; cpropInd < props.length; cpropInd++) {
                 /* Invoke our "fetchContestProperties" function, this prevents JSLint from yelling at us, and it prevents function closure errors. */
                 loadContestFunctions.fetchContestProperties(cpropInd);
-
-                /* Make sure we don't lose "i"s value. */
-                // (function(i) {
-                //     /* Once this property has been loaded from Firebase, add it to our "callbackData" object. */
-                //     contestRef.child(props[i]).once("value", function(snapshot) {
-                //         callbackData[props[i]] = snapshot.val();
-                //     }, this.logError);
-                // })(cpropInd);
             }
 
             /* Every second, run a check to see if we have all the data that we need, if we do, invoke our callback. */
@@ -365,14 +346,6 @@ window.Contest_Judging_System = (function() {
             for (var epropInd = 0; epropInd < props.length; epropInd++) {
                 /* Invoke our "fetchEntryProperties" function, this prevents JSLint from yelling at us, and it prevents function closure errors. */
                 loadEntryFunctions.fetchEntryProperties(epropInd);
-
-                /* Make sure we don't lose "i"s value. */
-                // (function(i) {
-                //     /* Once the current property has been loaded from Firebase, add it to our "callbackData" object */
-                //     fbRef.child(props[i]).once("value", function(snapshot) {
-                //         callbackData[props[i]] = snapshot.val();
-                //     }, this.logError);
-                // })(epropInd);
             }
 
             /* Every second, run a check to see if we have all the data that we need, if we do, invoke our callback. */
