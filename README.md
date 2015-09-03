@@ -2,6 +2,8 @@
 # KA-Contest-Judging-System
 As mentioned by Pamela Fox ( @pamelafox )
 
+### Current Stable Version: 1.0.2
+
 ## Running
 You can view a live version of this app running at [gigabytegiant.com](http://gigabytegiant.com/kacjs/).
 The project contributors use Python3's `http.server` to run this.
