@@ -30,7 +30,7 @@ function loadLeaderboard(contestData, entryData) {
     /* This function loads the leaderboard with the contest data and entry data: */
 
     /* Get the rubrics: */
-    Contest_Judging_System.getRubricsForContest(contestData.id, function(rubrics) {
+    window.Contest_Judging_System.getRubricsForContest(contestData.id, function(rubrics) {
         console.log(rubrics);
         /* Make the columns with id, title, each rubric, and a summed score: */
         var cols = [ { data: "Entry ID" }, { data: "Entry Title" } ];
@@ -124,7 +124,7 @@ function loadLeaderboard(contestData, entryData) {
 ***/
 function loadData() {
     /* The uid can be null because includeJudged is true. */
-    Contest_Judging_System.get_N_Entries(KA_API.misc.allData, contestId, userData.permLevel, null, true, function(contestData, entryData) {
+    window.Contest_Judging_System.get_N_Entries(KA_API.misc.allData, contestId, userData.permLevel, null, true, function(contestData, entryData) {
         /* Set global_entryData and call loadLeaderboard(): */
         global_entryData = entryData;
 		/* Invoke the function that'll setup the leaderboard. */
