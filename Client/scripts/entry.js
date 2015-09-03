@@ -209,6 +209,13 @@ function loadEntry() {
                     curLabel.htmlFor = kLower;
                     curLabel.textContent = rubricName + ": ";
 
+					var descElem;
+
+					if (rubrics[k].hasOwnProperty("desc")) {
+						descElem = document.createElement("small");
+						descElem.textContent = "(" + rubrics[k].desc + ")";
+					}
+
                     /* If there are discrete options to this rubric: */
                     if (rubrics[k].hasOwnProperty("keys")) {
                         /* Container for curSelectBtnGroup */
@@ -252,6 +259,9 @@ function loadEntry() {
                         }
                         curSelect.appendChild(curSelectBtnGroup);
                         curGroup.appendChild(curLabel);
+						if (descElem !== undefined) {
+							curGroup.appendChild(descElem);
+						}
                         curGroup.appendChild(curSelect);
                     }
                     /* Otherwise, the rubric is numerical. */
@@ -271,6 +281,9 @@ function loadEntry() {
 
                         /* Append everything to whatever it needs to be appended to */
                         curGroup.appendChild(curLabel);
+						if (descElem !== undefined) {
+							curGroup.appendChild(descElem);
+						}
                         curGroup.appendChild(curSlider);
                     }
 
