@@ -144,17 +144,21 @@ document.querySelector("#addrubric").addEventListener("click", function(event) {
             }
 
             /* A <ul> element for minimum and maximum: */
-            var minmaxList = document.createElement("ul");
+            var attrList = document.createElement("ul");
             /* Add the minimum: */
             var minLi = document.createElement("li");
             minLi.textContent = "Minimum: "+rubrics[jsonProp].min;
-            minmaxList.appendChild(minLi);
+            attrList.appendChild(minLi);
             /* Add the maximum: */
             var maxLi = document.createElement("li");
             maxLi.textContent = "Maximum: "+rubrics[jsonProp].max;
-            minmaxList.appendChild(maxLi);
+            attrList.appendChild(maxLi);
+            /* Add the description: */
+            var descLi = document.createElement("li");
+            descLi.textContent = "Description: " + (document.getElementById("rubricDesc").value === "" ? "N/A" : document.getElementById("rubricDesc").value);
+            attrList.appendChild(descLi);
             /* Add the list to curRubric */
-            curRubric.appendChild(minmaxList);
+            curRubric.appendChild(attrList);
             break;
         case "keys":
             /* If there are no keys or only one, tell the user to add more. */
@@ -166,7 +170,7 @@ document.querySelector("#addrubric").addEventListener("click", function(event) {
             rubrics[jsonProp] = {
                 keys: currentOptions.slice(0, currentOptions.length),
                 min: 0,
-                max: currentOptions.length-1
+                max: currentOptions.length - 1
             };
 
             /* A <ul> element for all of the options: */
@@ -179,10 +183,18 @@ document.querySelector("#addrubric").addEventListener("click", function(event) {
                 /* Add the current option into optionsList: */
                 optionsList.appendChild(curOptionLi);
             }
+
+            /* Add the description provided, to the options list. */
+            var descOption = document.createElement("li");
+            descOption.textContent = "Description: " + (document.getElementById("rubricDesc").value === "" ? "N/A" : document.getElementById("rubricDesc").value);
+            optionsList.appendChild(descOption);
+
             /* Add the list to curRubric */
             curRubric.appendChild(optionsList);
             break;
     }
+
+    rubrics[jsonProp].desc = document.getElementById("rubricDesc").value;
 
     /* Update rubrics.Order: */
     rubrics.Order.push(jsonProp);
