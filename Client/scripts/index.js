@@ -34,11 +34,11 @@ function displayContests() {
 function finishRequest(contests) {
     /* When the request is finished... */
 
-    //Loop through contests
-    for (var i in contests) {
-        if (contests.hasOwnProperty(i)) {
+    /* Loop through all of the contests that we recieved from Firebase */
+    for (var c in contests) {
+        if (contests.hasOwnProperty(c)) {
             /* The JSON object corresponding to this contest. */
-            var curr = contests[i];
+            var curr = contests[c];
 
             /* When done with AJAX request */
             /* http://getbootstrap.com/components/#media-default */
