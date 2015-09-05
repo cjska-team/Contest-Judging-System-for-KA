@@ -59,7 +59,7 @@ $.ajax({
 		/* Calculate the number of lines of code in this entry. */
 		linesOfCode = response.responseJSON.revision.code.split("\n").length;
 		/* Insert it into where it should be in the document. */
-		document.getElementById("program-info").textContent = linesOfCode+" lines of code";
+		document.querySelector("#program-info").textContent = linesOfCode+" lines of code";
 	}
 });
 
@@ -131,7 +131,7 @@ function loadEntry() {
         entryData = entryDataLocal;
 
         /* Set the text of our "program-name" heading to the name of the current entry */
-        document.getElementById("program-name").textContent = entryData.name;
+        document.querySelector("#program-name").textContent = entryData.name;
 
         /* The following stuff is broken in Firefox. Issue reported on Khan Academy live-editor repo. */
         if (!programPreview.childNodes.length) {
