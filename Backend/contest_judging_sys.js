@@ -386,24 +386,22 @@ window.Contest_Judging_System = (function() {
 
                     /* Loop through all the data we recieved from Khan Academy; and see if we already have it in Firebase. */
                     for (var i in kaData) {
-                        if (kaData.hasOwnProperty(i)) {
-                            if (!fbData.hasOwnProperty(i)) {
-                                // Most likely a new contest; add it to Firebase!
-                                console.log("[sync] We found a new contest! Contest ID: " + i);
-                                toAddToFirebase[i] = kaData[i];
-                            } else {
-                                // We have this contest in Firebase; so now let's see if we have all the entries
-                                for (var j in kaData[i].entries) {
-                                    if (kaData[i].hasOwnProperty[j] && !fbData[i].entries.hasOwnProperty(j)) {
-                                        // New entry! Add to Firebase.
-                                        console.log("[sync] We found a new entry! Contest ID: " + i + ". Entry ID: " + j);
-                                        /* TODO */
-                                        if (!entriesToAdd.hasOwnProperty(i)) {
-                                            entriesToAdd[i] = [];
-                                            entriesToAdd[i].push( kaData[i].entries[j] );
-                                        } else {
-                                            entriesToAdd[i].push( kaData[i].entries[j] );
-                                        }
+                        if (!fbData.hasOwnProperty(i)) {
+                            // Most likely a new contest; add it to Firebase!
+                            console.log("[sync] We found a new contest! Contest ID: " + i);
+                            toAddToFirebase[i] = kaData[i];
+                        } else {
+                            // We have this contest in Firebase; so now let's see if we have all the entries
+                            for (var j in kaData[i].entries) {
+                                if (!fbData[i].entries.hasOwnProperty(j)) {
+                                    // New entry! Add to Firebase.
+                                    console.log("[sync] We found a new entry! Contest ID: " + i + ". Entry ID: " + j);
+                                    /* TODO */
+                                    if (!entriesToAdd.hasOwnProperty(i)) {
+                                        entriesToAdd[i] = [];
+                                        entriesToAdd[i].push( kaData[i].entries[j] );
+                                    } else {
+                                        entriesToAdd[i].push( kaData[i].entries[j] );
                                     }
                                 }
                             }
@@ -419,7 +417,7 @@ window.Contest_Judging_System = (function() {
                         } else {
                             // Contest still exists. Now let's see if any entries have been removed.
                             for (var j in fbData[i].entries) {
-                                if (fbData.hasOwnProperty(i) && !kaData[i].entries.hasOwnProperty(j)) {
+                                if (!kaData[i].entries.hasOwnProperty(j)) {
                                     // Entry no longer exists on Khan Academy; delete from Firebase (or mark as archived).
                                     console.log("[sync] We found an entry that doesn't exist anymore! Contest ID: " + i + ". Entry ID: " + j);
                                     /* TODO */
@@ -436,41 +434,33 @@ window.Contest_Judging_System = (function() {
 
                     /* Add what we don't have; and remove what Khan Academy *doesn't* have. */
                     for (var a in toAddToFirebase) {
-                        if (toAddToFirebase.hasOwnProperty(a)) {
-                            // Add to Firebase!
-                            contestsFBRef.child(a).set(toAddToFirebase[a]);
-                            fbRef.child("contestKeys").child(a).set(true);
-                            // add to contest key list
-                        }
+                        // Add to Firebase!
+                        contestsFBRef.child(a).set(toAddToFirebase[a]);
+                        fbRef.child("contestKeys").child(a).set(true);
+                        // add to contest key list
                     }
                     for (var r in toRemoveFromFirebase) {
-                        if (toRemoveFromFirebase.hasOwnProperty(r)) {
-                            // Remove from Firebase!
-                            contestsFBRef.child(r).set(null);
-                            // remove from contest key list
-                            fbRef.child(contestKeys).child(r).set(null);
-                        }
+                        // Remove from Firebase!
+                        contestsFBRef.child(r).set(null);
+                        // remove from contest key list
+                        fbRef.child(contestKeys).child(r).set(null);
                     }
                     for (var ea in entriesToAdd) {
                         /* Add all the new entries to Firebase */
-                        if (entriesToAdd.hasOwnProperty(ea)) {
-                            for (var i = 0; i < entriesToAdd[ea].length; i++) {
-                                console.log("[sync] Adding " + entriesToAdd[ea][i].id + " to Firebase.");
-                                contestsFBRef.child(ea).child("entries").child(entriesToAdd[ea][i].id).set(entriesToAdd[ea][i]);
-                                // push to contest entry keys list
-                                contestsFBRef.child(ea).child("entryKeys").child(entriesToAdd[ea][i].id).set(true);
-                            }
+                        for (var i = 0; i < entriesToAdd[ea].length; i++) {
+                            console.log("[sync] Adding " + entriesToAdd[ea][i].id + " to Firebase.");
+                            contestsFBRef.child(ea).child("entries").child(entriesToAdd[ea][i].id).set(entriesToAdd[ea][i]);
+                            // push to contest entry keys list
+                            contestsFBRef.child(ea).child("entryKeys").child(entriesToAdd[ea][i].id).set(true);
                         }
                     }
                     for (var er in entriesToRemove) {
                         /* Remove all the old entries from Firebase */
-                        if (entriesToRemove.hasOwnProperty(er)) {
-                            for (var i = 0; i < entriesToRemove[er].length; i++) {
-                                console.log("[sync] Removing " + entriesToRemove[er][i] + " from Firebase!");
-                                contestsFBRef.child(er).child("entries").child(entriesToRemove[er][i]).set(null);
-                                // remove from the entry keys list
-                                contestsFBRef.child(er).child("entryKeys").child(entriesToRemove[er][i]).set(null);
-                            }
+                        for (var i = 0; i < entriesToRemove[er].length; i++) {
+                            console.log("[sync] Removing " + entriesToRemove[er][i] + " from Firebase!");
+                            contestsFBRef.child(er).child("entries").child(entriesToRemove[er][i]).set(null);
+                            // remove from the entry keys list
+                            contestsFBRef.child(er).child("entryKeys").child(entriesToRemove[er][i]).set(null);
                         }
                     }
 
@@ -575,7 +565,7 @@ window.Contest_Judging_System = (function() {
                     /* Call callback: */
                     callback(fbAuth, userData);
                 });
-            }
+            };
         },
         judgeEntry: function(contest, entry, scoreData, permLevel, callback) {
             /* This judges an entry entry of contest with scoreData from a judge with id as set in cookies. It then passes the new scores through callback. */
@@ -664,16 +654,12 @@ window.Contest_Judging_System = (function() {
 
                         /* Merge rubrics and contestRubrics: */
                         for (var i in contestRubrics) {
-                            if (contestRubrics.hasOwnProperty(i) && !rubrics.hasOwnProperty(i)) {
+                            if (!rubrics.hasOwnProperty(i)) {
                                 rubrics[i] = contestRubrics[i];
                             }
                         }
                         /* Merge rubrics.Order and contestRubrics.Order: */
-                        for (var i = 0; i < contestRubrics.Order.length; i++) {
-                            if (rubrics.Order.indexOf(contestRubrics.Order[i]) == -1) {
-                                rubrics.Order.push(contestRubrics.Order[i]);
-                            }
-                        }
+                        for (var i = 0; i < contestRubrics.Order.length; i++) if (rubrics.Order.indexOf(contestRubrics.Order[i]) == -1) rubrics.Order.push(contestRubrics.Order[i]);
 
                         /* Get the new Firebase data: */
                         var newFbData = {
