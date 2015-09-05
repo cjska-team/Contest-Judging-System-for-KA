@@ -160,7 +160,10 @@ function loadEntry() {
 
             /* If the user can see the scores... */
             if (entryData.hasOwnProperty("scores")) {
-                document.querySelector(".judgeOnly").style.display = "block";
+                var judgeOnlyEls = document.querySelectorAll(".judgeOnly");
+                for (var i = 0; i < judgeOnlyEls.length; i ++) {
+                    judgeOnlyEls[i].style.display = "block";
+                }
                 /* Empty rubricsDiv: */
                 while (rubricsDiv.childNodes.length) {
                     rubricsDiv.removeChild(rubricsDiv.childNodes[0]);
@@ -277,9 +280,11 @@ function loadEntry() {
                     rubricsDiv.appendChild(curGroup);
                 }
             } else {
-                /* Not sure if this is intended or not, but this will only hide the first element of class "judgeOnly"
-                    that it finds, not all of them. */
-                document.querySelector(".judgeOnly").style.display = "none";
+                /* Hide all elements of class "judgeOnly" */
+                var judgeOnlyEls = document.querySelectorAll(".judgeOnly");
+                for (var i = 0; i < judgeOnlyEls.length; i ++) {
+                    judgeOnlyEls[i].style.display = "none";
+                }
             }
 
             /* Append our program iframe to the "program-preview" div if it's no there already. */
