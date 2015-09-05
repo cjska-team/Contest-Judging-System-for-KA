@@ -267,8 +267,7 @@ function loadEntry() {
                     rubricsDiv.appendChild(curGroup);
                 }
             } else {
-                /* Not sure if this is intended or not, but this will only hide the first element of class "judgeOnly"
-                    that it finds, not all of them. */
+                /* Hide all elements of class "judgeOnly" */
                 var judgeOnlyEls = document.querySelectorAll(".judgeOnly");
                 for (var i = 0; i < judgeOnlyEls.length; i ++) {
                     judgeOnlyEls[i].style.display = "none";
