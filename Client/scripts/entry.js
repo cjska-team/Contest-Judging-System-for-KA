@@ -59,7 +59,7 @@ $.ajax({
 		/* Calculate the number of lines of code in this entry. */
 		linesOfCode = response.responseJSON.revision.code.split("\n").length;
 		/* Insert it into where it should be in the document. */
-		document.querySelector("#program-info").textContent = linesOfCode+" lines of code";
+		document.getElementById("program-info").textContent = linesOfCode+" lines of code";
 	}
 });
 
@@ -131,7 +131,7 @@ function loadEntry() {
         entryData = entryDataLocal;
 
         /* Set the text of our "program-name" heading to the name of the current entry */
-        document.querySelector("#program-name").textContent = entryData.name;
+        document.getElementById("program-name").textContent = entryData.name;
 
         /* The following stuff is broken in Firefox. Issue reported on Khan Academy live-editor repo. */
         if (!programPreview.childNodes.length) {
@@ -160,7 +160,10 @@ function loadEntry() {
 
             /* If the user can see the scores... */
             if (entryData.hasOwnProperty("scores")) {
-                document.querySelector(".judgeOnly").style.display = "block";
+                var judgeOnlyEls = document.querySelectorAll(".judgeOnly");
+                for (var i = 0; i < judgeOnlyEls.length; i ++) {
+                    judgeOnlyEls[i].style.display = "block";
+                }
                 /* Empty rubricsDiv: */
                 while (rubricsDiv.childNodes.length) {
                     rubricsDiv.removeChild(rubricsDiv.childNodes[0]);
@@ -266,7 +269,10 @@ function loadEntry() {
             } else {
                 /* Not sure if this is intended or not, but this will only hide the first element of class "judgeOnly"
                     that it finds, not all of them. */
-                document.querySelector(".judgeOnly").style.display = "none";
+                var judgeOnlyEls = document.querySelectorAll(".judgeOnly");
+                for (var i = 0; i < judgeOnlyEls.length; i ++) {
+                    judgeOnlyEls[i].style.display = "none";
+                }
             }
 
             /* Append our program iframe to the "program-preview" div if it's no there already. */
