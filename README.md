@@ -1,4 +1,4 @@
-[![Join the chat at https://gitter.im/spark-gh/KA-Contest-Judging-System](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/spark-gh/KA-Contest-Judging-System?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Code Climate](https://codeclimate.com/github/Team-Delta-KA/KA-Contest-Judging-System/badges/gpa.svg)](https://codeclimate.com/github/Team-Delta-KA/KA-Contest-Judging-System) [![Deployment status from DeployBot](https://team-delta.deploybot.com/badge/45290642014672/43809.svg)](http://deploybot.com)
+[![Join the chat at https://gitter.im/sparkstudios/KA-Contest-Judging-System](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/sparkstudios/KA-Contest-Judging-System?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Code Climate](https://codeclimate.com/github/Team-Delta-KA/KA-Contest-Judging-System/badges/gpa.svg)](https://codeclimate.com/github/Team-Delta-KA/KA-Contest-Judging-System) [![Deployment status from DeployBot](https://team-delta.deploybot.com/badge/45290642014672/43809.svg)](http://deploybot.com)
 # KA-Contest-Judging-System
 As mentioned by Pamela Fox ( @pamelafox )
 
