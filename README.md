@@ -2,7 +2,7 @@
 # KA-Contest-Judging-System
 As mentioned by Pamela Fox ( @pamelafox )
 
-### Current Stable Version: 1.2.2
+### Current Stable Version: 1.2.2.1
 
 ## Running
 You can view a live version of this app running at [gigabytegiant.com](http://gigabytegiant.com/kacjs/).
