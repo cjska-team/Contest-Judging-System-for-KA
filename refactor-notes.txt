@@ -1,2 +1,0 @@
-Gigabyte Giant's Refactoring notes for the Khan Academy Contest Judging System
- - Avoid inline if statements at all costs!
