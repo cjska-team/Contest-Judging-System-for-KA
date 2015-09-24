@@ -1,0 +1,27 @@
+{
+  "name": "KACJS",
+  "version": "2.0.0",
+  "description": "A system to help Khan Academy staff judge their Computer Science contests",
+  "main": "N/A",
+  "dependencies": {
+    "gulp": "^3.9.0",
+    "gulp-babel": "^5.2.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-sass": "^2.0.4",
+    "gulp-sourcemaps": "^1.5.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sparkstudios/KA-Contest-Judging-System.git"
+  },
+  "author": "Gigabyte Giant <brynden.bielefeld@hotmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sparkstudios/KA-Contest-Judging-System/issues"
+  },
+  "homepage": "http://gigabytegiant.com/kacjs"
+}
