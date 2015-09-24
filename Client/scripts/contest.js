@@ -54,7 +54,7 @@ function loadEntries() {
     loading.css("display", "block");
     hideWhileLoad.css("display", "none");
     /* Randomly pick n entries, and then display them on the page. */
-    Contest_Judging_System.get_N_Entries((numberOfEntries === null ? KA_API.misc.allData : numberOfEntries), contestId, global_userData.permLevel, global_userData.uid, includeJudged, function(contest, entries) {
+    window.Contest_Judging_System.get_N_Entries((numberOfEntries === null ? KA_API.misc.allData : numberOfEntries), contestId, global_userData.permLevel, global_userData.uid, includeJudged, function(contest, entries) {
         /* Setup the page */
         $("title").text(contest.name);
         $("#contestName").text(contest.name);
@@ -113,7 +113,7 @@ function loadEntries() {
 
                         mediaHeading.appendChild(hasBeenJudgedLabel);
 
-                        Contest_Judging_System.getRubricsForContest(contestId, function(rubrics) {
+                        window.Contest_Judging_System.getRubricsForContest(contestId, function(rubrics) {
                             /* Create a div that will hold more information about this entry */
                             var infoDiv = document.createElement("div");
                             infoDiv.className = "info";
@@ -145,7 +145,7 @@ function loadEntries() {
                                 } else {
                                     listItem.textContent = selectedRubric + ": " + val + " out of " + max;
                                     scoreList.appendChild(listItem);
-                                } 
+                                }
                             }
                             /* Append everything */
                             infoDiv.appendChild(scoreHeading);
@@ -186,12 +186,12 @@ function loadEntries() {
 }
 
 /* Connect to Firebase: */
-var fbRef = new Firebase("https://contest-judging-sys.firebaseio.com");
+var fbRef = new window.Contest_Judging_System.Firebase("https://contest-judging-sys.firebaseio.com");
 /* When the auth state changes (and on pageload): */
 fbRef.onAuth(function(fbAuth) {
     /* Get the user data if they're logged in: */
     if (fbAuth) {
-        Contest_Judging_System.getUserData(fbAuth.uid, function(userData) {
+        window.Contest_Judging_System.getUserData(fbAuth.uid, function(userData) {
             global_userData = userData;
             global_userData.uid = fbAuth.uid;
             /* Load the entries when done: */
