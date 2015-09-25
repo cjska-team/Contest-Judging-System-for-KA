@@ -16,8 +16,6 @@ gulp.task("scripts", function() {
 	return gulp.src("src/**/*.js")
 		.pipe(sourcemaps.init())
 		.pipe(babel())
-		.pipe(concat("src.js"))
-		.pipe(sourcemaps.write("."))
 		.pipe(gulp.dest(buildDir + "/scripts/"));
 });
 
