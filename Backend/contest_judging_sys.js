@@ -240,6 +240,10 @@ window.Contest_Judging_System = (function() {
                             // If we have all the required properties, add this contest to our "callbackData" object.
                             if (Object.keys(curContestData).length === props.length) {
                                 callbackData[key] = curContestData;
+                                // Check to make sure we have all the data, and if we do, invoke our callback.
+                                if (Object.keys(callbackData).length === foundContestKeys.length) {
+                                    callback(callbackData);
+                                }
                             }
                         }, window.Contest_Judging_System.logError);
                     }
@@ -250,16 +254,6 @@ window.Contest_Judging_System = (function() {
                     // Invoke our "fetchContestProperties" function, this prevents JSLint from yelling at us, and it prevents function closure errors.
                     getStoredContestsFunctions.fetchContestProperties(ckpropInd);
                 }
-            }, window.Contest_Judging_System.logError);
-
-            // Once the "contestKeys" query is done, check to make sure we have all the data, and invoke our callback.
-            contestKeys.once("value", function() {
-                var checkDone = setTimeout(function() {
-                    if (Object.keys(callbackData).length === foundContestKeys.length) {
-                        clearInterval(checkDone);
-                        callback(callbackData);
-                    }
-                }, 1000);
             }, window.Contest_Judging_System.logError);
         },
         /**
@@ -288,6 +282,11 @@ window.Contest_Judging_System = (function() {
                     // Once this property has been loaded from Firebase, add it to our "callbackData" object.
                     contestRef.child(props[propInd]).once("value", function(snapshot) {
                         callbackData[props[propInd]] = snapshot.val();
+                        // Check to see if we have all our data and if we do, invoke out callback.
+
+                        if (Object.keys(callbackData).length === props.length) {
+                            callback(callbackData);
+                        }
                     }, window.Contest_Judging_System.logError);
                 }
             };
@@ -297,16 +296,6 @@ window.Contest_Judging_System = (function() {
                 // Invoke our "fetchContestProperties" function, this prevents JSLint from yelling at us, and it prevents function closure errors.
                 loadContestFunctions.fetchContestProperties(cpropInd);
             }
-
-            // Every second, run a check to see if we have all the data that we need, if we do, invoke our callback.
-            var checkDone = setTimeout(function() {
-                if (Object.keys(callbackData).length === props.length) {
-                    // Stop checking if we're done:
-                    clearTimeout(checkDone);
-                    // Invoke our callback function, and pass our "callbackData" object into it.
-                    callback(callbackData);
-                }
-            }, 1000);
         },
         /**
          * loadEntry()
@@ -338,6 +327,10 @@ window.Contest_Judging_System = (function() {
                     // Once the current property has been loaded from Firebase, add it to our "callbackData" object
                     fbRef.child(props[propInd]).once("value", function(snapshot) {
                         callbackData[props[propInd]] = snapshot.val();
+                        // Check if we have all necessary data and if we do, invoke the callback.
+                        if (Object.keys(callbackData).length === props.length) {
+                            callback(callbackData);
+                        }
                     }, window.Contest_Judging_System.logError);
                 }
             };
@@ -347,16 +340,6 @@ window.Contest_Judging_System = (function() {
                 // Invoke our "fetchEntryProperties" function, this prevents JSLint from yelling at us, and it prevents function closure errors.
                 loadEntryFunctions.fetchEntryProperties(epropInd);
             }
-
-            // Every second, run a check to see if we have all the data that we need, if we do, invoke our callback.
-            var checkDone = setTimeout(function() {
-                if (Object.keys(callbackData).length === props.length) {
-                    // Stop checking if we're done:
-                    clearTimeout(checkDone);
-                    // Invoke our callback function, and pass it our "callbackData" object
-                    callback(callbackData);
-                }
-            }, 1000);
         },
         /**
          * get_N_Entries()
