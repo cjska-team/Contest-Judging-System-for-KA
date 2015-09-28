@@ -1,5 +1,3 @@
-var KA_API = require("../backend/ka_api.js");
-
 var createContestHolder = function(contestData) {
     // Begin Column Root
     var contestHolder = $("<div>")
