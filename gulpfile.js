@@ -1,12 +1,12 @@
-var gulp  = require("gulp");
-var sourcemaps = require("gulp-sourcemaps");
-var concat = require("gulp-concat");
-var sass  = require("gulp-sass");
-var babel = require("gulp-babel");
-var jshint = require("gulp-jshint");
+var gulp        = require("gulp");
+var sourcemaps  = require("gulp-sourcemaps");
+var concat      = require("gulp-concat");
+var sass        = require("gulp-sass");
+var babel       = require("gulp-babel");
+var jshint      = require("gulp-jshint");
 var browserSync = require("browser-sync").create();
 
-var buildDir = "./build";
+var buildDir    = "./build";
 
 browserSync.init({
 	server: {
