@@ -22,8 +22,5 @@
   "bugs": {
     "url": "https://github.com/sparkstudios/KA-Contest-Judging-System/issues"
   },
-  "homepage": "http://gigabytegiant.com/kacjs",
-  "jshintConfig": {
-     "esnext": true
-  }
+  "homepage": "http://gigabytegiant.com/kacjs"
 }
