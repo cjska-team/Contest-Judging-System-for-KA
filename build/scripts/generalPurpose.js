@@ -23,8 +23,8 @@ var generalPurposeFunctions = (function () {
                     curCookie = curCookie.substring(1);
                 }
                 // If we've found the right cookie, return its value.
-                if (curCookie.indexOf(name) === 0) {
-                    return curCookie.substring(name.length, curCookie.length);
+                if (curCookie.indexOf(cookieName) === 0) {
+                    return curCookie.substring(cookieName.length, curCookie.length);
                 }
             }
             // Otherwise, if the cookie doesn't exist, return ""
@@ -42,7 +42,7 @@ var generalPurposeFunctions = (function () {
             var d = new Date();
             d.setTime(d.getTime() + 30 * 24 * 60 * 60 * 1000);
             var expires = "expires=" + d.toUTCString();
-            document.cookie = cookie + "=" + value + "; " + expires;
+            document.cookie = cookieName + "=" + value + "; " + expires;
         }
     };
 })();
