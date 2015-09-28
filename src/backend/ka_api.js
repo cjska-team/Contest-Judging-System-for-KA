@@ -65,7 +65,6 @@ module.exports = (function() {
             // If we're not making an async request, return the "responseJSON"
             //  property from our "apiRequest" variable.
             return (useAsync === false ? apiRequest.responseJSON : undefined);
-        },
-        test: 1
+        }
     };
 })();
