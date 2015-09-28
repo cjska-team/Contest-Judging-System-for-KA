@@ -1,3 +1,11 @@
+/**
+ * createContestHolder(contestData)
+ * Creates a "contest holder" div, and returns it to the caller.
+ * @author Gigabyte Giant (2015)
+ * @param {Object} contestData: A JSON object containing the data for a contest.
+ * @returns {jQuery} contestHolder: The jQuery object containing the "contest holder" div.
+ * @todo (GigabyteGiant): Modify this function to use any data that gets passed in via the "contestData" object.
+ */
 var createContestHolder = function(contestData) {
     // Begin Column Root
     var contestHolder = $("<div>")
