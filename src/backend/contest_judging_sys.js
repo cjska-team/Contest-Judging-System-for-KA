@@ -1,4 +1,3 @@
-/*esnext*/
 import KA_API from "ka_api.js";
 import General from "../generalPurpose.js";
 

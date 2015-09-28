@@ -1,4 +1,3 @@
-/*esnext*/
 var KA_API = (function() {
     // This requires module requests jQuery; if jQuery isn't found...
     if (!window.jQuery) {
