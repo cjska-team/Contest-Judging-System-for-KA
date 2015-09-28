@@ -5,6 +5,9 @@ var sass        = require("gulp-sass");
 var babel       = require("gulp-babel");
 var jshint      = require("gulp-jshint");
 var browserSync = require("browser-sync").create();
+var browserify  = require("browserify");
+var babelify    = require("babelify");
+var source      = require('vinyl-source-stream');
 
 var buildDir    = "./build";
 
@@ -20,12 +23,13 @@ gulp.task("styles", function() {
         .pipe(gulp.dest(buildDir + "/css/"));
 });
 
-gulp.task("scripts", function() {
-    return gulp.src("src/**/*.js")
-        .pipe(sourcemaps.init())
-        .pipe(babel())
-        .pipe(gulp.dest(buildDir + "/scripts/"));
-});
+function transpileScripts(filePath) {
+    browserify(filePath, {debug: true})
+        .transform(babelify)
+        .bundle()
+        .pipe(source(filePath))
+        .pipe(gulp.dest(buildDir));
+}
 
 gulp.task("jshint", function() {
     return gulp.src("src/**/*.js")
@@ -34,7 +38,12 @@ gulp.task("jshint", function() {
 });
 
 gulp.task("default", function() {
-    gulp.watch("src/**/*.js", ["jshint", "scripts"]);
+    var scripts = gulp.watch("src/**/*.js", ["jshint"]);
+
+    scripts.on("change", function(evt) {
+        transpileScripts(evt.path);
+    });
+
     gulp.watch("sass/**/*.scss", ["styles"]);
     gulp.watch("./**/*.html").on("change", browserSync.reload);
 });

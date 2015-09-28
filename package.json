@@ -13,8 +13,11 @@
     "gulp-sourcemaps": "^1.5.2"
   },
   "devDependencies": {
+    "babelify": "^6.3.0",
     "browser-sync": "^2.9.6",
-    "gulp-jshint": "^1.11.2"
+    "browserify": "^11.2.0",
+    "gulp-jshint": "^1.11.2",
+    "vinyl-source-stream": "^1.1.0"
   },
   "repository": {
     "type": "git",
