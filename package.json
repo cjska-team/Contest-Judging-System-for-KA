@@ -12,7 +12,9 @@
     "gulp-sass": "^2.0.4",
     "gulp-sourcemaps": "^1.5.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "browser-sync": "^2.9.6"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sparkstudios/KA-Contest-Judging-System.git"
