@@ -1,7 +1,4 @@
-import KA_API from "ka_api.js";
-import General from "../generalPurpose.js";
-
-var Contest_Judging_System = (function() {
+module.exports = (function() {
     if (!window.jQuery || !window.Firebase || !window.KA_API) {
         return;
     }
@@ -10,5 +7,3 @@ var Contest_Judging_System = (function() {
 
     };
 })();
-
-export default Contest_Judging_System;

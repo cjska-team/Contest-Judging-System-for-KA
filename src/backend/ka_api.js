@@ -1,4 +1,4 @@
-var KA_API = (function() {
+module.exports = (function() {
     // This requires module requests jQuery; if jQuery isn't found...
     if (!window.jQuery) {
         // ...exit the function.
@@ -65,8 +65,7 @@ var KA_API = (function() {
             // If we're not making an async request, return the "responseJSON"
             //  property from our "apiRequest" variable.
             return (useAsync === false ? apiRequest.responseJSON : undefined);
-        }
+        },
+        test: 1
     };
 })();
-
-export default KA_API;
