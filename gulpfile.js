@@ -3,8 +3,15 @@ var sourcemaps = require("gulp-sourcemaps");
 var concat = require("gulp-concat");
 var sass  = require("gulp-sass");
 var babel = require("gulp-babel");
+var browserSync = require("browser-sync").create();
 
 var buildDir = "./build";
+
+browserSync.init({
+	server: {
+		baseDir: "./"
+	}
+});
 
 gulp.task("styles", function() {
 	gulp.src("sass/**/*.scss")
@@ -22,4 +29,5 @@ gulp.task("scripts", function() {
 gulp.task("default", function() {
 	gulp.watch("src/**/*.js", ["scripts"]);
 	gulp.watch("sass/**/*.scss", ["styles"]);
+	gulp.watch("./**/*.html").on("change", browserSync.reload);
 });
