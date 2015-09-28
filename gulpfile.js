@@ -9,32 +9,32 @@ var browserSync = require("browser-sync").create();
 var buildDir    = "./build";
 
 browserSync.init({
-	server: {
-		baseDir: "./"
-	}
+    server: {
+        baseDir: "./"
+    }
 });
 
 gulp.task("styles", function() {
-	gulp.src("sass/**/*.scss")
-		.pipe(sass().on("error", sass.logError))
-		.pipe(gulp.dest(buildDir + "/css/"));
+    gulp.src("sass/**/*.scss")
+        .pipe(sass().on("error", sass.logError))
+        .pipe(gulp.dest(buildDir + "/css/"));
 });
 
 gulp.task("scripts", function() {
-	return gulp.src("src/**/*.js")
-		.pipe(sourcemaps.init())
-		.pipe(babel())
-		.pipe(gulp.dest(buildDir + "/scripts/"));
+    return gulp.src("src/**/*.js")
+        .pipe(sourcemaps.init())
+        .pipe(babel())
+        .pipe(gulp.dest(buildDir + "/scripts/"));
 });
 
 gulp.task("jshint", function() {
-	return gulp.src("src/**/*.js")
-		.pipe(jshint())
-		.pipe(jshint.reporter('default'));
+    return gulp.src("src/**/*.js")
+        .pipe(jshint())
+        .pipe(jshint.reporter('default'));
 });
 
 gulp.task("default", function() {
-	gulp.watch("src/**/*.js", ["jshint", "scripts"]);
-	gulp.watch("sass/**/*.scss", ["styles"]);
-	gulp.watch("./**/*.html").on("change", browserSync.reload);
+    gulp.watch("src/**/*.js", ["jshint", "scripts"]);
+    gulp.watch("sass/**/*.scss", ["styles"]);
+    gulp.watch("./**/*.html").on("change", browserSync.reload);
 });
