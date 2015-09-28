@@ -3,6 +3,7 @@ var sourcemaps = require("gulp-sourcemaps");
 var concat = require("gulp-concat");
 var sass  = require("gulp-sass");
 var babel = require("gulp-babel");
+var jshint = require("gulp-jshint");
 var browserSync = require("browser-sync").create();
 
 var buildDir = "./build";
@@ -26,8 +27,14 @@ gulp.task("scripts", function() {
 		.pipe(gulp.dest(buildDir + "/scripts/"));
 });
 
+gulp.task("jshint", function() {
+	return gulp.src("src/**/*.js")
+		.pipe(jshint())
+		.pipe(jshint.reporter('default'));
+});
+
 gulp.task("default", function() {
-	gulp.watch("src/**/*.js", ["scripts"]);
+	gulp.watch("src/**/*.js", ["jshint", "scripts"]);
 	gulp.watch("sass/**/*.scss", ["styles"]);
 	gulp.watch("./**/*.html").on("change", browserSync.reload);
 });
