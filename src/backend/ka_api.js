@@ -58,7 +58,7 @@ module.exports = (function() {
                 url: apiUrl,
                 async: useAsync,
                 complete: (useAsync === true ? function(apiResponse) {
-                    callback(apiResponse);
+                    callback(apiResponse.responseJSON);
                 } : undefined)
             });
 
