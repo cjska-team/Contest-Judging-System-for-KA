@@ -60,17 +60,20 @@ function addOption(option) {
 document.querySelector("#addoption").addEventListener("click", function(event) {
     /* Make sure the form doesn't redirect. */
     event.preventDefault();
-    /* Make sure there is a nonempty option name: */
-    if (!document.forms.new_contest.option.value.length) {
-        alert("Please enter a option name. Thanks!");
-        return;
+    /* Make sure the button was actually clicked and it wasn't someone pressing Enter in an <input>: */
+    if (event.clientX !== 0 && event.clientY !== 0) {
+        /* Make sure there is a nonempty option name: */
+        if (!document.forms.new_contest.option.value.length) {
+            alert("Please enter a option name. Thanks!");
+            return;
+        }
+        /* Get multiple options by splitting on commas: */
+        var newOptions = document.forms.new_contest.option.value.split(",");
+        /* Add each option: */
+        for (var i = 0; i < newOptions.length; i++) addOption(newOptions[i]);
+        /* Clear the option textbox */
+        document.forms.new_contest.option.value = "";
     }
-    /* Get multiple options by splitting on commas: */
-    var newOptions = document.forms.new_contest.option.value.split(",");
-    /* Add each option: */
-    for (var i = 0; i < newOptions.length; i++) addOption(newOptions[i]);
-    /* Clear the option textbox */
-    document.forms.new_contest.option.value = "";
 });
 
 /* Use noUiSlider to create slider */
