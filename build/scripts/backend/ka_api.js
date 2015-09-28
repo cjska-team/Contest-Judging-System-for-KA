@@ -46,7 +46,7 @@ var KA_API = (function () {
             //  or not we're going to make an async request.
             var useAsync = false;
 
-            // If a callback function has been passed in, set async to true.
+            // If a callback function has been passed in, set "useAsync" to true.
             if (callback !== undefined && typeof callback === "function") {
                 useAsync = true;
             }
