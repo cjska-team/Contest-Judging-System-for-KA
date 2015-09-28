@@ -2,6 +2,6 @@
     "esnext": true,
     "undef" : true,
     "unused": true,
-    "predef": ["window", "document"],
+    "predef": ["window", "document", "require", "module", "console"],
     "jquery": true
 }
