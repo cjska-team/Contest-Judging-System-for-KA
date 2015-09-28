@@ -19,4 +19,4 @@ To run this...
 
 ## Screenshots
 #### How are we currently presenting contests to judges?
-![Homepage](https://d1ro8r1rbfn3jf.cloudfront.net/ms_75204/0yfEi8ewcvmKnxLKl6GBLwU7Dw8hvr/Monosnap%2B2015-09-03%2B13-59-30.png?Expires=1441393237&Signature=jlE07pPuf5FRBjzpcA8k0ixLQeoIUcAooOad~8xs38RXOT0OiVcOWrDZdJwp43VgkiHlXneQnIFLCQ7vD~M000hpXfT9H5uwW7HrO1LHOG-IO2cHxibR-YTv2qTTi56vXa5U2kDcHhLsxP0YEBU3TkoBeAphjaQp~AMNLYOVXR3pW5zh6qmOKuBi8eRS~pjgDIg5XFghkizE6pWZvmqILWbDtPf2N~vARlCFCBuOXpUWeLWMpZFAXXt5jtlmPbhAMov2HjehYxm0Dybn1xvXHVoMAwSDt37Q3C41nzqgHztSzaKe1EZQ23e8dV~mohG3CfTMt97UlMYVvDKf39TfqQ__&Key-Pair-Id=APKAJHEJJBIZWFB73RSA)
+![Homepage](http://take.ms/eJbHs)

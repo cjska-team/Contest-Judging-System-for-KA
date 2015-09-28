@@ -63,7 +63,7 @@ function loadLeaderboard(contestData, entryData) {
             /* The summed score for this entry: */
             var summedScore = 0;
             /* For each rubric: */
-            for (var roInd = 0; i < rubrics.Order.length; roInd++) {
+            for (var roInd = 0; roInd < rubrics.Order.length; roInd++) {
                 /* The score for this rubric is the average, unless it hasn't been graded yet, in which case it's the minimum: */
                 var score = entryData[eD].scores.rubric.hasOwnProperty(rubrics.Order[roInd]) ? entryData[eD].scores.rubric[rubrics.Order[roInd]].avg : rubrics[rubrics.Order[roInd]].min;
                 /* Increment summedScore by score: */
@@ -78,6 +78,7 @@ function loadLeaderboard(contestData, entryData) {
             }
             /* Add summedScore to objToAdd: */
             objToAdd["Summed Score"] = summedScore;
+            console.log(objToAdd);
             /* Push objToAdd into tableDataList: */
             tableDataList.push(objToAdd);
         }
