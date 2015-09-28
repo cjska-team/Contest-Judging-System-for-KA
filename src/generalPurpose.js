@@ -1,4 +1,4 @@
-var generalPurposeFunctions = (function() {
+module.exports = (function() {
     return {
         /**
          * getCookie(cookieName)
@@ -41,5 +41,3 @@ var generalPurposeFunctions = (function() {
         }
     };
 })();
-
-export default generalPurposeFunctions;
