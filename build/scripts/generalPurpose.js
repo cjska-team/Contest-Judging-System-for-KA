@@ -14,7 +14,7 @@ var generalPurposeFunctions = (function () {
          */
         getCookie: function getCookie(cookieName) {
             // Get the cookie with name cookie (return "" if non-existent)
-            var name = cookie + "=";
+            var name = cookieName + "=";
             // Check all of the cookies and try to find the one containing name.
             var cookieList = document.cookie.split(';');
             for (var cInd = 0; cInd < cookieList.length; cInd++) {
