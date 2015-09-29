@@ -1,70 +1,95 @@
 /**
+ * createContestControl(controlData)
+ * Creates a button using the data specified, and returns it to the caller.
+ * @author Gigabyte Giant (2015)
+ * @param {Object} controlData: The JSON object containing the data for the control (such as display text and where the control should link to)
+ * @returns {jQuery} contestControl: The jQuery object containing the newly created contest control
+ */
+var createContestControl = function(controlData) {
+    var contestControl = $("<a>")
+        .addClass("waves-effect")
+        .addClass("waves-light")
+        .addClass("amber")
+        .addClass("darken-2")
+        .addClass("btn")
+        .addClass("contest-control")
+        .text(controlData.text)
+        .attr("href", (controlData.link === undefined ? null : controlData.link));
+
+    return contestControl;
+};
+
+/**
+ * createContestDetails(contestData)
+ * Creates a "contest details" div, and returns it to the caller.
+ * @author Gigabyte Giant (2015)
+ * @param {Object} contestData: A JSON object containing the data for a contest.
+ * @returns {jQuery} contestDetails: The jQuery object containing the "contest details" div.
+ */
+var createContestDetails = function(contestData) {
+    var contestDetails = $("<div>")
+        .addClass("col")
+        .addClass("s9")
+        .append(
+            $("<h5>").text(contestData.title)
+        )
+        .append(
+            $("<div>")
+                .html(contestData.description)
+        );
+
+    return contestDetails;
+};
+
+/**
  * createContestHolder(contestData)
  * Creates a "contest holder" div, and returns it to the caller.
  * @author Gigabyte Giant (2015)
  * @param {Object} contestData: A JSON object containing the data for a contest.
  * @returns {jQuery} contestHolder: The jQuery object containing the "contest holder" div.
- * @todo (GigabyteGiant): Modify this function to use any data that gets passed in via the "contestData" object.
  */
 var createContestHolder = function(contestData) {
-    // Begin Card Root
-    var contestHolder = $("<div>").addClass("card").addClass("contest")
-        // Begin Card Image
+    var contestHolder = $("<div>").addClass("section")
         .append(
-            $("<div>").addClass("card-image").addClass("center")
+            $("<div>").addClass("col").addClass("s3")
                 .append(
-                    $("<img>").attr("src", "http://newlitfromeurope.org/wp-content/uploads/2015/05/placeholder1.gif").css("width", "200px")
+                    $("<img>").attr("src", contestData.thumbnail).attr("width", "200px")
                 )
                 .append(
-                    $("<span>").addClass("card-title").addClass("amber").addClass("lighten-2")
-                        .text("Contest: Some contest")
+                    $("<div>").addClass("center")
+                        .append(
+                            createContestControl({
+                                text: "View Entries"
+                            })
+                        )
+                        .append(
+                            createContestControl({
+                                text: "Leaderboard"
+                            })
+                        )
                 )
         )
-        // End Card Image
-        // Begin Card Content
         .append(
-            $("<div>").addClass("card-content")
-                .append(
-                    $("<p>").text("This is the description for some contest...")
-                )
-        )
-        // End Card Content
-        // Begin Card Action
-        .append(
-            $("<div>").addClass("card-action").addClass("center")
-                .append(
-                    $("<a>").attr("href", "#").text("All Entries")
-                )
-                .append(
-                    $("<a>").attr("href", "#").text("Leaderboard")
-                )
+            createContestDetails(contestData)
         );
-        // End Card Action
-    // End Card Root
 
     return contestHolder;
 };
 
-/**
- * createColumn()
- * Creates a materialize column div, and returns it to the caller.
- * @author Gigabyte Giant (2015)
- * @returns {jQuery} columnElement: The jQuery object containing the materialize column div.
- */
-var createColumn = function() {
-    // Begin Column
-    var columnElement = $("<div>")
-        .addClass("col").addClass("s12").addClass("m12");
-    // End Column
-
-    return columnElement;
-};
-
 var setupPage = function() {
     for (var i = 0; i < 32; i++) {
-        $(".row").append(
-            createColumn()
-                .append(createContestHolder())
+        $(".container").append(
+            $("<div>").addClass("row")
+                .append(
+                    createContestHolder({
+                        title: "Contest: Some contest",
+                        description: "This is a contest. Do something, and win a prize!",
+                        thumbnail: "http://newlitfromeurope.org/wp-content/uploads/2015/05/placeholder1.gif"
+                    })
+                )
+        )
+        .append(
+            $("<div>").addClass("divider")
         );
     }
 };
