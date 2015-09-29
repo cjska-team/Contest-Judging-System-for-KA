@@ -53,7 +53,7 @@ var createContestHolder = function(contestData) {
         .append(
             $("<div>").addClass("col").addClass("s3")
                 .append(
-                    $("<img>").attr("src", contestData.thumbnail).attr("width", "200px")
+                    $("<img>").attr("src", contestData.thumbnail).addClass("responsive-img")
                 )
                 .append(
                     $("<div>").addClass("center")
