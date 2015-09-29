@@ -35,12 +35,12 @@ gulp.task("jshint", function() {
 });
 
 gulp.task("default", function() {
-    var scripts = gulp.watch("src/**/*.js", ["jshint"]);
+    var scripts = gulp.watch("src/**/*.js", ["jshint"]).on("change", browserSync.reload);
 
     scripts.on("change", function(evt) {
         transpileScripts(evt.path);
     });
 
-    gulp.watch("sass/**/*.scss", ["styles"]);
+    gulp.watch("sass/**/*.scss", ["styles"]).on("change", browserSync.reload);
     gulp.watch("./**/*.html").on("change", browserSync.reload);
 });
