@@ -77,29 +77,22 @@ var createContestHolder = function(contestData) {
     return contestHolder;
 };
 
-
-CJSystem.contests({
-    callback: function() {
-        console.log("Got some contest data");
-        CJSystem.contest({
-            id: this.key(),
-            callback: function(contest) {
-                console.log("Got a contest");
-                console.log(this);
-                $(".contests").append(
-                    $("<div>").addClass("row")
-                        .append(
-                            createContestHolder({
-                                title: contest.name,
-                                description: contest.desc,
-                                thumbnail: "https://khanacademy.org" + contest.img
-                            })
-                        )
-                )
+var setupPage = function() {
+    for (var i = 0; i < 32; i++) {
+        $(".contests").append(
+            $("<div>").addClass("row")
                 .append(
-                    $("<div>").addClass("divider")
-                );
-            }
-        });
+                    createContestHolder({
+                        title: "Contest: Some contest",
+                        description: "This is a contest. Do something, and win a prize!",
+                        thumbnail: "http://www.whistler.com/images/placeholders/200x200.gif"
+                    })
+                )
+        )
+        .append(
+            $("<div>").addClass("divider")
+        );
     }
-});
+};
+
+setupPage();
