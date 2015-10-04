@@ -1,3 +1,4 @@
+import * as CJSystem from "../backend/contest_judging_sys.js";
 /**
  * createContestControl(controlData)
  * Creates a button using the data specified, and returns it to the caller.
@@ -53,10 +54,10 @@ var createContestHolder = function(contestData) {
         .append(
             $("<div>").addClass("col").addClass("s3")
                 .append(
-                    $("<img>").attr("src", contestData.thumbnail).addClass("responsive-img")
-                )
-                .append(
                     $("<div>").addClass("center")
+                        .append(
+                            $("<img>").attr("src", contestData.thumbnail).addClass("responsive-img")
+                        )
                         .append(
                             createContestControl({
                                 text: "View Entries"
@@ -76,22 +77,29 @@ var createContestHolder = function(contestData) {
     return contestHolder;
 };
 
-var setupPage = function() {
-    for (var i = 0; i < 32; i++) {
-        $(".container").append(
-            $("<div>").addClass("row")
-                .append(
-                    createContestHolder({
-                        title: "Contest: Some contest",
-                        description: "This is a contest. Do something, and win a prize!",
-                        thumbnail: "http://newlitfromeurope.org/wp-content/uploads/2015/05/placeholder1.gif"
-                    })
-                )
-        )
-        .append(
-            $("<div>").addClass("divider")
-        );
-    }
-};
 
-setupPage();
+CJSystem.contests({
+    callback: function() {
+        console.log("Got some contest data");
+        CJSystem.contest({
+            id: this.key(),
+            callback: function(contest) {
+                console.log("Got a contest");
+                console.log(this);
+                $(".contests").append(
+                    $("<div>").addClass("row")
+                        .append(
+                            createContestHolder({
+                                title: contest.name,
+                                description: contest.desc,
+                                thumbnail: "https://khanacademy.org" + contest.img
+                            })
+                        )
+                )
+                .append(
+                    $("<div>").addClass("divider")
+                );
+            }
+        });
+    }
+});

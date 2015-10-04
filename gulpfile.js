@@ -31,7 +31,7 @@ function transpileScripts(filePath) {
 gulp.task("jshint", function() {
     return gulp.src("src/**/*.js")
         .pipe(jshint())
-        .pipe(jshint.reporter('default'));
+        .pipe(jshint.reporter("default"));
 });
 
 gulp.task("default", function() {
