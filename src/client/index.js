@@ -53,10 +53,10 @@ var createContestHolder = function(contestData) {
         .append(
             $("<div>").addClass("col").addClass("s3")
                 .append(
-                    $("<img>").attr("src", contestData.thumbnail).addClass("responsive-img")
-                )
-                .append(
                     $("<div>").addClass("center")
+                        .append(
+                            $("<img>").attr("src", contestData.thumbnail).addClass("responsive-img")
+                        )
                         .append(
                             createContestControl({
                                 text: "View Entries"
@@ -78,13 +78,13 @@ var createContestHolder = function(contestData) {
 
 var setupPage = function() {
     for (var i = 0; i < 32; i++) {
-        $(".container").append(
+        $(".contests").append(
             $("<div>").addClass("row")
                 .append(
                     createContestHolder({
                         title: "Contest: Some contest",
                         description: "This is a contest. Do something, and win a prize!",
-                        thumbnail: "http://newlitfromeurope.org/wp-content/uploads/2015/05/placeholder1.gif"
+                        thumbnail: "http://www.whistler.com/images/placeholders/200x200.gif"
                     })
                 )
         )
