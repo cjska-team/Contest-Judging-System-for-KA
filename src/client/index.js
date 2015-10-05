@@ -1,4 +1,3 @@
-import * as CJSystem from "../backend/contest_judging_sys.js";
 /**
  * createContestControl(controlData)
  * Creates a button using the data specified, and returns it to the caller.
