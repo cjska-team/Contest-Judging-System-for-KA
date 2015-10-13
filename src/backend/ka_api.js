@@ -65,6 +65,36 @@ module.exports = (function() {
             // If we're not making an async request, return the "responseJSON"
             //  property from our "apiRequest" variable.
             return (useAsync === false ? apiRequest.responseJSON : undefined);
+        },
+        getSpinoffsFromScratchpad: function(scratchpadId, callback) {
+            // Declare a boolean variable that'll be used to determine whether
+            //  or not we're going to make an async request.
+            var useAsync = false;
+
+            // If a callback function has been passed in, set "useAsync" to true.
+            if (callback !== undefined && (typeof callback === "function")) {
+                useAsync = true;
+            }
+
+            // Declare a string variable that'll hold the API URL that we'll
+            //  use to fetch the information for the scratchpad that was
+            //  specified.
+            var apiUrl = this.urls.spinoffs(scratchpadId);
+
+            // Declare an object variable that'll be returned if we're not
+            //  performing an async request.
+            var apiRequest = $.ajax({
+                type: "GET",
+                url: apiUrl,
+                async: useAsync,
+                complete: (useAsync === true ? function(apiResponse) {
+                    callback(apiResponse.responseJSON);
+                } : undefined)
+            });
+
+            // If we're not making an async request, return the "responseJSON"
+            //  property from our "apiRequest" variable.
+            return (useAsync === false ? apiRequest.responseJSON : undefined);
         }
     };
 })();
