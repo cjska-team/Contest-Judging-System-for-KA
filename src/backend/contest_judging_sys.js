@@ -3,7 +3,7 @@ module.exports = (function() {
         return;
     }
 
-    // Declare a new "constant" to hold our "Firebase Key".
+    // The following variable is used to store our "Firebase Key"
     let FIREBASE_KEY = "https://contest-judging-sys.firebaseio.com";
 
     return {
