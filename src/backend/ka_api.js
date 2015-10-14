@@ -36,6 +36,18 @@ module.exports = (function() {
                 return "https://www.khanacademy.org/api/labs/scratchpads/{SCRATCHPAD}".replace("{SCRATCHPAD}", scratchpadID);
             }
         },
+        /**
+         * getScratchpadInfo(scratchpadId, callback)
+         * Makes a call to the Khan Academy CS API to fetch the data for a scratchpad.
+         * @author Gigabyte Giant (2015)
+         * @param {String} scratchpadId: The Scratchpad ID of the scratchpad that we'd like to retrieve data from.
+         * @param {Function} callback*: The callback function to invoke after the data has been retrieved.
+         * @returns {JSON}: The JSON data retrieved from the API
+         * @NOTE: If a callback function is not passed into this function,
+         *  we'll make an synchronous request to the Khan Academy CS API, and then return a JSON object.
+         * If a callback function is passed in, we'lll make an asynchronous request to the Khan Academy CS API,
+         *  and return nothing, and invoke the callback function that was passed in.
+         */
         getScratchpadInfo: function(scratchpadId, callback) {
             // Declare a boolean variable that'll be used to determine whether
             //  or not we're going to make an async request.
@@ -66,6 +78,18 @@ module.exports = (function() {
             //  property from our "apiRequest" variable.
             return (useAsync === false ? apiRequest.responseJSON : undefined);
         },
+        /**
+         * getSpinoffsFromScratchpad(scratchpadId, callback)
+         * Makes a call to the Khan Academy CS API to fetch the spinoffs for a scratchpad.
+         * @author Gigabyte Giant (2015)
+         * @param {String} scratchpadId: The Scratchpad ID of the scratchpad that we'd like to retrieve spinoffs from.
+         * @param {Function} callback*: The callback function to invoke after the data has been retrieved.
+         * @returns {JSON}: The JSON data retrieved from the API
+         * @NOTE: If a callback function is not passed into this function,
+         *  we'll make an synchronous request to the Khan Academy CS API, and then return a JSON object.
+         * If a callback function is passed in, we'lll make an asynchronous request to the Khan Academy CS API,
+         *  and return nothing, and invoke the callback function that was passed in.
+         */
         getSpinoffsFromScratchpad: function(scratchpadId, callback) {
             // Declare a boolean variable that'll be used to determine whether
             //  or not we're going to make an async request.
