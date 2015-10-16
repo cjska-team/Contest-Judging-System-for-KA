@@ -55,13 +55,13 @@ var createContestHolder = function(contestData) {
         .append(
             $("<div>").addClass("col").addClass("s3")
                 .append(
-                    $("<img>")
-                        .attr("src", contestData.thumbnail)
-                        .addClass("responsive-img")
-                        .addClass("contest-thumbnail")
-                )
-                .append(
                     $("<div>").addClass("center")
+                        .append(
+                            $("<img>")
+                                .attr("src", contestData.thumbnail)
+                                .addClass("img-responsive")
+                                .addClass("contest-thumbnail")
+                        )
                         .append(
                             createContestControl({
                                 text: "View Entries"

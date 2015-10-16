@@ -1,5 +1,6 @@
 $(function() {
     var addFooter = function() {
+        /* TODO(JavascriptFTW): Use Materialize's builtin footer functionality possibly */
         var footerElem = $("<footer>").addClass("section").addClass("center").addClass("muted");
 
         footerElem.append(

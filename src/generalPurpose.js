@@ -11,10 +11,10 @@ module.exports = (function() {
             // Get the cookie with name cookie (return "" if non-existent)
             cookieName = cookieName + "=";
             // Check all of the cookies and try to find the one containing name.
-            var cookieList = document.cookie.split(';');
-            for (var cInd = 0; cInd < cookieList.length; cInd++) {
+            var cookieList = document.cookie.split(";");
+            for (var cInd = 0; cInd < cookieList.length; cInd ++) {
                 var curCookie = cookieList[cInd];
-                while (curCookie[0] === ' ') {
+                while (curCookie[0] === " ") {
                     curCookie = curCookie.substring(1);
                 }
                 // If we've found the right cookie, return its value.
