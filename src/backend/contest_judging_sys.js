@@ -6,6 +6,9 @@ module.exports = (function() {
     // The following variable is used to store our "Firebase Key"
     let FIREBASE_KEY = "https://contest-judging-sys.firebaseio.com";
 
+    // The following variable is used to specify the default number of entries to fetch
+    let DEF_NUM_ENTRIES_TO_LOAD = 10;
+
     return {
         fetchFirebaseAuth: function() {
             return (new window.Firebase(FIREBASE_KEY)).getAuth();
@@ -69,6 +72,60 @@ module.exports = (function() {
                     });
                 }
             }, console.error);
+        },
+        /**
+         * fetchContestEntries(contestId, callback)
+         *
+         * @author Gigabyte Giant (2015)
+         * @param {String} contestId: The Khan Academy scratchpad ID of the contest that we want to fetch entries for.
+         * @param {Function} callback: The callback function to invoke after we've fetched all the data that we need.
+         * @param {Integer} loadHowMany*: The number of entries to load. If no value is passed to this parameter,
+         *  fallback onto a default value.
+         */
+        fetchContestEntries: function(contestId, callback, loadHowMany = DEF_NUM_ENTRIES_TO_LOAD) {
+            // If we don't have a valid callback function, exit the function.
+            if (!callback || (typeof callback !== "function")) {
+                return;
+            }
+
+            // Used to reference Firebase
+            let firebaseRef = (new window.Firebase(FIREBASE_KEY));
+
+            // References to Firebase children
+            let thisContestRef = firebaseRef.child("contests").child(contestId);
+            let contestEntriesRef = thisContestRef.child("entryKeys");
+
+            // Used to keep track of how many entries we've loaded
+            var numLoaded = 0;
+
+            // Used to store each of the entries that we've loaded
+            var entryKeys = [ ];
+
+            contestEntriesRef.once("value", function(fbSnapshot) {
+                let tmpEntryKeys = fbSnapshot.val();
+
+                // If there aren't at least "n" entries for this contest, load all of them.
+                if (Object.keys(tmpEntryKeys).length < loadHowMany) {
+                    loadHowMany = Object.keys(tmpEntryKeys).length;
+                }
+
+                while (numLoaded < loadHowMany) {
+                    let randomIndex = Math.floor(Math.random() * Object.keys(tmpEntryKeys).length);
+                    let selectedKey = Object.keys(tmpEntryKeys)[randomIndex];
+
+                    if (entryKeys.indexOf(selectedKey) === -1) {
+                        entryKeys.push(selectedKey);
+                        numLoaded++;
+                    }
+                }
+            }, console.error);
+
+            let callbackWait = setInterval(function() {
+                if (numLoaded === loadHowMany) {
+                    clearInterval(callbackWait);
+                    callback(entryKeys);
+                }
+            }, 1000);
         }
     };
 })();
