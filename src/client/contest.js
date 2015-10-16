@@ -19,5 +19,21 @@ var setupPage = function() {
 if (fbAuth === null) {
     CJS.authenticate();
 } else {
+    if (fbAuth === null) {
+        $("#authBtn").text("Hello, guest! Click me to login.");
+    } else {
+        $("#authBtn").text("Welcome, {name}! (Not you? Click here)".replace("{name}", CJS.fetchFirebaseAuth().google.displayName));
+    }
+
     setupPage();
 }
+
+$("#authBtn").on("click", function(evt) {
+    evt.preventDefault();
+
+    if (fbAuth === null) {
+        CJS.authenticate();
+    } else {
+        CJS.authenticate(true);
+    }
+});
