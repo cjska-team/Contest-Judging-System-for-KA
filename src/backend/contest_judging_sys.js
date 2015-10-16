@@ -203,6 +203,8 @@ module.exports = (function() {
          * @param {Integer} loadHowMany: The number of entries that we'd like to load.
          */
         loadXContestEntries: function(contestId, callback, loadHowMany) {
+            // "this" will eventually go out of scope (later on in this function),
+            //  that's why we have this variable.
             let self = this;
 
             this.fetchContestEntries(contestId, function(response) {
