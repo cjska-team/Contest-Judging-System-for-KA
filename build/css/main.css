@@ -31,3 +31,11 @@
 
 .contest-control {
   margin-top: 10px; }
+
+@media screen and (orientation: portrait) {
+  .contest .title {
+    text-align: center; }
+  .contest .description {
+    display: none; }
+  .contest-control {
+    display: block; } }

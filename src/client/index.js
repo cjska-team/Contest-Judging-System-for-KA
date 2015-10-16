@@ -29,10 +29,11 @@ var createContestDetails = function(contestData) {
     return $("<div>")
         .addClass("col s12 m9")
         .append(
-            $("<h5>").text(contestData.title)
+            $("<h5>").addClass("title").text(contestData.title)
         )
         .append(
             $("<div>")
+                .addClass("description")
                 .html(contestData.description)
         );
 };
@@ -46,7 +47,10 @@ var createContestDetails = function(contestData) {
  * @returns {jQuery} contestHolder: The jQuery object containing the "contest holder" div.
  */
 var createContestHolder = function(contestData) {
-    return $("<div>").addClass("section")
+    return $("<div>").addClass("contest section")
+        .append(
+            createContestDetails(contestData)
+        )
         .append(
             $("<div>").addClass("col s12 m3")
                 .append(
@@ -68,9 +72,6 @@ var createContestHolder = function(contestData) {
                             })
                         )
                 )
-        )
-        .append(
-            createContestDetails(contestData)
         );
 };
 
