@@ -193,6 +193,36 @@ module.exports = (function() {
                     callback(callbackData);
                 }
             }, this.reportError);
+        },
+        /**
+         * loadXContestEntries(contestId, callback, loadHowMany)
+         * Loads "x" contest entries, and passes them into a callback function.
+         * @author Gigabyte Giant (2015)
+         * @param {String} contestId: The scratchpad ID of the contest that we want to load entries from.
+         * @param {Function} callback: The callback function to invoke once we've loaded all the required data.
+         * @param {Integer} loadHowMany: The number of entries that we'd like to load.
+         */
+        loadXContestEntries: function(contestId, callback, loadHowMany) {
+            let self = this;
+
+            this.fetchContestEntries(contestId, function(response) {
+                var callbackData = { };
+
+                for (let entryId = 0; entryId < response.length; entryId++) {
+                    let thisEntryId = response[entryId];
+
+                    self.loadContestEntry(contestId, thisEntryId, function(response) {
+                        callbackData[thisEntryId] = response;
+                    });
+                }
+
+                let callbackWait = setInterval(function() {
+                    if (Object.keys(callbackData).length === loadHowMany) {
+                        clearInterval(callbackWait);
+                        callback(callbackData);
+                    }
+                }, 1000);
+            }, loadHowMany);
         }
     };
 })();
