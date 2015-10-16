@@ -17,6 +17,24 @@ module.exports = (function() {
             return (new window.Firebase(FIREBASE_KEY)).getAuth();
         },
         /**
+         * authenticate(logout)
+         * If logout is false (or undefined), we redirect to a google login page.
+         * If logout is true, we invoke Firebase's unauth method (to log the user out), and reload the page.
+         * @author Gigabyte Giant (2015)
+         * @param {Boolean} logout*: Should we log the user out? (Defaults to false)
+         */
+        authenticate: function(logout = false) {
+            let firebaseRef = (new window.Firebase(FIREBASE_KEY));
+
+            if (!logout) {
+                firebaseRef.authWithOAuthRedirect("google", this.reportError);
+            } else {
+                firebaseRef.unauth();
+
+                window.location.reload();
+            }
+        },
+        /**
          * fetchContests(callback)
          * Fetches all contests that're being stored in Firebase, and passes them into a callback function.
          * @author Gigabyte Giant (2015)

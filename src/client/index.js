@@ -82,6 +82,14 @@ var createContestHolder = function(contestData) {
 };
 
 var setupPage = function(contestData) {
+    let fbAuth = CJS.fetchFirebaseAuth();
+
+    if (fbAuth === null) {
+        $("#authBtn").text("Hello, guest! Click me to login.");
+    } else {
+        $("#authBtn").text("Welcome, {name}! (Not you? Click here)".replace("{name}", CJS.fetchFirebaseAuth().google.displayName));
+    }
+
     for (let cid in contestData) {
         let contest = contestData[cid];
 
@@ -102,3 +110,13 @@ var setupPage = function(contestData) {
 };
 
 CJS.fetchContests(setupPage);
+
+$("#authBtn").on("click", function(evt) {
+    evt.preventDefault();
+
+    if (CJS.fetchFirebaseAuth() === null) {
+        CJS.authenticate();
+    } else {
+        CJS.authenticate(true);
+    }
+});
