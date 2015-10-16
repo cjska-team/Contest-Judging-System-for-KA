@@ -18,7 +18,7 @@ $(function() {
             )
         );
 
-        $(".footer").append(footerElem);
+        $(".container").append(footerElem);
     };
 
     addFooter();
