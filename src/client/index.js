@@ -66,7 +66,8 @@ var createContestHolder = function(contestData) {
                         )
                         .append(
                             createContestControl({
-                                text: "View Entries"
+                                text: "View Entries",
+                                link: "contest.html"
                             })
                         )
                         .append(

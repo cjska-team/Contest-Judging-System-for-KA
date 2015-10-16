@@ -16,6 +16,9 @@ module.exports = (function() {
         fetchFirebaseAuth: function() {
             return (new window.Firebase(FIREBASE_KEY)).getAuth();
         },
+        onceAuthed: function(callback) {
+            (new window.Firebase(FIREBASE_KEY)).onAuth(callback, this.reportError);
+        },
         /**
          * authenticate(logout)
          * If logout is false (or undefined), we redirect to a google login page.
