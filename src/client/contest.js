@@ -13,7 +13,7 @@ var setupPage = function() {
 
             $("#entries").append(createEntryHolder(thisEntry)).append($("<div>").addClass("divider"));
         }
-    }, 10);
+    }, 30);
 };
 
 if (fbAuth === null) {
