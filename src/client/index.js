@@ -4,7 +4,7 @@ var CJS = require("../backend/contest_judging_sys.js");
  * createContestControl(controlData)
  * Creates a button using the data specified, and returns it to the caller.
  * @author Gigabyte Giant (2015)
- * @contributor Darryl Yeo (2015)
+ * @contributors Darryl Yeo (2015)
  * @param {Object} controlData: The JSON object containing the data for the control (such as display text and where the control should link to)
  * @returns {jQuery} contestControl: The jQuery object containing the newly created contest control
  */
@@ -19,7 +19,7 @@ var createContestControl = function(controlData) {
  * createContestDetails(contestData)
  * Creates a "contest details" div, and returns it to the caller.
  * @author Gigabyte Giant (2015)
- * @contributor Darryl Yeo (2015)
+ * @contributors Darryl Yeo (2015)
  * @param {Object} contestData: A JSON object containing the data for a contest.
  * @returns {jQuery} contestDetails: The jQuery object containing the "contest details" div.
  */
@@ -39,7 +39,7 @@ var createContestDetails = function(contestData) {
  * createContestHolder(contestData)
  * Creates a "contest holder" div, and returns it to the caller.
  * @author Gigabyte Giant (2015)
- * @contributor Darryl Yeo (2015)
+ * @contributors Darryl Yeo (2015)
  * @param {Object} contestData: A JSON object containing the data for a contest.
  * @returns {jQuery} contestHolder: The jQuery object containing the "contest holder" div.
  */
