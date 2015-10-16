@@ -1,82 +1,74 @@
 module.exports = (function() {
-	/* An array of the keys that NEED to exist on the window object for our code to function
-	   properly. Do it this way so that if there IS a missing dependency we can just open up
-	   the console and instantly see what we're missing */
-	var deps = ["jQuery", "Firebase"];
-	var hasAllDeps = true;
-    for (var i = 0; i < deps.length; i ++) {
-    	if (!window[deps[i]]) {
-    		console.error("Missing dependency \"" + deps[i] + "\"");
-    		hasAllDeps = false;
-    	}
-    }
-    if (!hasAllDeps) {
-    	return;
+    if (!window.jQuery || !window.Firebase) {
+        return;
     }
 
+    // The following variable is used to store our "Firebase Key"
+    let FIREBASE_KEY = "https://contest-judging-sys.firebaseio.com";
 
+    return {
+        fetchFirebaseAuth: function() {
+            return (new window.Firebase(FIREBASE_KEY)).getAuth();
+        },
+        /**
+         * fetchContests(callback)
+         * Fetches all contests that're being stored in Firebase, and passes them into a callback function.
+         * @author Gigabyte Giant (2015)
+         * @param {Function} callback: The callback function to invoke once we've captured all the data that we need.
+         * @todo (Gigabyte Giant): Add better comments!
+         */
+        fetchContests: function(callback) {
+            if (!callback || (typeof callback !== "function")) {
+                return;
+            }
 
-    var firebaseRef = new Firebase("https://contest-judging-sys.firebaseio.com");
+            // Used to reference Firebase
+            let firebaseRef = (new window.Firebase(FIREBASE_KEY));
 
-    var CJSystem = {};
+            // Firebase children
+            let contestKeysChild = firebaseRef.child("contestKeys");
+            let contestsChild = firebaseRef.child("contests");
 
-    /* A list of the properties that we want to get from contests */
-    var contestProps = ["desc", "id", "img", "name", "entryCount", "entryKeys", "rubrics"];
+            // Properties that we must have before we can invoke our callback function
+            let requiredProps = [
+                "id",
+                "name",
+                "desc",
+                "img",
+                "entryCount"
+            ];
 
+            // keysWeFound holds a list of all of the contest keys that we've found so far
+            var keysWeFound = [ ];
 
-    /**
-     * contests(cfg)
-     * Gets all contests from firebase and calls a function whenever one loads
-     * @author JavascriptFTW
-     * @param {Object} cfg: An object containing data for the method call
-     */
-    CJSystem.contests = function(cfg) {
-    	var contestKeys = firebaseRef.child("contestKeys");
+            // callbackData is the object that gets passed into our callback function
+            var callbackData = { };
 
-    	contestKeys.orderByKey().on("child_added", function(item) {
-    		cfg.callback.call(item, item);
-    	});
+            // "Query" our contestKeysChild
+            contestKeysChild.orderByKey().on("child_added", function(fbItem) {
+                // Add the current key to our "keysWeFound" array
+                keysWeFound.push(fbItem.key());
+
+                let thisContest = contestsChild.child(fbItem.key());
+
+                var thisContestData = { };
+
+                for (let propInd = 0; propInd < requiredProps.length; propInd++) {
+                    let currProperty = requiredProps[propInd];
+                    thisContest.child(currProperty).once("value", function(fbSnapshot) {
+                        thisContestData[currProperty] = fbSnapshot.val();
+
+                        // TODO (Gigabyte Giant): Get rid of all this nested "crap"
+                        if (Object.keys(thisContestData).length === requiredProps.length) {
+                            callbackData[fbItem.key()] = thisContestData;
+
+                            if (Object.keys(callbackData).length === keysWeFound.length) {
+                                callback(callbackData);
+                            }
+                        }
+                    });
+                }
+            }, console.error);
+        }
     };
-
-
-    /**
-     * contest(cfg)
-     * Gets data about a contest from firebase
-     * @author JavascriptFTW
-     * @param {Object} cfg: An object containing data for the method call
-     */
-    CJSystem.contest = function(cfg) {
-        /* Store how many contest properties we've loaded from firebase so we can tell
-           when we're done loading */
-    	var loadedProps = 0;
-
-    	var contestRef = firebaseRef.child("contests").child(cfg.id);
-
-    	var callbackData = {};
-
-    	function getProp(prop) {
-    		contestRef.child(prop).once("value", function(snapshot) {
-    			callbackData[prop] = snapshot.val();
-
-                /* We've loaded a property for this contest so increment loadedProps */
-    			loadedProps += 1;
-
-                /* If the number of loaded properties equals the number of properties
-                   that we want to load... */
-    			if (loadedProps === contestProps.length) {
-                    /* ...we're obviously done so call the callback that the user passed */
-    				cfg.callback.call(callbackData, callbackData);
-    			}
-
-    		});
-    	};
-
-    	for (var i = 0; i < contestProps.length; i ++) {
-    		getProp(contestProps[i]);
-    	}
-    };
-
-
-
-    return CJSystem;
 })();

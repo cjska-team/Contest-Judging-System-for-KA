@@ -1,3 +1,5 @@
+var CJS = require("../backend/contest_judging_sys.js");
+
 /**
  * createContestControl(controlData)
  * Creates a button using the data specified, and returns it to the caller.
@@ -53,10 +55,10 @@ var createContestHolder = function(contestData) {
         .append(
             $("<div>").addClass("col").addClass("s3")
                 .append(
+                    $("<img>").attr("src", contestData.thumbnail).addClass("responsive-img")
+                )
+                .append(
                     $("<div>").addClass("center")
-                        .append(
-                            $("<img>").attr("src", contestData.thumbnail).addClass("responsive-img")
-                        )
                         .append(
                             createContestControl({
                                 text: "View Entries"
@@ -76,15 +78,17 @@ var createContestHolder = function(contestData) {
     return contestHolder;
 };
 
-var setupPage = function() {
-    for (var i = 0; i < 32; i++) {
-        $(".contests").append(
+var setupPage = function(contestData) {
+    for (let cid in contestData) {
+        let contest = contestData[cid];
+
+        $("#contests").append(
             $("<div>").addClass("row")
                 .append(
                     createContestHolder({
-                        title: "Contest: Some contest",
-                        description: "This is a contest. Do something, and win a prize!",
-                        thumbnail: "http://www.whistler.com/images/placeholders/200x200.gif"
+                        title: contest.name,
+                        description: (contest.desc === "" ? "No description provided." : contest.desc),
+                        thumbnail: "https://www.khanacademy.org/" + contest.img
                     })
                 )
         )
@@ -93,5 +97,9 @@ var setupPage = function() {
         );
     }
 };
+
+CJS.fetchContests(function(data) {
+    setupPage(data);
+});
 
 setupPage();
