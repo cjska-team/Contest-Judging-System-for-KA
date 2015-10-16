@@ -1,5 +1,7 @@
 var CJS = require("../backend/contest_judging_sys.js");
 
+let fbAuth = CJS.fetchFirebaseAuth();
+
 /**
  * createContestControl(controlData)
  * Creates a button using the data specified, and returns it to the caller.
@@ -82,8 +84,6 @@ var createContestHolder = function(contestData) {
 };
 
 var setupPage = function(contestData) {
-    let fbAuth = CJS.fetchFirebaseAuth();
-
     if (fbAuth === null) {
         $("#authBtn").text("Hello, guest! Click me to login.");
     } else {
@@ -114,7 +114,7 @@ CJS.fetchContests(setupPage);
 $("#authBtn").on("click", function(evt) {
     evt.preventDefault();
 
-    if (CJS.fetchFirebaseAuth() === null) {
+    if (fbAuth === null) {
         CJS.authenticate();
     } else {
         CJS.authenticate(true);
