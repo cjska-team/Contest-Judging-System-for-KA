@@ -82,7 +82,7 @@ var setupPage = function(contestData) {
     for (let cid in contestData) {
         let contest = contestData[cid];
 
-        $(".container").append(
+        $("#contests").append(
             $("<div>").addClass("row")
                 .append(
                     createContestHolder({
