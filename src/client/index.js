@@ -102,5 +102,3 @@ var setupPage = function(contestData) {
 };
 
 CJS.fetchContests(setupPage);
-
-setupPage();
