@@ -47,7 +47,7 @@ var createContestDetails = function(contestData) {
  * @returns {jQuery} contestHolder: The jQuery object containing the "contest holder" div.
  */
 var createContestHolder = function(contestData) {
-    return $("<div>").addClass("contest section")
+    var contestHolder = $("<div>").addClass("contest section").attr("id", contestData.id)
         .append(
             createContestDetails(contestData)
         )
@@ -66,13 +66,20 @@ var createContestHolder = function(contestData) {
                                 link: "contest.html?contest=" + contestData.id
                             })
                         )
-                        .append(
-                            createContestControl({
-                                text: "Leaderboard"
-                            })
-                        )
                 )
         );
+
+    CJS.getPermLevel(function(permLevel) {
+        if (permLevel >= 5) {
+            $("#" + contestData.id + " .center").append(
+                createContestControl({
+                    text: "View Leaderboard"
+                })
+            );
+        }
+    });
+
+    return contestHolder;
 };
 
 var setupPage = function(contestData) {
