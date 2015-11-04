@@ -58,6 +58,41 @@ module.exports = (function() {
             }
         },
         /**
+         * fetchContest(contestId, callback)
+         * @author Gigabyte Giant (2015)
+         * @param {String} contestId: The ID of the contest that you want to load data for
+         * @param {Function} callback: The callback function to invoke once we've received the data.
+         */
+        fetchContest: function(contestId, callback, properties) {
+            if (!callback || (typeof callback !== "function")) {
+                return;
+            }
+
+            // Used to reference Firebase
+            let firebaseRef = (new window.Firebase(FIREBASE_KEY));
+
+            // Firebase children
+            let contestChild = firebaseRef.child("contests").child(contestId);
+
+            // Properties that we must have before can invoke our callback function
+            let requiredProps = (properties === undefined ? ["id", "name", "desc", "img", "entryCount"] : properties);
+
+            // The object that we pass into our callback function
+            var callbackData = {};
+
+            for (let propInd = 0; propInd < requiredProps.length; propInd++) {
+                let currProp = requiredProps[propInd];
+
+                contestChild.child(currProp).once("value", function(snapshot) {
+                    callbackData[currProp] = snapshot.val();
+
+                    if (Object.keys(callbackData).length === requiredProps.length) {
+                        callback(callbackData);
+                    }
+                }, this.reportError);
+            }
+        },
+        /**
          * fetchContests(callback)
          * Fetches all contests that're being stored in Firebase, and passes them into a callback function.
          * @author Gigabyte Giant (2015)
