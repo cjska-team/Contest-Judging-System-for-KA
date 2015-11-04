@@ -79,11 +79,12 @@ var setupPage = function(contestData) {
     if (fbAuth === null) {
         $("#authBtn").text("Hello, guest! Click me to login.");
     } else {
-        $("#authBtn").text("Welcome, {name}! (Not you? Click here)".replace("{name}", CJS.fetchFirebaseAuth().google.displayName));
+        $("#authBtn").text(`Welcome, ${CJS.fetchFirebaseAuth().google.displayName}! (Not you? Click here)`);
     }
 
     for (let cid in contestData) {
         let contest = contestData[cid];
+        console.log(contest);
 
         $("#contests").append(
             $("<div>").addClass("row")

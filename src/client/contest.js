@@ -7,6 +7,11 @@ var createEntryHolder = function(entryData) {
 };
 
 var setupPage = function() {
+    if (fbAuth === null) {
+        $("#authBtn").text("Hello, guest! Click me to login.");
+    } else {
+        $("#authBtn").text(`Welcome, ${CJS.fetchFirebaseAuth().google.displayName}! (Not you? Click here)`);
+    }
     CJS.loadXContestEntries("4688911017312256", function(response) {
         for (let entryId in response) {
             let thisEntry = response[entryId];
@@ -16,17 +21,7 @@ var setupPage = function() {
     }, 30);
 };
 
-if (fbAuth === null) {
-    CJS.authenticate();
-} else {
-    if (fbAuth === null) {
-        $("#authBtn").text("Hello, guest! Click me to login.");
-    } else {
-        $("#authBtn").text("Welcome, {name}! (Not you? Click here)".replace("{name}", CJS.fetchFirebaseAuth().google.displayName));
-    }
-
-    setupPage();
-}
+setupPage();
 
 $("#authBtn").on("click", function(evt) {
     evt.preventDefault();
