@@ -38,6 +38,26 @@ module.exports = (function() {
             }
         },
         /**
+         * getPermLevel()
+         * Gets the perm level of the user that is currently logged in.
+         * @author Gigabyte Giant (2015)
+         * @param {Function} callback: The callback function to invoke once we've recieved the data.
+         */
+        getPermLevel: function(callback) {
+            let authData = this.fetchFirebaseAuth();
+
+            if (authData !== null) {
+                let firebaseRef = (new window.Firebase(FIREBASE_KEY));
+                let thisUserChild = firebaseRef.child("users").child(authData.uid);
+
+                thisUserChild.once("value", function(snapshot) {
+                    callback(snapshot.val().permLevel);
+                });
+            } else {
+                callback(1);
+            }
+        },
+        /**
          * fetchContests(callback)
          * Fetches all contests that're being stored in Firebase, and passes them into a callback function.
          * @author Gigabyte Giant (2015)
@@ -173,29 +193,53 @@ module.exports = (function() {
             let contestRef = firebaseRef.child("contests").child(contestId);
             let entriesRef = contestRef.child("entries").child(entryId);
 
+            let self = this;
+
+            this.getPermLevel(function(permLevel) {
+                // A variable containing a list of all the properties that we must load before we can invoke our callback function
+                var requiredProps = ["id", "name", "thumb"];
+
+                if (permLevel >= 5) {
+                    requiredProps.push("scores");
+                }
+
+                // The JSON object that we'll pass into the callback function
+                var callbackData = { };
+
+                for (let i = 0; i < requiredProps.length; i++) {
+                    let propRef = entriesRef.child(requiredProps[i]);
+
+                    propRef.once("value", function(snapshot) {
+                        callbackData[requiredProps[i]] = snapshot.val();
+
+                        if (Object.keys(callbackData).length === requiredProps.length) {
+                            callback(callbackData);
+                        }
+                    }, self.reportError);
+                }
+            });
+
             // A variable containing a list of all the properties that we must load before we can invoke our callback function
-            let requiredProps = [
-                "id",
-                "name",
-                "thumb"
-            ];
+            // var requiredProps = [
+                
+            // ];
 
-            // The JSON object that we'll pass into the callback function
-            var callbackData = { };
+            // // The JSON object that we'll pass into the callback function
+            // var callbackData = { };
 
-            entriesRef.once("value", function(fbSnapshot) {
-                let tmpEntry = fbSnapshot.val();
+            // entriesRef.once("value", function(fbSnapshot) {
+            //     let tmpEntry = fbSnapshot.val();
 
-                for (let propInd = 0; propInd < requiredProps.length; propInd++) {
-                    let thisProp = requiredProps[propInd];
+            //     for (let propInd = 0; propInd < requiredProps.length; propInd++) {
+            //         let thisProp = requiredProps[propInd];
 
-                    callbackData[thisProp] = tmpEntry[thisProp];
-                }
+            //         callbackData[thisProp] = tmpEntry[thisProp];
+            //     }
 
-                if (Object.keys(callbackData).length === requiredProps.length) {
-                    callback(callbackData);
-                }
-            }, this.reportError);
+            //     if (Object.keys(callbackData).length === requiredProps.length) {
+            //         callback(callbackData);
+            //     }
+            // }, this.reportError);
         },
         /**
          * loadXContestEntries(contestId, callback, loadHowMany)
