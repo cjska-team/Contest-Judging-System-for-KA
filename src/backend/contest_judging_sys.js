@@ -62,6 +62,7 @@ module.exports = (function() {
          * @author Gigabyte Giant (2015)
          * @param {String} contestId: The ID of the contest that you want to load data for
          * @param {Function} callback: The callback function to invoke once we've received the data.
+         * @param {Array} properties*: A list of all the properties that you want to load from this contest.
          */
         fetchContest: function(contestId, callback, properties) {
             if (!callback || (typeof callback !== "function")) {
