@@ -13,8 +13,14 @@ if (urlParams.hasOwnProperty("contest")) {
     window.history.back();
 }
 
-var createEntryHolder = function(entryData) {
-    return $("<h5>").addClass("center").text(entryData.name);
+var createEntry = function(entry) {
+    return $("<div>")
+        .append(
+            $("<img>").attr("src", "https://www.khanacademy.org/" + entry.thumb)
+        )
+        .append(
+            $("<h3>").text(entry.name)
+        );
 };
 
 var setupPage = function() {
@@ -28,7 +34,11 @@ var setupPage = function() {
         for (let entryId in response) {
             let thisEntry = response[entryId];
 
-            $("#entries").append(createEntryHolder(thisEntry)).append($("<div>").addClass("divider"));
+            $("#entries")
+                .append(createEntry(thisEntry))
+                .append(
+                    $("<div>").addClass("divider")
+                );
         }
     }, 30);
 };
