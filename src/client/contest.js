@@ -1,6 +1,17 @@
 var CJS = require("../backend/contest_judging_sys.js");
+var helpers = require("../generalPurpose.js");
 
 let fbAuth = CJS.fetchFirebaseAuth();
+let urlParams = helpers.getUrlParams(window.location.href);
+
+var contestId = null;
+
+if (urlParams.hasOwnProperty("contest")) {
+    contestId = urlParams.contest;
+} else {
+    alert("Please specify a Contest ID!");
+    window.history.back();
+}
 
 var createEntryHolder = function(entryData) {
     return $("<h5>").addClass("center").text(entryData.name);
@@ -13,7 +24,7 @@ var setupPage = function() {
         $("#authBtn").text(`Welcome, ${CJS.fetchFirebaseAuth().google.displayName}! (Not you? Click here)`);
     }
 
-    CJS.loadXContestEntries("4688911017312256", function(response) {
+    CJS.loadXContestEntries(contestId, function(response) {
         for (let entryId in response) {
             let thisEntry = response[entryId];
 

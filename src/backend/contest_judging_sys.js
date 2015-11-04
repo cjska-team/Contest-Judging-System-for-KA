@@ -218,28 +218,6 @@ module.exports = (function() {
                     }, self.reportError);
                 }
             });
-
-            // A variable containing a list of all the properties that we must load before we can invoke our callback function
-            // var requiredProps = [
-                
-            // ];
-
-            // // The JSON object that we'll pass into the callback function
-            // var callbackData = { };
-
-            // entriesRef.once("value", function(fbSnapshot) {
-            //     let tmpEntry = fbSnapshot.val();
-
-            //     for (let propInd = 0; propInd < requiredProps.length; propInd++) {
-            //         let thisProp = requiredProps[propInd];
-
-            //         callbackData[thisProp] = tmpEntry[thisProp];
-            //     }
-
-            //     if (Object.keys(callbackData).length === requiredProps.length) {
-            //         callback(callbackData);
-            //     }
-            // }, this.reportError);
         },
         /**
          * loadXContestEntries(contestId, callback, loadHowMany)

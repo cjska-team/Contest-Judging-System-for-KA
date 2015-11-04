@@ -63,7 +63,7 @@ var createContestHolder = function(contestData) {
                         .append(
                             createContestControl({
                                 text: "View Entries",
-                                link: "contest.html"
+                                link: "contest.html?contest=" + contestData.id
                             })
                         )
                         .append(
@@ -84,12 +84,12 @@ var setupPage = function(contestData) {
 
     for (let cid in contestData) {
         let contest = contestData[cid];
-        console.log(contest);
 
         $("#contests").append(
             $("<div>").addClass("row")
                 .append(
                     createContestHolder({
+                        id: contest.id,
                         title: contest.name,
                         description: (contest.desc === "" ? "No description provided." : contest.desc),
                         thumbnail: "https://www.khanacademy.org/" + contest.img

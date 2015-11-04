@@ -38,6 +38,29 @@ module.exports = (function() {
             d.setTime(d.getTime() + (30 * 24 * 60 * 60 * 1000));
             var expires = "expires=" + d.toUTCString();
             document.cookie = cookieName + "=" + value + "; " + expires;
+        },
+        /**
+         * getUrlParams()
+         * @author Gigabyte Giant (2015)
+         * @param {String} url: The URL to fetch URL parameters from
+         */
+        getUrlParams: function(url) {
+            var urlParams = {};
+
+            var splitUrl = url.split("?")[1];
+
+            if (splitUrl !== undefined) {
+                var tmpUrlParams = splitUrl.split("&");
+
+                for (let upInd = 0; upInd < tmpUrlParams.length; upInd++) {
+                    let currParamStr = tmpUrlParams[upInd];
+
+                    urlParams[currParamStr.split("=")[0]] = currParamStr.split("=")[1]
+                        .replace(/\#\!/g, "");
+                }
+            }
+
+            return urlParams;
         }
     };
 })();
