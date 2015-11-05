@@ -14,7 +14,7 @@ if (urlParams.hasOwnProperty("contest")) {
 }
 
 var createEntry = function(entry) {
-    return $("<div>")
+    return $("<div>").attr("id", entry.id)
         .append(
             $("<img>").attr("src", "https://www.khanacademy.org/" + entry.thumb)
                 .addClass("img-responsive entry-img")
