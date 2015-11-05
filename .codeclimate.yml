@@ -5,4 +5,4 @@ languages:
   PHP: false
   Python: false
 # exclude_paths:
-# - "foo/bar.rb"
+# - "scripts/**/*"
