@@ -34,8 +34,36 @@
                 <div id="preview">
                     <h4 class="entry-name"></h4>
                 </div>
-                <h4 class="center-align">Rubrics</h4>
+                <h4 class="center-align">Program Controls</h4>
+                <div class="row program-controls">
+                    <div class="input-field col m4">
+                        <label for="width-input">Canvas Width</label>
+                        <input id="width-input dimension-input" type="number" name="width">
+                    </div>
+                    <div class="input-field col m4">
+                        <label for="height-input">Canvas Height</label>
+                        <input id="height-input dimension-input" type="number" name="height">
+                    </div>
+                    <div class="col m4 set-dimensions-col">
+                        <div class="col l6 m6 s6">
+                            <button class="col l12 m12 s12 btn amber waves-effect waves-light program-control-btn set-dimensions-control">
+                                Set Dimensions
+                            </button>
+                        </div>
+                        <div class="col l6 m6 s6">
+                            <button class="col l12 m12 s12 btn amber waves-effect waves-light program-control-btn reload-entry-control">
+                                Reload Entry
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <h4 class="center-align">Rubric Items</h4>
                 <div class="row" id="judgingControls"></div>
+                <div class="row">
+                    <button class="col l6 m6 s12 offset-l3 offset-m3 btn amber waves-effect waves-light submit-score-control">
+                        Submit Score
+                    </button>
+                </div>
             </div>
         </div>
         <script src="./build/src/jquery-2.1.4.min.js"></script>
