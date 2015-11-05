@@ -300,28 +300,44 @@ module.exports = (function() {
          * @param {Integer} loadHowMany: The number of entries that we'd like to load.
          */
         loadXContestEntries: function(contestId, callback, loadHowMany) {
-            // "this" will eventually go out of scope (later on in this function),
-            //  that's why we have this variable.
+            var callbackData = {};
+
             let self = this;
 
             this.fetchContestEntries(contestId, function(response) {
-                var callbackData = { };
+                for (let eInd = 0; eInd < response.length; eInd++) {
+                    self.loadContestEntry(contestId, response[eInd], function(entryData) {
+                        callbackData[response[eInd]] = entryData;
 
-                for (let entryId = 0; entryId < response.length; entryId++) {
-                    let thisEntryId = response[entryId];
-
-                    self.loadContestEntry(contestId, thisEntryId, function(response) {
-                        callbackData[thisEntryId] = response;
+                        if (Object.keys(callbackData).length === response.length) {
+                            callback(callbackData);
+                        }
                     });
                 }
-
-                let callbackWait = setInterval(function() {
-                    if (Object.keys(callbackData).length === loadHowMany) {
-                        clearInterval(callbackWait);
-                        callback(callbackData);
-                    }
-                }, 1000);
             }, loadHowMany);
+
+            // "this" will eventually go out of scope (later on in this function),
+            //  that's why we have this variable.
+            // let self = this;
+
+            // this.fetchContestEntries(contestId, function(response) {
+            //     var callbackData = { };
+
+            //     for (let entryId = 0; entryId < response.length; entryId++) {
+            //         let thisEntryId = response[entryId];
+
+            //         self.loadContestEntry(contestId, thisEntryId, function(response) {
+            //             callbackData[thisEntryId] = response;
+            //         });
+            //     }
+
+            //     let callbackWait = setInterval(function() {
+            //         if (Object.keys(callbackData).length === loadHowMany) {
+            //             clearInterval(callbackWait);
+            //             callback(callbackData);
+            //         }
+            //     }, 1000);
+            // }, loadHowMany);
         },
         /**
          * getDefaultRubrics(callback)
