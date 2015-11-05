@@ -286,6 +286,19 @@ module.exports = (function() {
                     }
                 }, 1000);
             }, loadHowMany);
+        },
+        /**
+         * getDefaultRubrics(callback)
+         * @author Gigabyte Giant (2015)
+         * @param {Function} callback: The callback function to invoke once we've loaded all the default rubrics
+         */
+        getDefaultRubrics: function(callback) {
+            let firebaseRef = (new window.Firebase(FIREBASE_KEY));
+            let rubricsChild = firebaseRef.child("rubrics");
+
+            rubricsChild.once("value", function(snapshot) {
+                callback(snapshot.val());
+            });
         }
     };
 })();
