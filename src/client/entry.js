@@ -1,7 +1,15 @@
 var CJS = require("../backend/contest_judging_sys.js");
 var helpers = require("../generalPurpose.js");
 
+let fbAuth = CJS.fetchFirebaseAuth();
+
 var setupPage = function() {
+    if (fbAuth === null) {
+        $("#authBtn").text("Hello, guest! Click me to login.");
+    } else {
+        $("#authBtn").text(`Welcome, ${CJS.fetchFirebaseAuth().google.displayName}! (Not you? Click here)`);
+    }
+
     CJS.getPermLevel(function(permLevel) {
         let urlParams = helpers.getUrlParams(window.location.href);
         var judgingControls = (permLevel >= 4);
@@ -10,7 +18,7 @@ var setupPage = function() {
             alert("Contest ID and/or Entry ID not specified. Returning to previous page.");
             window.history.back();
         } else {
-            let contestId = urlParams.contest;
+            let contestId = urlParams.contest.replace(/\#/g, "");
             let entryId = urlParams.entry;
 
             var sizing = {
@@ -28,3 +36,13 @@ var setupPage = function() {
 };
 
 setupPage();
+
+$("#authBtn").on("click", function(evt) {
+    evt.preventDefault();
+
+    if (fbAuth === null) {
+        CJS.authenticate();
+    } else {
+        CJS.authenticate(true);
+    }
+});
