@@ -23,7 +23,7 @@ function createRubricTab($tabList, rubric, kInd) {
 
 let controlFactories = {
     keys(rubric, elem) {
-        let $tabList = $("<ul>").addClass("tabs judging-control options-control");
+        let $tabList = $("<ul>").addClass("tabs judging-control options-control").attr("data-rubric-item", rubric.rubricItem);
         for (let kInd = 0; kInd < rubric.keys.length; kInd++) {
             createRubricTab($tabList, rubric, kInd);
         }
@@ -42,7 +42,7 @@ let controlFactories = {
                         "max": rubric.max,
                         "value": rubric.min,
                         "step": 1
-                    }).addClass("judging-control slider-control")
+                    }).addClass("judging-control slider-control").attr("data-rubric-item", rubric.rubricItem)
                 )
         );
     }
@@ -51,7 +51,7 @@ let controlFactories = {
 var createJudgingControl = function(rubric, type) {
     var elem = $("<div>")
         .append(
-            $("<h5>").text(rubric.displayText)
+            $("<h5>").text(rubric.rubricItem.replace(/\_/g, " "))
                 .addClass("judging-control-title")
         ).addClass("col l6 m6 s12 judging-control center-align");
 
@@ -109,7 +109,7 @@ var setupPage = function() {
                             rubricType = "slider";
                         }
 
-                        rubrics[thisRubric].displayText = thisRubric.replace(/\_/g, " ");
+                        rubrics[thisRubric].rubricItem = thisRubric;
 
                         $controlRow.append(createJudgingControl(rubrics[thisRubric], rubricType));
 
@@ -138,4 +138,41 @@ $("#authBtn").on("click", function(evt) {
     } else {
         CJS.authenticate(true);
     }
+});
+
+$(".submit-score-control").on("click", (evt) => {
+    evt.preventDefault();
+
+    let self = $(evt.toElement);
+
+    $(self).addClass("disabled").text("Submitting scores...");
+    $("#judgingControls *").prop("disabled", "true").addClass("disabled");
+
+    var scoreData = {};
+
+    $(".judging-control").each(function(index, item) {
+        let $controlElem = $(item);
+        let rubricItem = $controlElem.attr("data-rubric-item");
+
+        console.log(rubricItem);
+
+        if (rubricItem !== undefined) {
+            if ($controlElem.attr("class").indexOf("options-control") !== -1) {
+                let $selectedItem = $controlElem.find(".active");
+
+                scoreData[rubricItem] = parseInt($selectedItem.parent().attr("data-score-value"), 10);
+            } else if ($controlElem.attr("class").indexOf("slider-control") !== -1) {
+                scoreData[rubricItem] = parseInt($controlElem.val(), 10);
+            }
+        }
+    });
+
+    CJS.judgeEntry(urlParams.contest, urlParams.entry, scoreData, function(error) {
+        if (error) {
+            alert(error);
+            return;
+        }
+
+        $(self).text("Scores submitted!");
+    });
 });

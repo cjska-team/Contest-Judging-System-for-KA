@@ -9,6 +9,12 @@ module.exports = (function() {
     // The following variable is used to specify the default number of entries to fetch
     let DEF_NUM_ENTRIES_TO_LOAD = 10;
 
+    // Error messages.
+    let ERROR_MESSAGES = {
+        ERR_NOT_JUDGE: "Error: You do not have permission to judge contest entries.",
+        ERR_ALREADY_VOTED: "Error: You've already judged this entry."
+    };
+
     return {
         reportError: function(error) {
             console.error(error);
@@ -393,6 +399,113 @@ module.exports = (function() {
 
                     callback(callbackData);
                 }, ["rubrics"]);
+            });
+        },
+        /**
+         * judgeEntry(contestId, entryId, scoreData, callback)
+         * @author Gigabyte Giant (2015)
+         * @param {String} contestId: The ID of the contest that we're judging an entry for
+         * @param {String} entryId: The ID of the entry that we're judging
+         * @param {Object} scoreData: The scoring data
+         * @param {Function} callback: The callback function to invoke after we've validated the scores, and submitted them.
+         */
+        judgeEntry: function(contestId, entryId, scoreData, callback) {
+            // 0: Check the users perm level, if their permLevel isn't >= 4, exit.
+            // 1: Fetch the rubrics for the current contest, to make sure we're not doing anything funky
+            // 2: Validate the data that was submitted to the function
+            // 3: Submit the data to Firebase
+
+            let self = this;
+
+            this.getPermLevel(function(permLevel) {
+                if (permLevel >= 4) {
+                    let thisJudge = self.fetchFirebaseAuth().uid;
+
+                    self.getContestRubrics(contestId, function(contestRubrics) {
+                        contestRubrics.judgesWhoVoted = (contestRubrics.judgesWhoVoted === undefined ? [] : contestRubrics.judgesWhoVoted);
+
+                        if (contestRubrics.hasOwnProperty("judgesWhoVoted")) {
+                            if (contestRubrics.judgesWhoVoted.indexOf(thisJudge) !== -1) {
+                                callback(ERROR_MESSAGES.ERR_ALREADY_VOTED);
+                            }
+                        }
+
+                        var thisJudgesVote = {};
+
+                        for (let score in scoreData) {
+                            if (contestRubrics.hasOwnProperty(score)) {
+                                var scoreVal = -1;
+
+                                if (scoreData[score] > contestRubrics[score].max) {
+                                    scoreVal = contestRubrics[score].max;
+                                } else if (scoreData[score] < contestRubrics[score].min) {
+                                    scoreVal = contestRubrics[score].min
+                                } else {
+                                    scoreVal = scoreData[score];
+                                }
+
+                                thisJudgesVote[score] = scoreVal;
+                            }
+                        }
+
+                        console.log(thisJudgesVote);
+
+                        self.fetchContestEntry(contestId, entryId, function(existingScoreData) {
+                            existingScoreData = existingScoreData.scores;
+
+                            contestRubrics.judgesWhoVoted.push(thisJudge);
+
+                            var dataToWrite = {
+                                judgesWhoVoted: contestRubrics.judgesWhoVoted
+                            };
+
+                            if (existingScoreData.hasOwnProperty("rubric")) {
+                                let existingRubricItemScores = existingScoreData.rubric;
+                                
+                                let rubricItems = contestRubrics;
+
+                                for (let rubricItem in rubricItems) {
+                                    if (thisJudgesVote.hasOwnProperty(rubricItem)) {
+                                        console.log("The item: " + rubricItem);
+
+                                        var tmpScoreObj = {
+                                            avg: (existingRubricItemScores[rubricItem] === undefined ? 1 : existingRubricItemScores[rubricItem].avg),
+                                            rough: (existingRubricItemScores[rubricItem] === undefined ? 1 : existingRubricItemScores[rubricItem].rough)
+                                        };
+
+                                        if (dataToWrite.judgesWhoVoted.length - 1 === 0) {
+                                            tmpScoreObj.rough = 1;
+                                            tmpScoreObj.avg = 1;
+                                        }
+
+                                        tmpScoreObj.rough = tmpScoreObj.rough + thisJudgesVote[rubricItem];
+                                        tmpScoreObj.avg = tmpScoreObj.rough / (contestRubrics.judgesWhoVoted.length);
+
+                                        dataToWrite[rubricItem] = tmpScoreObj;
+                                    }
+                                }
+                            }
+
+                            console.log(dataToWrite);
+
+                            let fbRef = (new window.Firebase(FIREBASE_KEY))
+                                .child("contests").child(contestId)
+                                .child("entries").child(entryId)
+                                .child("scores").child("rubric");
+
+                            fbRef.set(dataToWrite, function(error) {
+                                if (error) {
+                                    self.reportError(error);
+                                    return;
+                                }
+
+                                callback();
+                            });
+                        }, ["scores"]);
+                    });
+                } else {
+                    callback(ERROR_MESSAGES.ERR_NOT_JUDGE);
+                }
             });
         }
     };
