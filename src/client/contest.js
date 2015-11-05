@@ -24,7 +24,7 @@ var createEntry = function(entry) {
         )
         .addClass("col s12 m3 l3 center-align contest-entry")
         .click(() => {
-            window.location.href = `entry.html?entry=${entry.id}`;
+            window.location.href = `entry.html?contest=${contestId}&entry=${entry.id}`;
         });
 };
 
