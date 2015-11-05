@@ -41,7 +41,7 @@ let controlFactories = {
                         "min": rubric.min,
                         "max": rubric.max,
                         "value": rubric.min,
-                        "step": 0.1
+                        "step": 1
                     }).addClass("judging-control slider-control")
                 )
         );
