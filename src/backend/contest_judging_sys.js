@@ -354,7 +354,6 @@ module.exports = (function() {
 
                     if (customRubrics !== null) {
                         for (let customRubric in customRubrics) {
-                            console.log(customRubric);
                             if (!callbackData.hasOwnProperty(customRubric)) {
                                 callbackData[customRubric] = customRubrics[customRubric];
                             }
@@ -362,12 +361,17 @@ module.exports = (function() {
 
                         if (customRubrics.hasOwnProperty("Order")) {
                             for (let oInd = 0; oInd < customRubrics.Order.length; oInd++) {
-                                let thisRubric = customRubrics.Order[oInd];
+                                // Make sure the current rubric item is actually a valid rubric item, and make sure it's not the "Order" item.
+                                if (customRubrics.hasOwnProperty(customRubrics.Order[oInd]) && customRubrics.Order[oInd] !== "Order") {
+                                    let thisRubric = customRubrics.Order[oInd];
 
-                                if (callbackData.Order.indexOf(thisRubric) === -1) {
-                                    callbackData.Order.push(thisRubric);
+                                    if (callbackData.Order.indexOf(thisRubric) === -1) {
+                                        callbackData.Order.push(thisRubric);
+                                    }
                                 }
                             }
+                        } else {
+                            customRubrics.Order = [];
                         }
                     }
 
