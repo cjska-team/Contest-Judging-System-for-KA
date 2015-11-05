@@ -1,20 +1,24 @@
-/* Have the spin, spin2, or spin3 animation run infinitely so .glyphicon-refresh-animate spins round and round forever. */
+body {
+    background-color: #fafafa;
+}
+
+/* Spin .glyphicon-refresh-animate round and round forever. */
 .glyphicon-refresh-animate {
-    -animation: spin .7s infinite linear;
-    -webkit-animation: spin2 .7s infinite linear;
-    -moz-animation: spin3 .7s infinite linear;
+    -webkit-animation: Spin .7s infinite linear;
+    -moz-animation: Spin .7s infinite linear;
+    animation: Spin .7s infinite linear;
 }
-@keyframes spin {
-    from { transform: scale(1) rotate(0deg);}
-    to { transform: scale(1) rotate(360deg);}
+@-webkit-keyframes Spin {
+    from { -webkit-transform: none; }
+    to { -webkit-transform: rotate(360deg); }
 }
-@-webkit-keyframes spin2 {
-    from { -webkit-transform: rotate(0deg);}
-    to { -webkit-transform: rotate(360deg);}
+@-moz-keyframes Spin {
+    from { -moz-transform: none; }
+    to { -moz-transform: rotate(360deg); }
 }
-@-moz-keyframes spin3 {
-    from { -moz-transform: rotate(0deg);}
-    to { -moz-transform: rotate(360deg);}
+@keyframes Spin {
+    from { transform: none; }
+    to { transform: rotate(360deg); }
 }
 
 .muted {
@@ -22,8 +26,8 @@
 }
 
 .contest-thumbnail {
-    width: 100%;
     max-width: 200px;
+    width: 100%;
 }
 
 .contest-control {
@@ -40,6 +44,7 @@
 
 .contest-entry {
     cursor: pointer;
+    -webkit-transition: background-color 0.33s ease;
     transition: background-color 0.33s ease;
 }
 
