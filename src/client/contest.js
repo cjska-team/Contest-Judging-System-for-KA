@@ -4,6 +4,8 @@ var helpers = require("../generalPurpose.js");
 let fbAuth = CJS.fetchFirebaseAuth();
 let urlParams = helpers.getUrlParams(window.location.href);
 
+var numEntriesToLoad = 32;
+
 var contestId = null;
 
 if (urlParams.hasOwnProperty("contest")) {
@@ -11,6 +13,10 @@ if (urlParams.hasOwnProperty("contest")) {
 } else {
     alert("Please specify a Contest ID!");
     window.history.back();
+}
+
+if (urlParams.hasOwnProperty("count")) {
+    numEntriesToLoad = parseInt(urlParams.count, 10);
 }
 
 var createEntry = function(entry) {
@@ -52,7 +58,7 @@ var setupPage = function() {
                 $("#entries").append($entriesRow);
             }
         }
-    }, 32);
+    }, numEntriesToLoad);
 
     CJS.fetchContest(contestId, (data) => {
         $(".contest-name").text(`Entries for ${data.name}`);
