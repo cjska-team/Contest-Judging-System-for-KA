@@ -1,0 +1,103 @@
+/* Have the spin, spin2, or spin3 animation run infinitely so .glyphicon-refresh-animate spins round and round forever. */
+.glyphicon-refresh-animate {
+  -animation: spin .7s infinite linear;
+  -webkit-animation: spin2 .7s infinite linear;
+  -moz-animation: spin3 .7s infinite linear; }
+
+@keyframes spin {
+  from {
+    transform: scale(1) rotate(0deg); }
+  to {
+    transform: scale(1) rotate(360deg); } }
+
+@-webkit-keyframes spin2 {
+  from {
+    -webkit-transform: rotate(0deg); }
+  to {
+    -webkit-transform: rotate(360deg); } }
+
+@-moz-keyframes spin3 {
+  from {
+    -moz-transform: rotate(0deg); }
+  to {
+    -moz-transform: rotate(360deg); } }
+
+.muted {
+  opacity: 0.38; }
+
+.contest-thumbnail {
+  width: 100%;
+  max-width: 200px; }
+
+.contest-control {
+  margin-top: 10px; }
+
+.contest-name {
+  margin: 1em 0; }
+
+.entries-container {
+  margin-top: 1em; }
+
+.contest-entry {
+  cursor: pointer;
+  transition: background-color 0.33s ease; }
+
+.contest-entry:hover {
+  background-color: rgba(0, 0, 0, 0.12); }
+
+.entry-img {
+  border: 1px solid rgba(0, 0, 0, 0.12); }
+
+.entry-frame {
+  width: 100%;
+  border: none;
+  overflow: hidden; }
+
+.options-tab.options-tab a {
+  color: #FF8F00;
+  transition: background-color 0.66s ease, color 0.33s ease; }
+
+.options-tab.options-tab a:hover {
+  color: #FFC107; }
+
+.options-tab.options-tab a.active {
+  background-color: #FFF8E1; }
+
+.options-control > .indicator {
+  background-color: #FF8F00; }
+
+.program-control-btn {
+  min-height: 4em; }
+
+input[type=number]:focus:not([readonly]) {
+  border-bottom: 1px solid #FF8F00;
+  box-shadow: 0 1px 0 0 #FF8F00; }
+
+input[type=range]::-webkit-slider-thumb {
+  background-color: #FF8F00;
+  width: 1.5em;
+  height: 1.5em;
+  margin-top: -0.7em;
+  cursor: pointer; }
+
+input[type=range]::-moz-range-thumb {
+  background-color: #FF8F00;
+  width: 1.5em;
+  height: 1.5em;
+  margin-top: -0.7em;
+  cursor: pointer; }
+
+input[type=range]::-ms-thumb {
+  background-color: #FF8F00;
+  width: 1.5em;
+  height: 1.5em;
+  margin-top: -0.7em;
+  cursor: pointer; }
+
+@media screen and (orientation: portrait) {
+  .contest .title {
+    text-align: center; }
+  .contest .description {
+    display: none; }
+  .contest-control {
+    display: block; } }

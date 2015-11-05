@@ -1,0 +1,7 @@
+{
+    "esnext": true,
+    "undef" : true,
+    "unused": true,
+    "predef": ["window", "document", "require", "define", "module", "console"],
+    "jquery": true
+}
