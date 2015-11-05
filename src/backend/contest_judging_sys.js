@@ -312,24 +312,41 @@ module.exports = (function() {
             let self = this;
 
             this.getDefaultRubrics(function(defaultRubrics) {
+                callbackData = defaultRubrics;
                 self.fetchContest(contestId, function(contestRubrics) {
-                    callbackData = contestRubrics.rubrics;
+                    let customRubrics = contestRubrics.rubrics;
 
-                    for (let defRubric in defaultRubrics) {
-                        if (defRubric !== undefined) {
-                            callbackData[defRubric] = defaultRubrics[defRubric];
+                    for (let customRubric in customRubrics) {
+                        if (!callbackData.hasOwnProperty(customRubric)) {
+                            callbackData[customRubric] = customRubrics[customRubric];
                         }
                     }
 
-                    callbackData.Order = defaultRubrics.Order;
+                    for (let oInd = 0; oInd < customRubrics.Order.length; oInd++) {
+                        let thisRubric = customRubrics.Order[oInd];
 
-                    for (let oInd = 0; oInd < contestRubrics.rubrics.Order.length; oInd++) {
-                        let currRubric = contestRubrics.rubrics.Order[oInd];
-
-                        if (callbackData.Order.indexOf(currRubric) == -1) {
-                            callbackData.Order.push(currRubric);
+                        if (callbackData.Order.indexOf(thisRubric) === -1) {
+                            callbackData.Order.push(thisRubric);
                         }
                     }
+
+                    // callbackData = contestRubrics.rubrics;
+
+                    // for (let defRubric in defaultRubrics) {
+                    //     callbackData[defRubric] = defaultRubrics[defRubric];
+                    // }
+
+                    // callbackData.Order = defaultRubrics.Order;
+
+                    // console.log(defaultRubrics.Order);
+
+                    // for (let oInd = 0; oInd < contestRubrics.rubrics.Order.length; oInd++) {
+                    //     let currRubric = contestRubrics.rubrics.Order[oInd];
+
+                    //     if (callbackData.Order.indexOf(currRubric) === -1) {
+                    //         callbackData.Order.push(currRubric);
+                    //     }
+                    // }
 
                     callback(callbackData);
                 }, ["rubrics"]);
