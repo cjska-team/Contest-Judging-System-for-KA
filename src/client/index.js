@@ -73,7 +73,8 @@ var createContestHolder = function(contestData) {
         if (permLevel >= 5) {
             $("#" + contestData.id + " .center").append(
                 createContestControl({
-                    text: "View Leaderboard"
+                    text: "View Leaderboard",
+                    link: "leaderboard.html?contest=" + contestData.id
                 })
             );
         }
