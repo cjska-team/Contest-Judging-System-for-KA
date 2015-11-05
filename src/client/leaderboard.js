@@ -75,10 +75,16 @@ var setupLeaderboard = function(data) {
 var showPage = function() {
     let urlParams = helpers.getUrlParams(window.location.href);
 
+    if (CJS.fetchFirebaseAuth() === null) {
+        $("#authBtn").text("Hello, guest! Click me to login.");
+    } else {
+        $("#authBtn").text(`Welcome, ${CJS.fetchFirebaseAuth().google.displayName}! (Not you? Click here)`);
+    }
+
     var contestId = null;
 
     if (urlParams.hasOwnProperty("contest")) {
-        contestId = urlParams.contest;
+        contestId = urlParams.contest.replace(/\#/g, "");
     } else {
         alert("Contest ID not specified. Returning to homepage.");
         window.location.href = "index.html";
@@ -99,5 +105,15 @@ CJS.getPermLevel(function(permLevel) {
     } else {
         alert("You do not have the required permissions to view this page. Returning to homepage.");
         window.location.href = "index.html";
+    }
+});
+
+$("#authBtn").on("click", function(evt) {
+    evt.preventDefault();
+
+    if (CJS.fetchFirebaseAuth() === null) {
+        CJS.authenticate();
+    } else {
+        CJS.authenticate(true);
     }
 });
