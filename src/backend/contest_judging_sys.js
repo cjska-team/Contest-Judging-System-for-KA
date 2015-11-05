@@ -299,6 +299,33 @@ module.exports = (function() {
             rubricsChild.once("value", function(snapshot) {
                 callback(snapshot.val());
             });
+        },
+        /**
+         * getContestRubrics(contestId, callback)
+         * @author Gigabyte Giant (2015)
+         * @param {String} contestId: The ID of the contest that we want to load the rubrics for
+         * @param {Function} callback: The callback function to invoke once we've loaded all of the rubrics
+         */
+        getContestRubrics: function(contestId, callback) {
+            var callbackData = {};
+
+            let self = this;
+
+            this.getDefaultRubrics(function(defaultRubrics) {
+                self.fetchContest(contestId, function(contestRubrics) {
+                    callbackData = contestRubrics.rubrics;
+
+                    for (let defRubric in defaultRubrics) {
+                        if (defRubric !== undefined) {
+                            callbackData[defRubric] = defaultRubrics[defRubric];
+                        }
+                    }
+
+                    callbackData.Order = defaultRubrics.Order.concat(contestRubrics.rubrics.Order);
+
+                    callback(callbackData);
+                }, ["rubrics"]);
+            });
         }
     };
 })();
