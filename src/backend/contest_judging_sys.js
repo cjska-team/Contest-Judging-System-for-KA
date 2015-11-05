@@ -321,7 +321,15 @@ module.exports = (function() {
                         }
                     }
 
-                    callbackData.Order = defaultRubrics.Order.concat(contestRubrics.rubrics.Order);
+                    callbackData.Order = defaultRubrics.Order;
+
+                    for (let oInd = 0; oInd < contestRubrics.rubrics.Order.length; oInd++) {
+                        let currRubric = contestRubrics.rubrics.Order[oInd];
+
+                        if (callbackData.Order.indexOf(currRubric) == -1) {
+                            callbackData.Order.push(currRubric);
+                        }
+                    }
 
                     callback(callbackData);
                 }, ["rubrics"]);
