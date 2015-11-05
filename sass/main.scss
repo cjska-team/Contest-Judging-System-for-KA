@@ -30,6 +30,27 @@
     margin-top: 10px;
 }
 
+.contest-name {
+    margin: 1em 0;
+}
+
+.entries-container {
+    margin-top: 1em;
+}
+
+.contest-entry {
+    cursor: pointer;
+    transition: background-color 0.33s ease;
+}
+
+.contest-entry:hover {
+    background-color: rgba(0, 0, 0, 0.12);
+}
+
+.entry-img {
+    border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
 @media screen and (orientation:portrait) {
     .contest .title {
         text-align: center;

@@ -366,7 +366,9 @@ if (urlParams.hasOwnProperty("contest")) {
 }
 
 var createEntry = function createEntry(entry) {
-    return $("<div>").append($("<img>").attr("src", "https://www.khanacademy.org/" + entry.thumb)).append($("<h3>").text(entry.name));
+    return $("<div>").append($("<img>").attr("src", "https://www.khanacademy.org/" + entry.thumb).addClass("img-responsive entry-img")).append($("<p>").text(entry.name).addClass("entry-title center-align")).addClass("col s12 m3 l3 center-align contest-entry").click(function () {
+        window.location.href = "entry.html?entry=" + entry.id;
+    });
 };
 
 var setupPage = function setupPage() {
@@ -377,15 +379,29 @@ var setupPage = function setupPage() {
     }
 
     CJS.loadXContestEntries(contestId, function (response) {
+        var numEntries = 0;
+        var $entriesRow = $("<div>").addClass("row");
+        $("#entries").append($entriesRow);
+
         for (var entryId in response) {
+            numEntries += 1;
             var thisEntry = response[entryId];
 
-            $("#entries").append(createEntry(thisEntry)).append($("<div>").addClass("divider"));
+            $entriesRow.append(createEntry(thisEntry));
+
+            if (numEntries % 4 === 0) {
+                $entriesRow = $("<div>").addClass("row");
+                $("#entries").append($entriesRow);
+            }
         }
-    }, 30);
+    }, 32);
+
+    CJS.fetchContest(contestId, function (data) {
+        $(".contest-name").text("Entries for " + data.name);
+    }, ["name"]);
 };
 
-setupPage();
+$(document).ready(setupPage);
 
 $("#authBtn").on("click", function (evt) {
     evt.preventDefault();
