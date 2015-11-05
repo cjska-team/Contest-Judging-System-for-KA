@@ -63,7 +63,7 @@ var createContestHolder = function(contestData) {
                         .append(
                             createContestControl({
                                 text: "View Entries",
-                                link: "contest.html?contest=" + contestData.id
+                                link: "contest.html?contest=" + contestData.id + "&count=32"
                             })
                         )
                 )
