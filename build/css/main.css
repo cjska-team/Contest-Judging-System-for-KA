@@ -55,3 +55,6 @@
     display: none; }
   .contest-control {
     display: block; } }
+
+.judgingBtn {
+  margin: 2px; }
