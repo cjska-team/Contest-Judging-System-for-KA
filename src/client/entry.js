@@ -4,6 +4,11 @@ var helpers = require("../generalPurpose.js");
 let fbAuth = CJS.fetchFirebaseAuth();
 let urlParams = helpers.getUrlParams(window.location.href);
 
+var sizing = {
+    width: 400,
+    height: 400
+};
+
 function createRubricTab($tabList, rubric, kInd) {
     $tabList.append(
         $("<li>")
@@ -78,11 +83,6 @@ var setupPage = function() {
             let contestId = urlParams.contest.replace(/\#/g, "");
             let entryId = urlParams.entry;
 
-            var sizing = {
-                width: 400,
-                height: 400
-            };
-
             let iframeUrl = `https://www.khanacademy.org/computer-programming/contest-entry/${entryId}/embedded?buttons=no&editor=yes&author=no&width=${sizing.width}&height=${sizing.height}`;
 
             $("#preview").append(
@@ -119,6 +119,8 @@ var setupPage = function() {
                         }
                     }
                 });
+            } else {
+                $(".judgeOnly").hide();
             }
         }
     });
@@ -175,4 +177,17 @@ $(".submit-score-control").on("click", (evt) => {
 
         $(self).text("Scores submitted!");
     });
+});
+
+$(".reload-entry-control").on("click", () => {
+    $(".entry-frame").attr("src", $(".entry-frame").attr("src"));
+});
+
+$(".set-dimensions-control").on("click", () => {
+    sizing.width = parseInt($("[name=width]").val(), 10);
+    sizing.height = parseInt($("[name=height]").val(), 10);
+
+    console.log(`https://www.khanacademy.org/computer-programming/contest-entry/${urlParams.entry}/embedded?buttons=no&editor=yes&author=no&width=${sizing.width}&height=${sizing.height}`);
+
+    $(".entry-frame").attr("src", `https://www.khanacademy.org/computer-programming/contest-entry/${urlParams.entry}/embedded?buttons=no&editor=yes&author=no&width=${sizing.width}&height=${sizing.height}`);
 });
