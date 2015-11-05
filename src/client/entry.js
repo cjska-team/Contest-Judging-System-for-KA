@@ -2,35 +2,60 @@ var CJS = require("../backend/contest_judging_sys.js");
 var helpers = require("../generalPurpose.js");
 
 let fbAuth = CJS.fetchFirebaseAuth();
+let urlParams = helpers.getUrlParams(window.location.href);
+
+function createRubricTab($tabList, rubric, kInd) {
+    $tabList.append(
+        $("<li>")
+            .addClass("tab col options-tab")
+            .attr("data-score-value", kInd)
+            .append($("<a>")
+                .text(rubric.keys[kInd])
+                .attr("href", `rubric-${kInd}`)
+                .click((evt) => {
+                    let $thisElem = $(evt.toElement);
+                    $tabList.tabs("select_tab", `rubric-${kInd}`);
+                    console.log($thisElem.attr("data-score-value"));
+                })
+            )
+    );
+}
+
+let controlFactories = {
+    keys(rubric, elem) {
+        let $tabList = $("<ul>").addClass("tabs judging-control options-control");
+        for (let kInd = 0; kInd < rubric.keys.length; kInd++) {
+            createRubricTab($tabList, rubric, kInd);
+        }
+        elem.append($tabList);
+        $tabList.tabs();
+    },
+    slider(rubric, elem) {
+        console.log("Hey sliders!");
+        elem.append(
+            $("<p>")
+                .addClass("range-field")
+                .append(
+                    $("<input>").attr({
+                        "type": "range",
+                        "min": rubric.min,
+                        "max": rubric.max,
+                        "value": rubric.min,
+                        "step": 0.1
+                    }).addClass("judging-control slider-control")
+                )
+        );
+    }
+}
 
 var createJudgingControl = function(rubric, type) {
     var elem = $("<div>")
         .append(
-            $("<h4>").text(rubric.displayText)
-        );
+            $("<h5>").text(rubric.displayText)
+                .addClass("judging-control-title")
+        ).addClass("col l6 m6 s12 judging-control center-align");
 
-    switch (type) {
-        case "keys":
-            for (let kInd = 0; kInd < rubric.keys.length; kInd++) {
-                elem.append(
-                    $("<button>")
-                        .addClass("btn waves-effect waves-light amber judgingBtn").attr("data-score-value", kInd).text(rubric.keys[kInd])
-                        .click((evt) => {
-                            let thisElem = evt.toElement;
-                            console.log($(thisElem).attr("data-score-value"));
-                        })
-                );
-            }
-            break;
-        case "slider":
-            elem.append(
-                $("<input>").attr("type", "range").attr("min", rubric.min).attr("max", rubric.max).attr("value", rubric.min)
-                    .update((evt) => {
-                        
-                    })
-            );
-            break;
-    }
+    controlFactories[type](rubric, elem);
 
     return elem;
 };
@@ -43,7 +68,6 @@ var setupPage = function() {
     }
 
     CJS.getPermLevel(function(permLevel) {
-        let urlParams = helpers.getUrlParams(window.location.href);
 
         console.log(urlParams);
 
@@ -62,11 +86,14 @@ var setupPage = function() {
             let iframeUrl = `https://www.khanacademy.org/computer-programming/contest-entry/${entryId}/embedded?buttons=no&editor=yes&author=no&width=${sizing.width}&height=${sizing.height}`;
 
             $("#preview").append(
-                $("<iframe>").attr("src", iframeUrl).css("width", "100%").css("height", (sizing.height + 10) + "px").css("border", "none")
+                $("<iframe>").attr("src", iframeUrl).css("height", (sizing.height + 10) + "px").addClass("entry-frame")
             );
 
             if (permLevel >= 4) {
                 var judgingControlsBox = $("#judgingControls");
+
+                let $controlRow = $("<div>").addClass("row");
+                judgingControlsBox.append($controlRow);
 
                 CJS.getContestRubrics(contestId, function(rubrics) {
                     console.log(rubrics);
@@ -84,12 +111,21 @@ var setupPage = function() {
 
                         rubrics[thisRubric].displayText = thisRubric.replace(/\_/g, " ");
 
-                        judgingControlsBox.append(createJudgingControl(rubrics[thisRubric], rubricType));
-                    }                    
+                        $controlRow.append(createJudgingControl(rubrics[thisRubric], rubricType));
+
+                        if ($controlRow.children().length > 1) {
+                            $controlRow = $("<div>").addClass("row");
+                            judgingControlsBox.append($controlRow);
+                        }
+                    }
                 });
             }
         }
     });
+
+    CJS.fetchContest(urlParams.contest, (data) => {
+        $(".contest-name").text(`Entry in ${data.name}`);
+    }, ["name"]);
 };
 
 setupPage();

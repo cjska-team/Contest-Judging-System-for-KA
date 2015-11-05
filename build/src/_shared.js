@@ -4,7 +4,7 @@ $(function() {
         var footerElem = $("<footer>").addClass("section").addClass("center").addClass("muted");
 
         footerElem.append(
-            $("<p>").text("KACJS; Copyright 2015 Gigabyte Giant & Spark.")
+            $("<p>").text("CJSKA; Copyright 2015 Gigabyte Giant & Spark.")
                 .append("<br>")
                 .append(
                     $("<small>")
