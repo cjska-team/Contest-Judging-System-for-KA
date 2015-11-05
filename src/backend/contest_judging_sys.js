@@ -58,7 +58,43 @@ module.exports = (function() {
             }
         },
         /**
-         * fetchContest(contestId, callback)
+         * fetchContestEntry(contestId, entryId, callback, properties)
+         * @author Gigabyte Giant (2015)
+         * @param {String} contestId: The ID of the contest that the entry we want to load data for resides under
+         * @param {String} entryId: The ID of the contest entry that we want to load data for
+         * @param {Function} callback: The callback function to invoke once we've loaded all of the required data
+         * @param {Array} properties*: A list of all the properties that you want to load from this contest entry
+         */
+        fetchContestEntry: function(contestId, entryId, callback, properties) {
+            if (!callback || (typeof callback !== "function")) {
+                return;
+            }
+
+            // Used to reference Firebase
+            let firebaseRef = (new window.Firebase(FIREBASE_KEY));
+
+            // Firebase children
+            let contestChild = firebaseRef.child("contests").child(contestId);
+            let entryChild = contestChild.child("entries").child(entryId);
+
+            let requiredProps = (properties === undefined ? ["id", "name", "thumb"] : properties);
+
+            var callbackData = {};
+
+            for (let propInd = 0; propInd < requiredProps.length; propInd++) {
+                let currProp = requiredProps[propInd];
+
+                entryChild.child(currProp).once("value", function(snapshot) {
+                    callbackData[currProp] = snapshot.val();
+
+                    if (Object.keys(callbackData).length === requiredProps.length) {
+                        callback(callbackData);
+                    }
+                }, this.reportError);
+            }
+        },
+        /**
+         * fetchContest(contestId, callback, properties)
          * @author Gigabyte Giant (2015)
          * @param {String} contestId: The ID of the contest that you want to load data for
          * @param {Function} callback: The callback function to invoke once we've received the data.
@@ -329,24 +365,6 @@ module.exports = (function() {
                             callbackData.Order.push(thisRubric);
                         }
                     }
-
-                    // callbackData = contestRubrics.rubrics;
-
-                    // for (let defRubric in defaultRubrics) {
-                    //     callbackData[defRubric] = defaultRubrics[defRubric];
-                    // }
-
-                    // callbackData.Order = defaultRubrics.Order;
-
-                    // console.log(defaultRubrics.Order);
-
-                    // for (let oInd = 0; oInd < contestRubrics.rubrics.Order.length; oInd++) {
-                    //     let currRubric = contestRubrics.rubrics.Order[oInd];
-
-                    //     if (callbackData.Order.indexOf(currRubric) === -1) {
-                    //         callbackData.Order.push(currRubric);
-                    //     }
-                    // }
 
                     callback(callbackData);
                 }, ["rubrics"]);
