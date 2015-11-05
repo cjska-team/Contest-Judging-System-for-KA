@@ -316,10 +316,12 @@ module.exports = (function() {
                     callbackData = contestRubrics.rubrics;
 
                     for (let defRubric in defaultRubrics) {
-                        callbackData[defRubric] = defaultRubrics[defRubric];
+                        if (defRubric !== undefined) {
+                            callbackData[defRubric] = defaultRubrics[defRubric];
+                        }
                     }
 
-                    callbackData.Order = defaultRubrics.Order.concat(contestRubrics.Order);
+                    callbackData.Order = defaultRubrics.Order.concat(contestRubrics.rubrics.Order);
 
                     callback(callbackData);
                 }, ["rubrics"]);
