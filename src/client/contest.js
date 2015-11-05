@@ -42,6 +42,7 @@ var setupPage = function() {
     }
 
     CJS.loadXContestEntries(contestId, function(response) {
+        console.log(response);
         let numEntries = 0;
         let $entriesRow = $("<div>").addClass("row");
         $("#entries").append($entriesRow);
