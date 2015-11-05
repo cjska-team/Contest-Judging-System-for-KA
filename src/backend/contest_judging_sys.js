@@ -352,17 +352,22 @@ module.exports = (function() {
                 self.fetchContest(contestId, function(contestRubrics) {
                     let customRubrics = contestRubrics.rubrics;
 
-                    for (let customRubric in customRubrics) {
-                        if (!callbackData.hasOwnProperty(customRubric)) {
-                            callbackData[customRubric] = customRubrics[customRubric];
+                    if (customRubrics !== null) {
+                        for (let customRubric in customRubrics) {
+                            console.log(customRubric);
+                            if (!callbackData.hasOwnProperty(customRubric)) {
+                                callbackData[customRubric] = customRubrics[customRubric];
+                            }
                         }
-                    }
 
-                    for (let oInd = 0; oInd < customRubrics.Order.length; oInd++) {
-                        let thisRubric = customRubrics.Order[oInd];
+                        if (customRubrics.hasOwnProperty("Order")) {
+                            for (let oInd = 0; oInd < customRubrics.Order.length; oInd++) {
+                                let thisRubric = customRubrics.Order[oInd];
 
-                        if (callbackData.Order.indexOf(thisRubric) === -1) {
-                            callbackData.Order.push(thisRubric);
+                                if (callbackData.Order.indexOf(thisRubric) === -1) {
+                                    callbackData.Order.push(thisRubric);
+                                }
+                            }
                         }
                     }
 
