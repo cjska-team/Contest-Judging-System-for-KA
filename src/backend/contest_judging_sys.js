@@ -439,7 +439,7 @@ module.exports = (function() {
                                 if (scoreData[score] > contestRubrics[score].max) {
                                     scoreVal = contestRubrics[score].max;
                                 } else if (scoreData[score] < contestRubrics[score].min) {
-                                    scoreVal = contestRubrics[score].min
+                                    scoreVal = contestRubrics[score].min;
                                 } else {
                                     scoreVal = scoreData[score];
                                 }

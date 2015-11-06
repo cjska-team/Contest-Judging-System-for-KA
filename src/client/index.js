@@ -1,6 +1,5 @@
 var CJS = require("../backend/contest_judging_sys.js");
-
-let fbAuth = CJS.fetchFirebaseAuth();
+var helpers = require("../helpers/helpers.js");
 
 /**
  * createContestControl(controlData)
@@ -84,12 +83,6 @@ var createContestHolder = function(contestData) {
 };
 
 var setupPage = function(contestData) {
-    if (fbAuth === null) {
-        $("#authBtn").text("Hello, guest! Click me to login.");
-    } else {
-        $("#authBtn").text(`Welcome, ${CJS.fetchFirebaseAuth().google.displayName}! (Not you? Click here)`);
-    }
-
     for (let cid in contestData) {
         let contest = contestData[cid];
 
@@ -110,14 +103,15 @@ var setupPage = function(contestData) {
     }
 };
 
+helpers.authentication.setupPageAuth("#authBtn", CJS);
 CJS.fetchContests(setupPage);
 
-$("#authBtn").on("click", function(evt) {
-    evt.preventDefault();
+// $("#authBtn").on("click", function(evt) {
+//     evt.preventDefault();
 
-    if (fbAuth === null) {
-        CJS.authenticate();
-    } else {
-        CJS.authenticate(true);
-    }
-});
+//     if (fbAuth === null) {
+//         CJS.authenticate();
+//     } else {
+//         CJS.authenticate(true);
+//     }
+// });

@@ -1,8 +1,7 @@
 var CJS = require("../backend/contest_judging_sys.js");
-var helpers = require("../generalPurpose.js");
+var helpers = require("../helpers/helpers.js");
 
-let fbAuth = CJS.fetchFirebaseAuth();
-let urlParams = helpers.getUrlParams(window.location.href);
+let urlParams = helpers.general.getUrlParams(window.location.href);
 
 var sizing = {
     width: 400,
@@ -51,7 +50,7 @@ let controlFactories = {
                 )
         );
     }
-}
+};
 
 var createJudgingControl = function(rubric, type) {
     var elem = $("<div>")
@@ -66,16 +65,7 @@ var createJudgingControl = function(rubric, type) {
 };
 
 var setupPage = function() {
-    if (fbAuth === null) {
-        $("#authBtn").text("Hello, guest! Click me to login.");
-    } else {
-        $("#authBtn").text(`Welcome, ${CJS.fetchFirebaseAuth().google.displayName}! (Not you? Click here)`);
-    }
-
     CJS.getPermLevel(function(permLevel) {
-
-        console.log(urlParams);
-
         if (!urlParams.hasOwnProperty("contest") || !urlParams.hasOwnProperty("entry")) {
             alert("Contest ID and/or Entry ID not specified. Returning to previous page.");
             window.history.back();
@@ -130,17 +120,8 @@ var setupPage = function() {
     }, ["name"]);
 };
 
+helpers.authentication.setupPageAuth("#authBtn", CJS);
 setupPage();
-
-$("#authBtn").on("click", function(evt) {
-    evt.preventDefault();
-
-    if (fbAuth === null) {
-        CJS.authenticate();
-    } else {
-        CJS.authenticate(true);
-    }
-});
 
 $(".submit-score-control").on("click", (evt) => {
     evt.preventDefault();
