@@ -204,7 +204,7 @@ module.exports = (function() {
          * @param {Integer} loadHowMany*: The number of entries to load. If no value is passed to this parameter,
          *  fallback onto a default value.
          */
-        fetchContestEntries: function(contestId, callback, loadHowMany = DEF_NUM_ENTRIES_TO_LOAD) {
+        fetchContestEntries: function(contestId, callback, loadHowMany = DEF_NUM_ENTRIES_TO_LOAD, includeJudged = false) {
             // If we don't have a valid callback function, exit the function.
             if (!callback || (typeof callback !== "function")) {
                 return;
@@ -215,7 +215,7 @@ module.exports = (function() {
 
             // References to Firebase children
             let thisContestRef = firebaseRef.child("contests").child(contestId);
-            let contestEntriesRef = thisContestRef.child("entryKeys");
+            let contestEntriesRef = thisContestRef.child("entries");
 
             // Used to keep track of how many entries we've loaded
             var numLoaded = 0;
@@ -224,23 +224,31 @@ module.exports = (function() {
             var entryKeys = [ ];
 
             contestEntriesRef.once("value", function(fbSnapshot) {
-                let tmpEntryKeys = fbSnapshot.val();
+                let tmpEntryKeys = Object.keys(fbSnapshot.val());
 
-                // If there aren't at least "n" entries for this contest, load all of them.
-                if (Object.keys(tmpEntryKeys).length < loadHowMany) {
-                    loadHowMany = Object.keys(tmpEntryKeys).length;
+                if (tmpEntryKeys.length < loadHowMany) {
+                    loadHowMany = tmpEntryKeys.length;
                 }
 
                 while (numLoaded < loadHowMany) {
-                    let randomIndex = Math.floor(Math.random() * Object.keys(tmpEntryKeys).length);
-                    let selectedKey = Object.keys(tmpEntryKeys)[randomIndex];
+                    let randomIndex = Math.floor(Math.random() * tmpEntryKeys.length);
+                    let selectedKey = tmpEntryKeys[randomIndex];
 
                     if (entryKeys.indexOf(selectedKey) === -1) {
-                        entryKeys.push(selectedKey);
-                        numLoaded++;
+                        if (fbSnapshot.val()[selectedKey].hasOwnProperty("scores")) {
+                            if (!fbSnapshot.val()[selectedKey].scores.rubric.hasOwnProperty("judgesWhoVoted") || fbSnapshot.val()[selectedKey].scores.rubric.judgesWhoVoted.indexOf(self.fetchFirebaseAuth().uid) === -1) {
+                                entryKeys.push(selectedKey);
+                                numLoaded++;
+                            } else {
+                                loadHowMany--;
+                            }
+                        } else {
+                            entryKeys.push(selectedKey);
+                            numLoaded++;
+                        }
                     }
                 }
-            }, this.reportError);
+            });
 
             let callbackWait = setInterval(function() {
                 if (numLoaded === loadHowMany) {
