@@ -204,7 +204,7 @@ module.exports = (function() {
          * @param {Integer} loadHowMany*: The number of entries to load. If no value is passed to this parameter,
          *  fallback onto a default value.
          */
-        fetchContestEntries: function(contestId, callback, loadHowMany = DEF_NUM_ENTRIES_TO_LOAD, includeJudged = false) {
+        fetchContestEntries: function(contestId, callback, loadHowMany = DEF_NUM_ENTRIES_TO_LOAD, includeJudged = true) {
             // If we don't have a valid callback function, exit the function.
             if (!callback || (typeof callback !== "function")) {
                 return;
@@ -223,6 +223,8 @@ module.exports = (function() {
             // Used to store each of the entries that we've loaded
             var entryKeys = [ ];
 
+            let self = this;
+
             contestEntriesRef.once("value", function(fbSnapshot) {
                 let tmpEntryKeys = Object.keys(fbSnapshot.val());
 
@@ -235,11 +237,12 @@ module.exports = (function() {
                     let selectedKey = tmpEntryKeys[randomIndex];
 
                     if (entryKeys.indexOf(selectedKey) === -1) {
-                        if (fbSnapshot.val()[selectedKey].hasOwnProperty("scores")) {
+                        if (fbSnapshot.val()[selectedKey].hasOwnProperty("scores") && !includeJudged) {
                             if (!fbSnapshot.val()[selectedKey].scores.rubric.hasOwnProperty("judgesWhoVoted") || fbSnapshot.val()[selectedKey].scores.rubric.judgesWhoVoted.indexOf(self.fetchFirebaseAuth().uid) === -1) {
                                 entryKeys.push(selectedKey);
                                 numLoaded++;
                             } else {
+                                console.log("Already judged " + selectedKey);
                                 loadHowMany--;
                             }
                         } else {
@@ -313,7 +316,7 @@ module.exports = (function() {
          * @param {Function} callback: The callback function to invoke once we've loaded all the required data.
          * @param {Integer} loadHowMany: The number of entries that we'd like to load.
          */
-        loadXContestEntries: function(contestId, callback, loadHowMany) {
+        loadXContestEntries: function(contestId, callback, loadHowMany, includeJudged = true) {
             var callbackData = {};
 
             let self = this;
@@ -328,30 +331,7 @@ module.exports = (function() {
                         }
                     });
                 }
-            }, loadHowMany);
-
-            // "this" will eventually go out of scope (later on in this function),
-            //  that's why we have this variable.
-            // let self = this;
-
-            // this.fetchContestEntries(contestId, function(response) {
-            //     var callbackData = { };
-
-            //     for (let entryId = 0; entryId < response.length; entryId++) {
-            //         let thisEntryId = response[entryId];
-
-            //         self.loadContestEntry(contestId, thisEntryId, function(response) {
-            //             callbackData[thisEntryId] = response;
-            //         });
-            //     }
-
-            //     let callbackWait = setInterval(function() {
-            //         if (Object.keys(callbackData).length === loadHowMany) {
-            //             clearInterval(callbackWait);
-            //             callback(callbackData);
-            //         }
-            //     }, 1000);
-            // }, loadHowMany);
+            }, loadHowMany, includeJudged);
         },
         /**
          * getDefaultRubrics(callback)
