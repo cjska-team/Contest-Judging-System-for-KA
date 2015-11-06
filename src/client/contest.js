@@ -52,7 +52,7 @@ var setupPage = function() {
                 $("#entries").append($entriesRow);
             }
         }
-    }, numEntriesToLoad);
+    }, numEntriesToLoad, false);
 
     CJS.fetchContest(contestId, (data) => {
         $(".contest-name").text(`Entries for ${data.name}`);

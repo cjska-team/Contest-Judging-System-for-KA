@@ -223,6 +223,8 @@ module.exports = (function() {
             // Used to store each of the entries that we've loaded
             var entryKeys = [ ];
 
+            var alreadyChecked = [];
+
             let self = this;
 
             contestEntriesRef.once("value", function(fbSnapshot) {
@@ -242,8 +244,12 @@ module.exports = (function() {
                                 entryKeys.push(selectedKey);
                                 numLoaded++;
                             } else {
-                                console.log("Already judged " + selectedKey);
-                                loadHowMany--;
+                                if (alreadyChecked.indexOf(selectedKey) === -1) {
+                                    console.log("Already judged " + selectedKey);
+                                    alreadyChecked.push(selectedKey);
+                                } else {
+                                    loadHowMany--;
+                                }
                             }
                         } else {
                             entryKeys.push(selectedKey);
