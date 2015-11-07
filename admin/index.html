@@ -38,7 +38,7 @@
                             <a href="#editContest" class="active">Edit Contest</a>
                         </li>
                         <li class="tab col s6 options-tab disabled">
-                            <a href="#createContest">Create Contest</a>
+                            <a href="#createContest">Create Contest (Coming soon!)</a>
                         </li>
                     </ul>
                 </div>
@@ -51,10 +51,46 @@
                     </select>
                     <br>
                     <div id="editContestControls">
+                        <h5>General Contest Information</h5>
                         <label>Contest Name:</label>
                         <input type="text" name="contestName" placeholder="Contest: Rename a contest">
+                        <div id="rubricItemControls">
+                            <h5>Create a new rubric item</h5>
+                            <div class="col l6 m6 s12">
+                                <label>Rubric Item Name:</label>
+                                <input type="text" name="rubricItemName" placeholder="Contest-Judging-ness">
+                            </div>
+                            <div class="col l6 m6 s12">
+                                <ul id="rubricItemType" class="tabs">
+                                    <li class="tab col s3 active options-tab">
+                                        <a href="#slider">Min/Max</a>
+                                    </li>
+                                    <li class="tab col s3 options-tab">
+                                        <a href="#keys">Keys</a>
+                                    </li>
+                                </ul>
+                                <div id="slider">
+                                    <label>Minimum value</label>
+                                    <input type="number" name="rubricItemMin" min="0" value="0">
+                                    <label>Maximum value</label>
+                                    <input type="number" name="rubricItemMax" value="5">
+                                </div>
+                                <div id="keys">
+                                    <label>Keys (separate items with commas, please) <small>Note: Items are ranked from left to right</small></label>
+                                    <input type="text" name="rubricItemKeys" placeholder="Bad, Okay, Good">
+                                </div>
+                            </div>
+                            <div class="col l12 m12 s12">
+                                <button class="col l12 m12 s12 btn amber waves-effect waves-light create-rubric-item">Create Rubric Item</button>
+                            </div>
+                            <div id="rubricItemsList">
+                                
+                            </div>
+                        </div>
+                        <div class="col l12 m12 s12">
+                            <button id="submitData" class="col l12 m12 s12 btn amber waves-effect waves-light disabled" disabled>Submit new data</button>
+                        </div>
                     </div>
-                    <button id="submitData" class="col l12 m12 s12 btn amber waves-effect waves-light disabled" disabled>Submit new data</button>
                 </div>
             </div>
             <div class="divider"></div>

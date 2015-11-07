@@ -5,7 +5,8 @@ var gContests = null;
 
 var newData = {
     id: null,
-    name: null
+    name: null,
+    newRubrics: []
 };
 
 $(function() {
@@ -30,14 +31,6 @@ $(function() {
     });
 });
 
-$(".options-tab").on("click", (evt) => {
-    evt.preventDefault();
-
-    console.log("Click!");
-
-    $($(evt.toElement).attr("href")).css("display", "block");
-});
-
 $("#contestSelect").on("change", () => {
     $("#submitData").attr("disabled", false).removeClass("disabled");
 
@@ -48,8 +41,9 @@ $("#contestSelect").on("change", () => {
 });
 
 $("#submitData").on("click", () => {
-    newData.id = $("#contestSelect").val();
-    newData.name = $("[name=contestName]").val();
+    // TODO (@GigabyteGiant)
+});
 
-    console.log(newData);
+$(".create-rubric-item").on("click", () => {
+    // TODO (@GigabyteGiant)
 });
