@@ -115,8 +115,11 @@ var setupPage = function() {
         }
     });
 
-    CJS.fetchContest(urlParams.contest, (data) => {
-        $(".contest-name").text(`Entry in ${data.name}`);
+    CJS.fetchContest(urlParams.contest, (contestData) => {
+        CJS.fetchContestEntry(urlParams.contest, urlParams.entry, (entryData) => {
+            $(".entry-name").text(`${entryData.name}`);
+            $(".contest-name").text(`Entry in ${contestData.name}`);
+        }, ["name"]);
     }, ["name"]);
 };
 
