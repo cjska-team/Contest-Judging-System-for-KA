@@ -121,6 +121,7 @@ var setupPage = function() {
 };
 
 helpers.authentication.setupPageAuth("#authBtn", CJS);
+$(".judge-next-control").hide();
 setupPage();
 
 $(".submit-score-control").on("click", (evt) => {
@@ -156,7 +157,11 @@ $(".submit-score-control").on("click", (evt) => {
             return;
         }
 
+        $("#judgingControls").css("opacity", "0.4");
+
         $(self).text("Scores submitted!");
+
+        $(".judge-next-control").show();
     });
 });
 
@@ -171,4 +176,10 @@ $(".set-dimensions-control").on("click", () => {
     console.log(`https://www.khanacademy.org/computer-programming/contest-entry/${urlParams.entry}/embedded?buttons=no&editor=yes&author=no&width=${sizing.width}&height=${sizing.height}`);
 
     $(".entry-frame").attr("src", `https://www.khanacademy.org/computer-programming/contest-entry/${urlParams.entry}/embedded?buttons=no&editor=yes&author=no&width=${sizing.width}&height=${sizing.height}`);
+});
+
+$(".judge-next-control").on("click", () => {
+    CJS.fetchContestEntries(urlParams.contest, function(nextEntry) {
+        window.location.href = `entry.html?contest=${urlParams.contest}&entry=${nextEntry[0]}`;
+    }, 1, false);
 });
