@@ -63,3 +63,15 @@ $(document).ready(function() {
     helpers.authentication.setupPageAuth("#authBtn", CJS);
     setupPage();
 });
+
+$("#next-unjudged").on("click", (evt) => {
+    evt.preventDefault();
+
+    CJS.fetchContestEntries(urlParams.contest, function(nextEntry) {
+        if (nextEntry[0] !== undefined) {
+            window.location.href = `entry.html?contest=${urlParams.contest}&entry=${nextEntry[0]}`;
+        } else {
+            alert("We couldn't find an un-judged entry, sorry!");
+        }
+    }, 1, false);
+})
