@@ -2,7 +2,7 @@ module.exports = {
     addAdminLink: function(selector, cjsWrapper) {
         cjsWrapper.getPermLevel(function(permLevel) {
             if (permLevel >= 5) {
-                $("<li>").append(
+                $("<li>").addClass("active").append(
                     $("<a>").attr("href", "./admin/").text("Admin dashboard")
                 ).insertBefore($(selector).parent());
             }
@@ -29,6 +29,6 @@ module.exports = {
     setupPageAuth: function(authBtnSelector, cjsWrapper) {
         this.setupOnClick(authBtnSelector, cjsWrapper);
         this.showWelcome(authBtnSelector, cjsWrapper);
-        this.addAdminLink(authBtnSelector, cjsWrapper);
+        // this.addAdminLink(authBtnSelector, cjsWrapper);
     }
 };
