@@ -46,7 +46,7 @@
             <div class="row">
                 <div id="editContest" class="col s12">
                     <label>Contest</label>
-                    <select id="contestSelect" class="browser-default">
+                    <select id="contestSelect" class="contest-select">
                         <option id="start" value="" disabled selected>Loading contests... Please wait.</option>
                     </select>
                     <br>
@@ -54,7 +54,7 @@
                         <h5>General Contest Information</h5>
                         <label>Contest Name:</label>
                         <input type="text" name="contestName" placeholder="Contest: Rename a contest">
-                        <div id="rubricItemControls">
+                        <div class="row" id="rubricItemControls">
                             <h5>Create a new rubric item</h5>
                             <div class="col l6 m6 s12">
                                 <label>Rubric Item Name:</label>
@@ -76,19 +76,21 @@
                                     <input type="number" name="rubricItemMax" value="5">
                                 </div>
                                 <div id="keys">
-                                    <label>Keys (separate items with commas, please) <small>Note: Items are ranked from left to right</small></label>
-                                    <input type="text" name="rubricItemKeys" placeholder="Bad, Okay, Good">
+                                    <div class="keys">
+                                    </div>
                                 </div>
                             </div>
                             <div class="col l12 m12 s12">
                                 <button class="col l12 m12 s12 btn amber waves-effect waves-light create-rubric-item">Create Rubric Item</button>
                             </div>
                             <div id="rubricItemsList">
-                                
+
                             </div>
                         </div>
-                        <div class="col l12 m12 s12">
-                            <button id="submitData" class="col l12 m12 s12 btn amber waves-effect waves-light disabled" disabled>Submit new data</button>
+                        <div class="row">
+                            <div class="col l12 m12 s12">
+                                <button id="submitData" class="col l12 m12 s12 btn amber waves-effect waves-light disabled" disabled>Submit new data</button>
+                            </div>
                         </div>
                     </div>
                 </div>

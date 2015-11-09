@@ -24,6 +24,8 @@ $(function() {
                         $("<option>").attr("value", contestKeys[cInd]).text(contests[contestKeys[cInd]].name)
                     );
                 }
+
+                $("#contestSelect").material_select();
             });
         } else {
             window.location.href = "../index.html";
@@ -39,6 +41,54 @@ $("#contestSelect").on("change", () => {
 
     $("[name=contestName]").val(newData.name);
 });
+
+let rubricKeys = [];
+
+function removeRubricKey(index) {
+    if (index < rubricKeys.length) {
+        let rubricKey = rubricKeys.splice(index, 1)[0];
+        rubricKey.$el.remove();
+    }
+}
+
+function addRubricKey($container) {
+    let data = {
+        name: "",
+        $el: $("<div>").addClass("key col l12 m12 s12")
+                .append(
+                    $("<label>")
+                        .text(`Rubric Key ${rubricKeys.length + 1}`)
+                )
+    };
+
+    let $input = $("<input>").attr("type", "text").attr("id", "rubric-key")
+
+    data.$input = $input;
+
+    $input.bind("input propertychange", () => {
+        console.log("hi");
+        data.name = $input.val();
+        if ($input.val().length > 0 && data.$el.is(":last-child")) {
+            addRubricKey($container);
+        }
+        if (rubricKeys.length >= 2 &&
+            rubricKeys[rubricKeys.length - 2].name === "" &&
+            rubricKeys[rubricKeys.length - 1].name === "" &&
+            !rubricKeys[rubricKeys.length - 1].$input.is(":focus")) {
+                removeRubricKey(rubricKeys.length - 1);
+        }
+    });
+
+    data.$el.append($input);
+
+    $container.append(data.$el);
+
+    rubricKeys.push(data);
+
+    return data;
+}
+
+addRubricKey($(".keys"));
 
 $("#submitData").on("click", () => {
     // TODO (@GigabyteGiant)
