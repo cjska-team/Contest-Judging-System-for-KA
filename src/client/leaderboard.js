@@ -69,7 +69,9 @@ var setupLeaderboard = function(data) {
         data: leaderboardRows
     });
 
-    $("[name=leaderboard_length]").addClass("browser-default");
+    $("[name=leaderboard_length]").addClass("browser-default").append(
+        $("<option>").attr("value", "500000").text("An uber-epic amount")
+    );
 };
 
 var showPage = function() {
