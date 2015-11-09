@@ -69,7 +69,7 @@ var setupLeaderboard = function(data) {
         data: leaderboardRows
     });
 
-    $("#leaderboard #leaderboard_length").hide();
+    $("[name=leaderboard_length]").addClass("browser-default");
 };
 
 var showPage = function() {
