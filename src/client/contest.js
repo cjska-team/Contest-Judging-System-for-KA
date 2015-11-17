@@ -21,16 +21,16 @@ if (urlParams.hasOwnProperty("count")) {
 var createEntry = function(entry) {
     return $("<div>").attr("id", entry.id)
         .append(
-            $("<img>").attr("src", "https://www.khanacademy.org/" + entry.thumb)
-                .addClass("img-responsive entry-img")
-        )
-        .append(
-            $("<p>").text(entry.name).addClass("entry-title center-align")
-        )
-        .addClass("col s12 m3 l3 center-align contest-entry")
-        .click(() => {
-            window.location.href = `entry.html?contest=${contestId}&entry=${entry.id}`;
-        });
+            $("<a>").attr("href", `entry.html?contest=${contestId}&entry=${entry.id}`)
+                .append(
+                    $("<img>").attr("src", "https://www.khanacademy.org/" + entry.thumb)
+                        .addClass("img-responsive entry-img")
+                )
+                .append(
+                    $("<p>").text(entry.name).addClass("entry-title center-align")
+                )
+                .addClass("col s12 m3 l3 center-align contest-entry")
+        );
 };
 
 var setupPage = function() {
