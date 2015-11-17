@@ -9,8 +9,3 @@
  * `git checkout 2.0`
  * `npm install`
  * `gulp` (or, if Gulp isn't installed globally: `node node_modules/gulp/bin/gulp.js`)
-
-##### Running the client locally
-We use Python3's `http.server` to run KACJS's client locally; so, you can too!
- * `python3 -m http.server 8000` (*Don't have Python3? No worries, you can just run `python -m SimpleHTTPServer 8000`*)
- * Point your browser to `127.0.0.1:8000`
