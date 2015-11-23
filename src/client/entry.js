@@ -69,6 +69,9 @@ var setupPage = function() {
         if (!urlParams.hasOwnProperty("contest") || !urlParams.hasOwnProperty("entry")) {
             alert("Contest ID and/or Entry ID not specified. Returning to previous page.");
             window.history.back();
+        } else if ((urlParams.contest === undefined || urlParams.contest === null) || (urlParams.entry === undefined || urlParams.entry === null)) {
+            alert("Ooops, something nasty happend. Returing to homepage!");
+            window.location.href = "../index.html";
         } else {
             let contestId = urlParams.contest.replace(/\#/g, "");
             let entryId = urlParams.entry;
