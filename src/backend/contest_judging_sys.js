@@ -38,15 +38,15 @@ module.exports = (function() {
             if (!logout) {
                 let self = this;
 
-                firebaseRef.authWithOAuthRedirect("google", function(err, authData) {
+                firebaseRef.authWithOAuthPopup("google", function(err, authData) {
                     if (err) {
-                        self.reportError(err);
+                        
                     } else {
                         let fbUsersRef = firebaseRef.child("users");
 
                         fbUsersRef.once("value", function(usersSnapshot) {
                             if (!usersSnapshot.hasChild(authData.uid)) {
-                                usersRef.child(authData.uid).set({
+                                fbUsersRef.child(authData.uid).set({
                                     name: authData.google.displayName,
                                     permLevel: 1
                                 }, self.reportError);
@@ -76,7 +76,11 @@ module.exports = (function() {
                 let thisUserChild = firebaseRef.child("users").child(authData.uid);
 
                 thisUserChild.once("value", function(snapshot) {
-                    callback(snapshot.val().permLevel);
+                    if (snapshot.val() !== null) {
+                        callback(snapshot.val().permLevel);
+                    } else {
+                        callback(1);
+                    }
                 });
             } else {
                 callback(1);
