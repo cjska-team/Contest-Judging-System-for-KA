@@ -238,7 +238,7 @@ module.exports = (function() {
                     let randomIndex = Math.floor(Math.random() * tmpEntryKeys.length);
                     let selectedKey = tmpEntryKeys[randomIndex];
 
-                    if (entryKeys.indexOf(selectedKey) === -1) {
+                    if (entryKeys.indexOf(selectedKey) === -1 && (!fbSnapshot.val()[selectedKey].hasOwnProperty("archived") || fbSnapshot.val()[selectedKey].archived === false)) {
                         if (fbSnapshot.val()[selectedKey].hasOwnProperty("scores") && !includeJudged) {
                             if (!fbSnapshot.val()[selectedKey].scores.rubric.hasOwnProperty("judgesWhoVoted") || fbSnapshot.val()[selectedKey].scores.rubric.judgesWhoVoted.indexOf(self.fetchFirebaseAuth().uid) === -1) {
                                 entryKeys.push(selectedKey);
