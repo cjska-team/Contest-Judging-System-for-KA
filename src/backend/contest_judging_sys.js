@@ -36,7 +36,26 @@ module.exports = (function() {
             let firebaseRef = (new window.Firebase(FIREBASE_KEY));
 
             if (!logout) {
-                firebaseRef.authWithOAuthRedirect("google", this.reportError);
+                let self = this;
+
+                firebaseRef.authWithOAuthRedirect("google", function(err, authData) {
+                    if (err) {
+                        self.reportError(err);
+                    } else {
+                        let fbUsersRef = firebaseRef.child("users");
+
+                        fbUsersRef.once("value", function(usersSnapshot) {
+                            if (!usersSnapshot.hasChild(authData.uid)) {
+                                usersRef.child(authData.uid).set({
+                                    name: authData.google.displayName,
+                                    permLevel: 1
+                                }, self.reportError);
+
+                                console.log("Added new user to Firebase! Welcome to CJSKA \"" + authData.google.displayName + "\"!");
+                            }
+                        });
+                    }
+                });
             } else {
                 firebaseRef.unauth();
 
