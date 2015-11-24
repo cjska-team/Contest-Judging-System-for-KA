@@ -30,7 +30,8 @@
   max-width: 200px; }
 
 .contest-control {
-  margin-top: 10px; }
+  margin-top: 10px;
+  min-width: 100%; }
 
 .contest-name {
   margin: 1em 0; }
