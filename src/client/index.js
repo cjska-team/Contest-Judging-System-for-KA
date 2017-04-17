@@ -12,7 +12,7 @@ let fbAuth = CJS.fetchFirebaseAuth();
  */
 var createContestControl = function(controlData) {
     return $("<a>")
-        .addClass("waves-effect waves-light amber darken-2 btn contest-control")
+        .addClass("waves-effect waves-light light-green darken-2 btn contest-control")
         .text(controlData.text)
         .attr("href", (controlData.link === undefined ? null : controlData.link));
 };
